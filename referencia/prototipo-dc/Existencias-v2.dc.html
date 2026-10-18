@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Existencias</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@500;600&amp;family=Asap:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#F7F8FA}
+a{color:#1A7F3D}a:hover{color:#166B33}
+:focus-visible{outline:2px solid #1A7F3D;outline-offset:2px}
+h1,h2,h3{font-family:'Signika',sans-serif}
+.side a{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 12px;border-radius:8px;text-decoration:none;color:#3A4247;font-size:14px}
+.side a:hover{background:#F0F3F5}
+.side a.on{background:#E3F7E9;color:#166B33;font-weight:600}.side a.on:hover{background:#CDEFD8}
+.side .grp{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5F656B;padding:14px 12px 6px;font-weight:600}
+.card{background:#FFFFFF;border:1px solid #E4E8EB;border-radius:12px}
+.inp{height:38px;box-sizing:border-box;border:1px solid #CDD4D9;border-radius:8px;padding:0 10px;font:inherit;font-size:14px;color:#30383D;background:#FFFFFF;width:100%}
+.inp:focus{border-color:#1A7F3D;outline:2px solid #A7E8BB;outline-offset:0}
+.btn{height:38px;box-sizing:border-box;padding:0 14px;border-radius:8px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:1px solid transparent;white-space:nowrap}
+.b-pri{background:#1A7F3D;color:#FFFFFF}.b-pri:hover{background:#166B33;color:#FFFFFF}
+.b-sec{background:#FFFFFF;color:#30383D;border-color:#CDD4D9}.b-sec:hover{background:#F7F8FA}
+.kpi{padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .k{font-size:12.5px;color:#4E555B;font-weight:600}
+.kpi .v{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;color:#30383D}
+.kpi .s{font-size:12.5px;color:#5F656B}
+.grid{display:grid;grid-template-columns:92px minmax(150px,1.3fr) minmax(130px,1.1fr) minmax(150px,1.2fr) 130px 110px 84px 100px 40px;align-items:center;column-gap:14px;padding:0 14px}
+.th{font-size:12px;font-weight:600;color:#4E555B;text-transform:uppercase;letter-spacing:.04em;min-height:38px;background:#F3FBF5;border-bottom:1px solid #E4E8EB}
+.tr{min-height:64px;font-size:14px}
+.tr:hover{background:#FAFBFC}
+.item{border-bottom:1px solid #ECEFF1}
+.item.open{border:1px solid #A7E8BB;border-radius:12px;margin:6px 0}
+.item.open .tr{border-bottom:1px solid #E3F7E9}
+.scroll{overflow:visible}
+.bellwrap{position:relative}
+.bell{position:relative;width:40px;height:40px;border-radius:10px;border:1px solid #CDD4D9;background:#FFFFFF;color:#166B33;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bell:hover{background:#EDF9F0}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#DC2626;color:#FFFFFF;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+.badge::after{content:"";position:absolute;inset:-4px;border-radius:999px;border:2px solid #DC2626;opacity:0;animation:ring 2s ease-out infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion: reduce){.badge::after{animation:none}}
+.bellpanel{position:absolute;right:0;top:48px;z-index:40;width:400px;background:#FFFFFF;border:1px solid #E4E8EB;border-radius:14px;box-shadow:0 18px 40px rgba(48,56,61,.18);overflow:hidden}
+.bphead{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;border-bottom:1px solid #EDF0F2;background:linear-gradient(180deg,#F3FBF5,#FFFFFF)}
+.bpicon{width:34px;height:34px;border-radius:10px;background:#E3F7E9;color:#1A7F3D;display:flex;align-items:center;justify-content:center}
+.bplist{list-style:none;margin:0;padding:6px;max-height:330px;overflow-y:auto}
+.bpitem{width:100%;display:flex;align-items:center;gap:12px;padding:10px;border:none;background:none;border-radius:10px;cursor:pointer;font:inherit;font-size:13.5px}
+.bpitem:hover{background:#F3FBF5}
+.bub{width:46px;height:46px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;line-height:1}
+.bub strong{font-family:'IBM Plex Mono',monospace;font-size:17px}
+.bub small{font-size:10.5px;margin-top:2px}
+.bub.hi{background:#FEE2E2;color:#B91C1C}.bub.md{background:#FEF3C7;color:#92400E}
+.bpfoot{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid #EDF0F2;background:#F9FAFB}
+.mono{font-family:'IBM Plex Mono',monospace}
+.pager{display:flex;align-items:center;gap:6px}
+.pg{min-width:34px;height:34px;padding:0 10px;border-radius:8px;border:1px solid #CDD4D9;background:#FFFFFF;color:#30383D;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.pg:hover{background:#EDF9F0}.pg.on{background:#1A7F3D;border-color:#1A7F3D;color:#FFFFFF}.pg:disabled{opacity:.45;cursor:not-allowed}
+.scroll .th{position:sticky;top:0;z-index:2}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right;font-size:13.5px}
+.r{text-align:right}
+.sub{font-size:12.5px;color:#5F656B}
+.cat{display:inline-block;font-size:11.5px;font-weight:600;color:#4E555B;background:#F0F3F5;border-radius:4px;padding:1px 6px}
+.est{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;color:#4E555B;background:#EEF1F3;border-radius:999px;padding:1px 8px;margin-left:6px}
+.lot{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;background:#FFEBDD;color:#9A4A0C;border:1px solid #FFC9A3;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.risk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px 3px 8px;white-space:nowrap}
+.alto{background:#B91C1C;color:#FFFFFF}
+.medio{background:#FEF3C7;color:#92400E}
+.bajo{background:#EEF1F3;color:#3A4247}
+.none{color:#5F656B;font-size:12.5px}
+.icon-btn{width:34px;height:34px;border:none;background:none;border-radius:8px;color:#5F656B;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn:hover{background:#E3F7E9;color:#166B33}
+.pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px 0 14px;border:1px solid #CDD4D9;border-radius:10px;background:#FFFFFF;font-size:13px;color:#5F656B}
+.pill select{border:none;background:transparent;font:inherit;font-size:13.5px;font-weight:600;color:#30383D;appearance:none;padding-right:4px;cursor:pointer}
+.pill:focus-within{border-color:#1A7F3D}
+.detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;padding:18px 20px 20px 120px}
+.h3{margin:0 0 12px;font-size:14px;font-weight:600;color:#30383D}
+.mv{display:grid;grid-template-columns:70px minmax(0,1fr) 80px 80px;gap:10px;padding:8px 0;border-bottom:1px solid #ECEFF1;font-size:13.5px;align-items:center}
+.mvh{font-size:11.5px;font-weight:600;color:#5F656B;text-transform:uppercase;letter-spacing:.04em}
+.neg{color:#B91C1C}.pos{color:#30383D}
+
+/* Uniformidad de controles */
+.inp,.btn,.cell,.pill,.tog,.estbox,.date,.fbtn,.uline,.b-link{height:36px !important;min-height:36px;box-sizing:border-box}
+.inp,.cell,.tog,.estbox,.pill,.btn{border-radius:8px !important}
+.inp,.cell,.pill select,.uline{font-size:14px !important}
+.btn{font-size:14px;padding:0 14px}
+.lbl{gap:6px !important;font-size:12.5px !important;font-weight:600 !important;color:#4E555B !important}
+.cell{width:88px !important;max-width:100%;text-align:right}
+:is(label,span,div):has(> .cell){display:flex;justify-content:flex-end}
+.bell{width:36px !important;height:36px !important;border-radius:8px !important}
+.tile{background:#E3F7E9;color:#1A7F3D}
+.seg2 button,.pg,header button{height:36px !important}
+
+/* Paleta app: verde #33C863, menta #A7E8BB, naranja #FFA56B */
+.b-pri{background:#33C863 !important;color:#30383D !important;border-color:#33C863 !important}.b-pri:hover{background:#2BB257 !important;border-color:#2BB257 !important}
+.b-pri svg{stroke:#30383D}
+.est,.estbox{background:#FFEBDD !important;color:#8A3F06 !important}
+.th,.th2{background:#F7F8FA !important}
+
+/* Menú lateral ocultable y altura uniforme de cajas */
+.navtog{width:36px;height:36px;border:1px solid #E4E8EB;border-radius:8px;background:#FFFFFF;color:#30383D;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.navtog:hover{background:#F3FBF5;border-color:#A7E8BB}
+.side{transition:max-width .15s ease,flex-basis .15s ease}
+.side.min{flex:0 0 60px !important;max-width:60px !important;padding:10px 8px 20px !important}
+.side.min a{justify-content:center;padding:0;gap:0;font-size:0}
+.side.min a svg{flex:none}
+.side.min .grp{font-size:0;padding:0;height:1px;background:#E4E8EB;margin:10px 6px}
+@media (prefers-reduced-motion: reduce){.side{transition:none}}
+.inp,.cell{line-height:normal !important;padding-top:0 !important;padding-bottom:0 !important}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:30px !important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235F656B' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+input[type=date].inp{padding-right:8px !important}
+.add label:has(> .cell){display:flex;flex-direction:column;align-items:stretch}
+
+/* Guía de estilo Figma (14-oct): minimalista, bordes suaves, verde como acento */
+body{line-height:1.45}
+.card{border-color:#E5E7EB !important;border-radius:12px !important;box-shadow:none}
+.inp,.cell{border-color:#E5E7EB !important;color:#26323F !important;border-radius:8px !important}
+.inp::placeholder,.cell::placeholder{color:#929292}
+.inp:focus,.cell:focus{border-color:#33C863 !important;outline:3px solid #E3F7E9 !important;outline-offset:0}
+.b-sec{background:transparent !important;border-color:#E5E7EB !important;color:#26323F !important}.b-sec:hover{background:#F7F8FA !important}
+.lbl{font-weight:500 !important;color:#4E555B !important}
+.side{border-right-color:#E5E7EB !important}
+.side a{color:#5F656B}
+.side a:hover{background:#F7F8FA}
+.side a.on{background:transparent !important;color:#1A7F3D !important;font-weight:600}
+.side a.on svg{stroke:#33C863}
+.th{border-bottom-color:#E5E7EB !important}
+.chip.c-ok{background:#E3F7E9;color:#166B33}
+
+/* Botones suaves y tabla única (15-oct) */
+.btn{font-weight:500 !important;font-size:13.5px !important;padding:0 14px;letter-spacing:0;box-shadow:none}
+.btn svg{width:15px;height:15px}
+.b-pri{background:#33C863 !important;border-color:#33C863 !important;color:#14361F !important}
+.b-pri:hover{background:#2EB95B !important;border-color:#2EB95B !important}
+.b-pri svg{stroke:#14361F}
+.b-sec{background:#FFFFFF !important;border:1px solid #E5E7EB !important;color:#4E555B !important}
+.b-sec:hover{background:#F7F8FA !important;color:#26323F !important}
+.b-link,.b-ghost{background:transparent !important;border:none !important;color:#166B33 !important;font-weight:500 !important}
+.b-link:hover,.b-ghost:hover{background:#F3FBF5 !important}
+.btn:disabled{opacity:.45 !important}
+[role="table"] .btn,.tr .btn{height:30px !important;min-height:30px !important;font-size:13px !important;padding:0 10px !important}
+.tog{font-weight:500 !important;border-color:#E5E7EB !important;color:#4E555B !important}
+.tog.on{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.fbtn{height:32px !important;min-height:32px;border-color:#E5E7EB !important;font-weight:500;color:#4E555B}
+.fbtn[aria-pressed="true"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg[aria-current="page"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg{border-color:#E5E7EB !important;font-weight:500 !important}
+/* Tabla: tarjeta, cabecera tenue, filas con línea sutil, sin cuadrícula */
+.th,.th2{background:#F7F8FA !important;color:#5F656B !important;font-size:12px !important;font-weight:500 !important;text-transform:none !important;letter-spacing:0 !important;min-height:40px !important;border-bottom:1px solid #EEF0F2 !important}
+[role="table"] [role="row"]{padding-left:16px !important;padding-right:16px !important;column-gap:16px}
+.tr{min-height:52px !important;font-size:13.5px !important;border-bottom:1px solid #EEF0F2 !important;border-top:none !important}
+.tr:hover{background:#FAFBFC !important}
+.tbl{border:1px solid #EEF0F2 !important;border-radius:10px !important}
+.chip{font-size:12px !important;font-weight:500 !important;padding:2px 10px !important}
+.num{font-size:13.5px}
+
+/* Ajuste tablas y botones (15-oct, revisión Astrid) */
+.th,.th2{font-size:13px !important;font-weight:600 !important;color:#4E555B !important}
+.tr strong,.tr [style*="font-weight: 600; font-size: 14.5px"]{font-size:14px !important}
+[role="table"] .b-pri,[role="table"] .b-sec,.tr .b-pri,.tr .b-sec{background:transparent !important;border-color:transparent !important;color:#166B33 !important;padding:0 8px !important}
+[role="table"] .b-sec,.tr .b-sec{color:#4E555B !important}
+[role="table"] .b-pri:hover,[role="table"] .b-sec:hover,.tr .b-pri:hover,.tr .b-sec:hover{background:#F3FBF5 !important}
+[role="table"] .b-pri svg,.tr .b-pri svg{stroke:#166B33}
+.add .a-btn{width:auto !important;justify-self:start;padding:0 18px !important}
+
+/* Cajas de texto compactas (15-oct) */
+.inp{max-width:360px}
+input[type=date].inp{max-width:170px}
+.inp.num,.inrow .inp.num{max-width:110px}
+.hdrform{grid-template-columns:repeat(auto-fill,minmax(190px,230px)) !important;justify-content:start}
+.form,.dgrid{justify-content:start}
+.dgrid{grid-template-columns:repeat(auto-fill,minmax(180px,230px)) !important}
+.d-prod{grid-column:span 2}
+.d-prod .inp{max-width:none}
+.add .a-prod .inp{max-width:380px}
+.modal .inp{max-width:none}
+
+/* A-12 texto de apoyo */
+.sub,.s2,.kpi .s{font-size:13px !important}
+
+/* Rol en sesión: menú según permisos y contador de riesgo */
+.nbadge{margin-left:auto;font-size:11.5px;font-weight:600;background:#FDECEC;color:#B91C1C;border-radius:999px;padding:0 7px;line-height:18px}
+.side.min .nbadge{display:none}
+.r-bodega .nv-remisiones,.r-bodega .nv-organizaciones,.r-bodega .nv-kits,.r-bodega .nv-riesgo,.r-bodega .nv-reportes,.r-bodega .nv-catalogo,.r-bodega .nv-historicos,.r-bodega .nv-usuarios,.r-bodega .g-dis,.r-bodega .g-ana,.r-bodega .g-adm{display:none !important}
+.r-asist .nv-recepciones,.r-asist .nv-bajas,.r-asist .nv-kits,.r-asist .nv-riesgo,.r-asist .nv-catalogo,.r-asist .nv-historicos,.r-asist .nv-usuarios,.r-asist .g-adm{display:none !important}
+.r-coord .nv-recepciones,.r-coord .nv-bajas,.r-coord .nv-remisiones,.r-coord .nv-organizaciones{display:none !important}
+
+.toast{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:#30383D;color:#FFFFFF;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(48,56,61,.25)}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(48,56,61,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal{width:100%;max-width:880px;background:#FFFFFF;border-radius:16px;box-shadow:0 24px 60px rgba(48,56,61,.3);display:flex;flex-direction:column}
+.mhead{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid #E4E8EB}
+.mbody{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid #E4E8EB;background:#F9FAFB;border-radius:0 0 16px 16px}
+.banner{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;font-size:14px}
+.banner.err{background:#FDECEC;color:#991B1B;border:1px solid #FBCACA}
+.banner.ok{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+.banner.info{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+
+/* ===== App shell responsivo v1 (igual en todas las pantallas) ===== */
+:root{--app-nav-w:232px;--app-nav-w-mini:64px;--app-header-h:56px;--app-gutter:28px;--app-gutter-sm:16px;--app-touch-h:44px;--app-border:#E5E7EB;--app-row-line:#EEF0F2;--app-surface:#FFFFFF;--app-muted:#5F656B;--app-focus:#33C863}
+.app__header{position:sticky;top:0;z-index:40}
+.app__body{display:grid;grid-template-columns:var(--app-nav-w) minmax(0,1fr);flex:1;min-width:0;align-items:start}
+.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+.side{position:sticky;top:var(--app-header-h);height:calc(100vh - var(--app-header-h));overflow-y:auto;box-sizing:border-box;width:auto;background:var(--app-surface);border-right:1px solid var(--app-border);padding:10px 10px 20px;display:flex;flex-direction:column;gap:2px}
+.side.min{max-width:none !important;flex:none !important}
+.app__main{min-width:0;padding:20px var(--app-gutter) 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px}
+.app__main--home{padding-top:24px;gap:20px}
+.app__scroll{position:relative;overflow-x:auto;max-width:100%;scrollbar-width:thin;scrollbar-color:#C9D0D6 transparent}
+.app__scroll:focus-visible{outline:2px solid var(--app-focus);outline-offset:-2px}
+[role="table"]{position:relative}
+.sr{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+[role="cell"],[role="columnheader"]{min-width:0}
+[role="columnheader"]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="cell"]:not(:has(*)){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="table"] [role="row"]{padding-left:12px !important;padding-right:12px !important;column-gap:12px}
+.app__bank,.app__user-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Menos de 1440 px: menú solo íconos para que la tabla completa quepa; el botón de tres líneas lo despliega encima */
+@media (max-width: 1439px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+  .side:not(.is-open){padding:10px 8px 20px !important}
+  .side:not(.is-open) a{justify-content:center;padding:0;gap:0;font-size:0}
+  .side:not(.is-open) .grp{font-size:0;padding:0;height:1px;background:var(--app-border);margin:10px 6px}
+  .side:not(.is-open) .nbadge{display:none}
+  .side.is-open{position:fixed;left:0;top:var(--app-header-h);width:var(--app-nav-w);z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.14)}
+}
+/* 1024 a 1279 px: controles táctiles de 44 px y margen lateral menor */
+@media (max-width: 1279px){
+  .app__main{padding-left:20px;padding-right:20px}
+  [data-touch] .inp,[data-touch] .btn,[data-touch] .cell,[data-touch] .pill,[data-touch] .tog,[data-touch] .fbtn,[data-touch] .pg,[data-touch] .navtog,[data-touch] .estbox{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important}
+  [data-touch] [role="table"] .btn,[data-touch] .tr .btn,[data-touch] .icon-btn{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important;min-width:var(--app-touch-h)}
+  [data-touch] .side a{min-height:var(--app-touch-h)}
+  .app__bank{display:none}
+}
+/* Menos de 1024 px: menú detrás del botón de tres líneas y cada fila como tarjeta */
+@media (max-width: 1023px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:minmax(0,1fr)}
+  .side{display:none !important}
+  .side.is-open{display:flex !important;position:fixed;left:0;top:var(--app-header-h);bottom:0;height:auto;width:var(--app-nav-w);max-width:85vw !important;z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.18)}
+  .app__main{padding:16px var(--app-gutter-sm) 28px}
+  .layout,.home{grid-template-columns:minmax(0,1fr) !important}
+  .app__main [role="table"]:not([data-layout="scroll"]){min-width:0 !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) .th{display:none !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="row"]:not(.th){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px 16px !important;padding:14px 16px !important;min-height:0 !important;height:auto !important;border:1px solid var(--app-row-line) !important;border-radius:12px;margin:8px 0;background:var(--app-surface)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]{display:flex !important;flex-direction:column;align-items:flex-start !important;justify-content:flex-start !important;gap:3px;text-align:left !important;white-space:normal}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:first-child,.app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:nth-child(2):has(input[type="checkbox"]) ~ [role="cell"]:nth-child(2){grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label]:not([data-label=""])::before{content:attr(data-label);font-family:'Asap','Segoe UI',sans-serif;font-size:12px;letter-spacing:0;font-weight:500;color:var(--app-muted)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label=""]{grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) .num{text-align:left !important}
+  .app__scroll:has(> [role="table"]:not([data-layout="scroll"])){overflow-x:visible}
+}
+@media (max-width: 767px){
+  .app__user-text{display:none}
+}
+/* fin app shell */
+</style>
+</helmet>
+<div data-touch="true" style="font-family: 'Asap', 'Segoe UI', sans-serif; font-size: 14px; color: #30383D; min-height: 100vh; display: flex; flex-direction: column;">
+  <header class="app__header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 0 20px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E4E8EB;">
+    <button type="button" class="navtog" onClick="{{toggleNav}}" aria-label="{{navLabel}}" aria-expanded="{{navExp}}" title="{{navLabel}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    <a href="Inicio-v2.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #30383D;">
+      <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 8px; background: #33C863; color: #30383D; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
+      <span style="font-family: 'Signika', sans-serif; font-weight: 600; font-size: 16px;">SSD Bancos de Alimentos</span>
+    </a>
+    <span class="app__bank" style="font-size: 13.5px; color: #4E555B; padding-left: 16px; border-left: 1px solid #E4E8EB;">Banco Diocesano de Alimentos de Neiva</span>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;"><span class="app__user-text" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;"><span style="font-weight: 600; font-size: 13.5px;">{{userName}}</span><span style="font-size: 12px; color: #5F656B;">{{userRole}}</span></span><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: #E3F7E9; color: #166B33; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">{{userIni}}</span><a href="Login-v2.dc.html" class="btn b-link" title="Cerrar sesión" aria-label="Cerrar sesión" style="padding: 0 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path></svg></a></div>
+  </header>
+  <div class="app__body">
+    <nav class="{{navCls}}" id="menu-principal" aria-label="Menú principal">
+      <a href="Inicio-v2.dc.html" class="nv-inicio" title="Inicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h14V10"></path><path d="M10 20v-5h4v5"></path></svg>Inicio</a>
+      <div class="grp g-inv">Inventario</div>
+      <a href="Recepciones-v2.dc.html" class="nv-recepciones" title="Recepciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg>Recepciones</a>
+      <a href="Existencias-v2.dc.html" class="on nv-existencias" aria-current="page" title="Existencias"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"></path><path d="m2 13 10 5 10-5"></path></svg>Existencias</a>
+      <a href="Bajas-v2.dc.html" class="nv-bajas" title="Bajas y compostaje"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 15h10l1-15"></path></svg>Bajas y compostaje</a>
+      <div class="grp g-dis">Distribución</div>
+      <a href="Remisiones-v2.dc.html" class="nv-remisiones" title="Remisiones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>Remisiones</a>
+      <a href="Organizaciones-v2.dc.html" class="nv-organizaciones" title="Organizaciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M10 21v-6h4v6"></path></svg>Organizaciones</a>
+      <a href="Kits-v2.dc.html" class="nv-kits" title="Programas y kits"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M4 10h16M10 4v16"></path></svg>Programas y kits</a>
+      <div class="grp g-ana">Análisis</div>
+      <a href="Riesgo-v2.dc.html" class="nv-riesgo" title="Riesgo de vencimiento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg>Riesgo de vencimiento<span class="nbadge" title="Lotes en riesgo alto">3</span></a>
+      <a href="Reporte-v2.dc.html" class="nv-reportes" title="Reporte mensual"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"></path></svg>Reporte mensual</a>
+      <div class="grp g-adm">Administración</div>
+      <a href="Catalogo-v2.dc.html" class="nv-catalogo" title="Catálogo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Catálogo</a>
+      <a href="Historicos-v2.dc.html" class="nv-historicos" title="Importar históricos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 8v4l3 2"></path></svg>Importar históricos</a>
+      <a href="Usuarios-v2.dc.html" class="nv-usuarios" title="Usuarios y roles"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"></circle><path d="M2 21a7 7 0 0 1 14 0"></path><path d="M17 11a3 3 0 1 0 0-6M22 21a6 6 0 0 0-4-5.6"></path></svg>Usuarios y roles</a>
+    </nav>
+    <main class="app__main">
+      <div style="font-size: 13px; color: #5F656B;"><a href="Inicio-v2.dc.html">Inicio</a> / Inventario / Existencias</div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: 600;">Existencias</h1>
+        <span role="status" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: #166B33; background: #E3F7E9; border-radius: 999px; padding: 3px 10px;"><span aria-hidden="true" style="width: 7px; height: 7px; border-radius: 50%; background: #1A7F3D;"></span>Se actualiza sin recargar</span>
+        <span style="font-size: 12.5px; color: #5F656B;">Corte 10-nov-2026</span>
+        <div style="display: flex; gap: 8px; margin-left: auto;"><a class="btn b-pri" href="Remision-v2.dc.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nueva remisión</a></div>
+      </div>
+      <section class="card" aria-label="Resumen de existencias" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));">
+        <div class="kpi"><span class="k">Lotes vigentes</span><span class="v">{{lotCount}}</span><span class="s">con existencia mayor a cero</span></div>
+        <div class="kpi" style="border-left: 1px solid #ECEFF1;"><span class="k">En bodega</span><span class="v">{{totalKg}} kg</span><span class="s">suma de movimientos</span></div>
+        <div class="kpi" style="border-left: 1px solid #ECEFF1;"><span class="k">Riesgo alto</span><span class="v" style="color: #B91C1C;">{{altoKg}} kg</span><span class="s">{{altoText}}</span></div>
+        <div class="kpi" style="border-left: 1px solid #ECEFF1;"><span class="k">Vencimiento estimado</span><span class="v">{{estCount}} lotes</span><span class="s">sin fecha impresa</span></div>
+      </section>
+      <section class="card" aria-label="Lotes en bodega" style="overflow: hidden;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 18px;">
+          <h2 style="margin: 0 8px 0 0; font-size: 17px; font-weight: 600;">Lotes</h2>
+          <label class="pill"><span>Categoría:</span><select value="{{cat}}" onChange="{{onCat}}"><option value="">Todas</option><sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><option value="{{c}}">{{c}}</option></sc-for></select><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></label>
+          <label class="pill"><span>Riesgo:</span><select value="{{rf}}" onChange="{{onRf}}"><option value="">Todos</option><option value="alto">Alto</option><option value="medio">Medio</option><option value="bajo">Bajo</option></select><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></label>
+          <label class="pill"><span>Ordenar:</span><select value="{{sort}}" onChange="{{onSort}}"><option value="">Vence primero</option><option value="kg">Mayor peso</option></select><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></label>
+          <label style="position: relative; margin-left: auto; width: 260px;"><span style="position: absolute; left: -9999px;">Buscar producto o lote</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5F656B" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 12px; top: 12px;"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><input class="inp" placeholder="Buscar producto o lote" value="{{q}}" onChange="{{onQ}}" style="padding-left: 34px; height: 40px; border-radius: 999px;"></label>
+        </div>
+        <div class="app__scroll" tabindex="0" role="region" aria-label="Lotes en bodega (desplazable)" style="padding: 0 18px;">
+          <div role="table" aria-label="Lotes en bodega" style="min-width: 1100px;">
+            <div class="scroll">
+              <div role="row" class="grid th"><span role="columnheader">Lote</span><span role="columnheader">Producto</span><span role="columnheader">Presentación</span><span role="columnheader">Recepción</span><span role="columnheader">Vencimiento</span><span role="columnheader" class="r">Existencia</span><span role="columnheader" class="r">Kg</span><span role="columnheader">Riesgo</span><span role="columnheader"><span style="position: absolute; left: -9999px;">Detalle</span></span></div>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+                <div class="{{r.cls}}">
+                  <div role="row" class="grid tr">
+                    <span role="cell" data-label="Lote"><span class="lot">{{r.id}}</span></span>
+                    <span role="cell" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 0;" data-label="Producto"><span style="font-weight: 600; font-size: 14.5px;">{{r.prod}}</span><span class="cat">{{r.cat}}</span></span>
+                    <span role="cell" data-label="Presentación" title="{{r.pres}}">{{r.pres}}</span>
+                    <span role="cell" style="display: flex; flex-direction: column; gap: 2px;" data-label="Recepción"><span>{{r.rec}}</span><span class="sub">{{r.donor}}</span></span>
+                    <span role="cell" style="display: flex; flex-direction: column; gap: 2px;" data-label="Vencimiento"><span>{{r.venc}}<sc-if value="{{r.est}}" hint-placeholder-val="{{false}}"><span class="est">estimada</span></sc-if></span><span class="sub">{{r.daysText}}</span></span>
+                    <span role="cell" class="num" data-label="Existencia" title="{{r.qtyText}}">{{r.qtyText}}</span>
+                    <span role="cell" class="num" data-label="Kg" title="{{r.kg}}">{{r.kg}}</span>
+                    <span role="cell" data-label="Riesgo">
+                      <sc-if value="{{r.isAlto}}" hint-placeholder-val="{{false}}"><span class="risk alto"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg>Alto</span></sc-if>
+                      <sc-if value="{{r.isMedio}}" hint-placeholder-val="{{false}}"><span class="risk medio"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Medio</span></sc-if>
+                      <sc-if value="{{r.isBajo}}" hint-placeholder-val="{{false}}"><span class="risk bajo"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Bajo</span></sc-if>
+                      <sc-if value="{{r.isNone}}" hint-placeholder-val="{{true}}"><span class="none">No aplica</span></sc-if>
+                    </span>
+                    <span role="cell" data-label="Detalle"><button class="icon-btn" type="button" onClick="{{r.toggle}}" aria-expanded="{{r.open}}" aria-label="{{r.openLabel}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="{{r.chev}}"><path d="m6 9 6 6 6-6"></path></svg></button></span>
+                  </div>
+                  <sc-if value="{{r.open}}" hint-placeholder-val="{{false}}">
+                    <div class="detail">
+                      <div>
+                        <h3 class="h3">Trazabilidad</h3>
+                        <ol style="list-style: none; margin: 0; padding: 0;">
+                          <sc-for list="{{r.trace}}" as="t" hint-placeholder-count="3">
+                            <li style="display: flex; gap: 12px;"><span aria-hidden="true" style="display: flex; flex-direction: column; align-items: center;"><span style="{{t.dot}}"></span><span style="{{t.line}}"></span></span><span style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 14px;"><span style="font-weight: 600;">{{t.title}}</span><span class="sub">{{t.sub}}</span></span></li>
+                          </sc-for>
+                        </ol>
+                      </div>
+                      <div>
+                        <h3 class="h3">Movimientos <span class="sub" style="font-weight: 400;">· solo inserción, no se editan</span></h3>
+                        <div class="mv mvh"><span>Fecha</span><span>Tipo</span><span class="r">Cantidad</span><span class="r">Kg</span></div>
+                        <sc-for list="{{r.moves}}" as="m" hint-placeholder-count="2">
+                          <div class="mv"><span class="sub" style="font-size: 13px;">{{m.date}}</span><span>{{m.type}}</span><span class="{{m.cls}}">{{m.qty}}</span><span class="num">{{m.kg}}</span></div>
+                        </sc-for>
+                        <sc-if value="{{r.noMoves}}" hint-placeholder-val="{{false}}"><p class="sub" style="margin: 8px 0 0;">Movimientos de la recepción R-0431, fuera del ejemplo.</p></sc-if>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;"><a class="btn b-pri" href="Remision-v2.dc.html" style="height: 34px;">Incluir en remisión</a><button class="btn b-sec" type="button" onClick="{{r.openAdj}}" style="height: 34px;">Registrar ajuste</button><a class="btn b-sec" href="Bajas-v2.dc.html" onClick="{{r.goBaja}}" style="height: 34px;">Registrar baja</a></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 18px; font-size: 13px; color: #4E555B; border-top: 1px solid #E4E8EB;"><span>{{footText}}</span><span class="sub">· Existencia = suma de movimientos del lote</span>
+          <nav class="pager" aria-label="Paginación" style="margin-left: auto;"><button class="pg" type="button" onClick="{{prev}}" disabled="{{isFirst}}" aria-label="Página anterior">‹</button><sc-for list="{{pages}}" as="p" hint-placeholder-count="2"><button class="{{p.cls}}" type="button" onClick="{{p.go}}" aria-current="{{p.cur}}" aria-label="{{p.label}}">{{p.n}}</button></sc-for><button class="pg" type="button" onClick="{{next}}" disabled="{{isLast}}" aria-label="Página siguiente">›</button></nav>
+          <label style="display: inline-flex; align-items: center; gap: 6px;">Por página<select class="inp" value="{{per}}" onChange="{{onPer}}" style="width: 72px; height: 34px;"><option value="10">10</option><option value="20">20</option><option value="50">50</option></select></label></div>
+      </section>
+    </main>
+  </div>
+  <sc-if value="{{adjOpen}}" hint-placeholder-val="{{false}}">
+    <div class="overlay" onClick="{{closeAdj}}">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="adj-t" onClick="{{stopP}}" style="max-width: 480px;">
+        <div class="mhead"><h2 id="adj-t" style="margin: 0; font-size: 17px; font-weight: 600;">Registrar ajuste · {{adjLot}}</h2></div>
+        <div class="mbody">
+          <p style="margin: 0; font-size: 14px;">Existencia actual: <strong>{{adjCur}}</strong>. El ajuste se guarda como un movimiento nuevo; el registro original no se modifica.</p>
+          <label class="lbl">Cantidad contada en bodega<input class="inp num" inputmode="decimal" value="{{adjQty}}" onChange="{{onAdjQty}}" style="max-width: 160px;"></label>
+          <sc-if value="{{adjHasErr}}" hint-placeholder-val="{{false}}"><div class="banner err" role="alert">{{adjErr}}</div></sc-if>
+        </div>
+        <div class="mfoot"><button class="btn b-sec" type="button" onClick="{{closeAdj}}">Cancelar</button><button class="btn b-pri" type="button" onClick="{{saveAdj}}">Registrar ajuste</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{hasToast2}}" hint-placeholder-val="{{false}}"><div role="status" class="toast">{{toast2}}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const R0458 = { t: 'Recepción R-0458', s: '08-nov-2026 · Soporte EatCloud #55120' };
+const EXITO = { t: 'Donante Almacenes Éxito', s: 'Donación' };
+const tr = (d, r, l, x) => [{ t: 'Donante ' + d, s: 'Donación' }, { t: 'Recepción ' + r, s: x || 'Recepción anterior' }, { t: 'Lote ' + l, s: 'Vencimiento impreso' }];
+const base = (o) => ({ trace: tr(o.donor, o.rec, o.id), moves: [['', 'Entrada', '+' + o.qty, String(o.kg).replace('.', ',')]], ...o });
+this.lots = [
+{ id: 'L-104', prod: 'Pan tajado', cat: 'Panadería', pres: 'Bolsa 500 g', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '11-nov', days: 1, est: true, qty: 60, unit: 'bolsas', kg: 30, risk: 'alto', trace: [EXITO, R0458, { t: 'Lote L-104', s: 'Vencimiento estimado: vida útil de Panadería, 3 días' }], moves: [['08-nov', 'Entrada', '+60', '30,0']] },
+{ id: 'L-105', prod: 'Pechuga de pollo', cat: 'Carnes', pres: 'Bandeja congelada 2 kg', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '12-nov', days: 2, est: false, qty: 15, unit: 'bandejas', kg: 30, risk: 'alto', trace: [EXITO, R0458, { t: 'Lote L-105', s: 'Vencimiento impreso' }], moves: [['08-nov', 'Entrada', '+15', '30,0']] },
+base({ id: 'L-095', prod: 'Yogur', cat: 'Lácteos', pres: 'Botella 1.000 ml', rec: 'R-0440', donor: 'Olímpica', venc: '12-nov', days: 2, est: false, qty: 24, unit: 'botellas', kg: 24, risk: 'alto' }),
+base({ id: 'L-097', prod: 'Tomate', cat: 'Frutas y verduras', pres: 'Granel, por kg', rec: 'R-0445', donor: 'Carulla', venc: '13-nov', days: 3, est: true, qty: 140, unit: 'kg', kg: 140, risk: 'medio' }),
+base({ id: 'L-099', prod: 'Queso campesino', cat: 'Lácteos', pres: 'Bloque 500 g', rec: 'R-0446', donor: 'Lácteos del Huila', venc: '13-nov', days: 3, est: false, qty: 30, unit: 'bloques', kg: 15, risk: 'medio' }),
+base({ id: 'L-098', prod: 'Banano', cat: 'Frutas y verduras', pres: 'Granel, por kg', rec: 'R-0445', donor: 'Carulla', venc: '14-nov', days: 4, est: true, qty: 210, unit: 'kg', kg: 210, risk: 'medio' }),
+{ id: 'L-103', prod: 'Sandía', cat: 'Frutas y verduras', pres: 'Granel, por kg', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '15-nov', days: 5, est: true, qty: 680, unit: 'kg', kg: 680, risk: 'medio', trace: [EXITO, R0458, { t: 'Lote L-103', s: 'Vencimiento estimado: vida útil de Frutas y verduras, 7 días' }], moves: [['08-nov', 'Entrada', '+800', '800,0'], ['08-nov', 'Desecho en recepción', '−120', '120,0']] },
+{ id: 'L-090', prod: 'Leche entera', cat: 'Lácteos', pres: 'Caja 1.100 ml', rec: 'R-0431', donor: 'Lácteos del Huila', venc: '18-nov', days: 8, est: false, qty: 10, unit: 'cajas', kg: 11, risk: 'medio', trace: [{ t: 'Donante Lácteos del Huila', s: 'Donación' }, { t: 'Recepción R-0431', s: 'Recepción anterior' }, { t: 'Lote L-090', s: 'Vencimiento impreso' }], moves: [] },
+base({ id: 'L-096', prod: 'Huevos', cat: 'Huevos', pres: 'Bandeja 30 unidades', rec: 'R-0440', donor: 'Olímpica', venc: '19-nov', days: 9, est: false, qty: 12, unit: 'bandejas', kg: 21.6, risk: 'bajo' }),
+{ id: 'L-101', prod: 'Leche entera', cat: 'Lácteos', pres: 'Caja 1.100 ml', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '20-nov', days: 10, est: false, qty: 42, unit: 'cajas', kg: 46.2, risk: 'bajo', trace: [EXITO, R0458, { t: 'Lote L-101', s: 'Vencimiento impreso' }], moves: [['08-nov', 'Entrada', '+48', '52,8'], ['08-nov', 'Desecho en recepción', '−6', '6,6']] },
+base({ id: 'L-091', prod: 'Pasta', cat: 'Cereales', pres: 'Bolsa 500 g', rec: 'R-0435', donor: 'Olímpica', venc: '10-dic', days: 30, est: false, qty: 100, unit: 'bolsas', kg: 50, risk: '' }),
+base({ id: 'L-092', prod: 'Avena en hojuelas', cat: 'Cereales', pres: 'Bolsa 500 g', rec: 'R-0435', donor: 'Olímpica', venc: '22-dic', days: 42, est: false, qty: 40, unit: 'bolsas', kg: 20, risk: '' }),
+base({ id: 'L-093', prod: 'Panela', cat: 'Endulzantes', pres: 'Bloque 500 g', rec: 'R-0438', donor: 'Almacenes Éxito', venc: '18-ene', days: 69, est: false, qty: 50, unit: 'bloques', kg: 25, risk: '' }),
+base({ id: 'L-085', prod: 'Fríjol', cat: 'Granos', pres: 'Bolsa 500 g', rec: 'R-0420', donor: 'Olímpica', venc: '20-ene', days: 71, est: false, qty: 80, unit: 'bolsas', kg: 40, risk: '' }),
+base({ id: 'L-086', prod: 'Lenteja', cat: 'Granos', pres: 'Bolsa 500 g', rec: 'R-0420', donor: 'Olímpica', venc: '05-feb', days: 87, est: false, qty: 60, unit: 'bolsas', kg: 30, risk: '' }),
+{ id: 'L-102', prod: 'Arroz', cat: 'Cereales', pres: 'Bulto 50 kg', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '15-mar', days: 125, est: false, qty: 3, unit: 'bultos', kg: 150, risk: '', trace: [EXITO, R0458, { t: 'Lote L-102', s: 'Vencimiento impreso' }], moves: [['08-nov', 'Entrada', '+4', '200,0'], ['10-nov', 'Fraccionamiento (salida)', '−1', '50,0']] },
+{ id: 'L-106', prod: 'Arroz', cat: 'Cereales', pres: 'Bolsa 1 kg', rec: 'R-0458', donor: 'Almacenes Éxito', venc: '15-mar', days: 125, est: false, qty: 50, unit: 'bolsas', kg: 50, risk: '', trace: [EXITO, R0458, { t: 'Lote origen L-102', s: 'Arroz · Bulto 50 kg' }, { t: 'Fraccionamiento a L-106', s: '1 bulto a 50 bolsas de 1 kg · vencimiento heredado' }], moves: [['10-nov', 'Fraccionamiento (entrada)', '+50', '50,0']] },
+base({ id: 'L-087', prod: 'Aceite vegetal', cat: 'Aceites', pres: 'Botella 1.000 ml', rec: 'R-0422', donor: 'Carulla', venc: '30-abr', days: 171, est: false, qty: 36, unit: 'botellas', kg: 36, risk: '' }),
+base({ id: 'L-088', prod: 'Atún en lata', cat: 'Enlatados', pres: 'Lata 170 g', rec: 'R-0422', donor: 'Carulla', venc: '15-ago', days: 278, est: false, qty: 96, unit: 'latas', kg: 16.3, risk: '' }),
+base({ id: 'L-094', prod: 'Jabón de loza', cat: 'Aseo', pres: 'Barra 300 g', rec: 'R-0438', donor: 'Almacenes Éxito', venc: 'No aplica', days: 9999, est: false, qty: 40, unit: 'barras', kg: 12, risk: '' })
+];
+this.state = { q: '', cat: '', rf: '', sort: '', open: 'L-106', page: 1, per: 10, bell: false, seen: false };
+}
+saveAdj() {
+const a = this.state.adj; const l = this.lots.find((x) => x.id === a.id); const n = parseFloat(String(a.qty).replace(',', '.'));
+if (!(n >= 0)) { this.setState({ adj: { ...a, err: 'Ingresa la cantidad contada (0 o más).' } }); return; }
+if (n === l.qty) { this.setState({ adj: { ...a, err: 'La cantidad contada es igual a la existencia; no hay ajuste que registrar.' } }); return; }
+const per = l.qty ? l.kg / l.qty : 0; const d = n - l.qty; const dkg = d * per;
+l.moves = [...(l.moves || []), ['10-nov', 'Ajuste', (d > 0 ? '+' : '') + d.toLocaleString('es-CO'), (dkg > 0 ? '' : '') + this.fmt(dkg)]];
+l.qty = n; l.kg = Math.max(0, l.kg + dkg);
+this.setState({ adj: null, toast: 'Ajuste registrado en ' + l.id + ' como movimiento nuevo; el original se conserva.' });
+clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 3000);
+}
+sorted() { return this.lots.slice().sort((a, b) => a.days - b.days); }
+fmt(n) { return n.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+_rv() {
+const s = this.state; const q = s.q.trim().toLowerCase();
+let list = this.lots.filter((l) => (!q || (l.id + ' ' + l.prod + ' ' + l.pres + ' ' + l.cat).toLowerCase().includes(q)) && (!s.cat || l.cat === s.cat) && (!s.rf || l.risk === s.rf));
+list = list.slice().sort((a, b) => (s.sort === 'kg' ? b.kg - a.kg : a.days - b.days));
+const per = Number(s.per) || 10; const pageCount = Math.max(1, Math.ceil(list.length / per)); const page = Math.min(s.page, pageCount);
+const pageList = list.slice((page - 1) * per, page * per);
+const rows = pageList.map((l) => {
+const open = s.open === l.id;
+return {
+id: l.id, prod: l.prod, cat: l.cat, pres: l.pres, rec: l.rec, donor: l.donor, venc: l.venc, est: l.est,
+daysText: l.days >= 9999 ? 'no perecedero' : (l.days === 1 ? 'en 1 día' : 'en ' + l.days + ' días'),
+qtyText: l.qty.toLocaleString('es-CO') + ' ' + l.unit, kg: this.fmt(l.kg),
+isAlto: l.risk === 'alto', isMedio: l.risk === 'medio', isBajo: l.risk === 'bajo', isNone: !l.risk,
+open: open, cls: open ? 'item open' : 'item',
+openAdj: () => this.setState({ adj: { id: l.id, qty: String(l.qty), err: '' } }),
+goBaja: () => { try { localStorage.setItem('ssd.bajaLote', l.id); } catch (e) {} },
+chev: open ? 'transform: rotate(180deg); transition: transform .15s' : 'transition: transform .15s',
+openLabel: (open ? 'Ocultar detalle del lote ' : 'Ver detalle del lote ') + l.id,
+toggle: () => this.setState((st) => ({ open: st.open === l.id ? '' : l.id })),
+trace: l.trace.map((t, i) => ({ title: t.t, sub: t.s,
+dot: 'width: 12px; height: 12px; border-radius: 50%; box-sizing: border-box; ' + (i === l.trace.length - 1 ? 'background: #FFFFFF; border: 3px solid #1A7F3D;' : 'background: #1A7F3D;'),
+line: i === l.trace.length - 1 ? 'display: none' : 'width: 2px; flex: 1; min-height: 22px; background: #CDD4D9;' })),
+moves: l.moves.map((m) => ({ date: m[0], type: m[1], qty: m[2], kg: m[3], cls: 'num ' + (m[2].charAt(0) === '+' ? 'pos' : 'neg') })),
+noMoves: l.moves.length === 0
+};
+});
+const alto = this.lots.filter((l) => l.risk === 'alto');
+const alertLots = this.lots.filter((l) => l.days <= 3).sort((a, b) => a.days - b.days);
+return {
+rows: rows, q: s.q, cat: s.cat, rf: s.rf, sort: s.sort,
+cats: [...new Set(this.lots.map((l) => l.cat))],
+adjOpen: !!s.adj, adjLot: s.adj ? s.adj.id : '', adjQty: s.adj ? s.adj.qty : '', adjErr: s.adj ? s.adj.err : '', adjHasErr: !!(s.adj && s.adj.err),
+adjCur: s.adj ? (() => { const l = this.lots.find((x) => x.id === s.adj.id); return l.qty.toLocaleString('es-CO') + ' ' + l.unit; })() : '',
+onAdjQty: (e) => this.setState({ adj: { ...this.state.adj, qty: e.target.value, err: '' } }), closeAdj: () => this.setState({ adj: null }), saveAdj: () => this.saveAdj(), stopP: (e) => e.stopPropagation(),
+hasToast2: !!s.toast, toast2: s.toast,
+lotCount: this.lots.length, totalKg: this.fmt(this.lots.reduce((a, l) => a + l.kg, 0)),
+altoKg: this.fmt(alto.reduce((a, l) => a + l.kg, 0)), altoText: alto.length + ' lotes vencen en 2 días o menos',
+estCount: this.lots.filter((l) => l.est).length,
+footText: list.length ? 'Mostrando ' + ((page - 1) * per + 1) + '–' + Math.min(page * per, list.length) + ' de ' + list.length + ' lotes' : 'Sin lotes para este filtro',
+pages: Array.from({ length: pageCount }, (_, k) => ({ n: String(k + 1), cls: k + 1 === page ? 'pg on' : 'pg', cur: k + 1 === page ? 'page' : 'false', label: 'Página ' + (k + 1), go: () => this.setState({ page: k + 1 }) })),
+isFirst: page <= 1, isLast: page >= pageCount, per: String(per),
+prev: () => this.setState({ page: Math.max(1, page - 1) }), next: () => this.setState({ page: Math.min(pageCount, page + 1) }),
+onPer: (e) => this.setState({ per: Number(e.target.value), page: 1 }),
+bellOpen: s.bell, unseen: !s.seen && alertLots.length > 0, alertCount: String(alertLots.length),
+bellLabel: 'Alertas de vencimiento: ' + alertLots.length + (s.seen ? '' : ' sin ver'),
+alertSub: alertLots.length + ' lotes vencen en 3 días o menos · ' + this.fmt(alertLots.reduce((a, l) => a + l.kg, 0)) + ' kg',
+toggleBell: () => this.setState((st) => ({ bell: !st.bell })),
+markSeen: () => this.setState({ seen: true, bell: false }),
+alerts: alertLots.map((l) => ({ id: l.id, prod: l.prod, pres: l.pres, venc: l.venc, kg: this.fmt(l.kg), days: String(l.days), unit: l.days === 1 ? 'día' : 'días', bubble: l.days <= 2 ? 'bub hi' : 'bub md',
+go: () => { const idx = this.sorted().findIndex((x) => x.id === l.id); this.setState({ q: '', cat: '', rf: '', sort: '', open: l.id, page: Math.floor(idx / (Number(this.state.per) || 10)) + 1, bell: false, seen: true }); } })),
+onQ: (e) => this.setState({ q: e.target.value, page: 1 }),
+onCat: (e) => this.setState({ cat: e.target.value, page: 1 }),
+onRf: (e) => this.setState({ rf: e.target.value, page: 1 }),
+onSort: (e) => this.setState({ sort: e.target.value, page: 1 })
+};
+}
+_rol() {
+let r = null; try { r = localStorage.getItem('ssd.rol'); } catch (e) {}
+if (!r) { try { r = window.parent.__ssdRol || window.__ssdRol; } catch (e) {} }
+if (!this._rolL) { this._rolL = true; const f = () => this.setState({ rolTick: Date.now() }); try { window.addEventListener('storage', (e) => { if (e.key === 'ssd.rol') f(); }); } catch (e) {} try { window.parent.addEventListener('ssd-rol', f); } catch (e) {} }
+return r === 'asist' || r === 'bodega' ? r : 'coord';
+}
+renderVals() {
+const v = this._rv(); let m = this.state ? this.state.navMin : undefined;
+if (m === undefined) { try { m = localStorage.getItem('ssd.navMin') === '1'; } catch (e) { m = false; } }
+const o = !!(this.state && this.state.navOpen); const narrow = () => { try { return window.innerWidth < 1440; } catch (e) { return false; } };
+const r = this._rol();
+const U = { coord: ['Laura Gómez', 'Coordinador del banco', 'LG'], asist: ['Diana Ríos', 'Asistente administrativa', 'DR'], bodega: ['Carlos Perdomo', 'Personal de bodega', 'CP'] }[r] || ['Laura Gómez', 'Coordinador del banco', 'LG'];
+return Object.assign({}, v, { navCls: (m ? 'side min' : 'side') + (o ? ' is-open' : '') + ' r-' + r, navLabel: (narrow() ? !o : m) ? 'Mostrar menú lateral' : 'Ocultar menú lateral', navExp: (narrow() ? o : !m) ? 'true' : 'false',
+userName: U[0], userRole: U[1], userIni: U[2], userFirst: U[0].split(' ')[0],
+toggleNav: () => { if (narrow()) { this.setState({ navOpen: !o }); return; } const n = !m; try { localStorage.setItem('ssd.navMin', n ? '1' : '0'); } catch (e) {} this.setState({ navMin: n }); } });
+}
+
+
+}
+</script>
+</body>
+</html>

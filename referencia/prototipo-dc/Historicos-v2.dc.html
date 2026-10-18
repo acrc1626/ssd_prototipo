@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Importar históricos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@500;600&amp;family=Asap:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0;background:#F7F8FA}
+a{color:#1A7F3D}a:hover{color:#166B33}
+:focus-visible{outline:2px solid #1A7F3D;outline-offset:2px}
+h1,h2,h3{font-family:'Signika',sans-serif}
+.side a{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 12px;border-radius:8px;text-decoration:none;color:#3A4247;font-size:14px}
+.side a:hover{background:#F0F3F5}
+.side a.on{background:#E3F7E9;color:#166B33;font-weight:600}.side a.on:hover{background:#CDEFD8}
+.side .grp{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5F656B;padding:14px 12px 6px;font-weight:600}
+.card{background:#FFFFFF;border:1px solid #E4E8EB;border-radius:12px}
+.lbl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:#4E555B}
+.inp{height:38px;box-sizing:border-box;border:1px solid #CDD4D9;border-radius:8px;padding:0 10px;font:inherit;font-size:14px;font-weight:400;color:#30383D;background:#FFFFFF;width:100%}
+.inp:focus{border-color:#1A7F3D;outline:2px solid #A7E8BB;outline-offset:0}
+.btn{height:38px;box-sizing:border-box;padding:0 14px;border-radius:8px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:1px solid transparent;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.b-pri{background:#1A7F3D;color:#FFFFFF}.b-pri:hover{background:#166B33;color:#FFFFFF}
+.b-sec{background:#FFFFFF;color:#30383D;border-color:#CDD4D9}.b-sec:hover{background:#F7F8FA}
+.b-link{background:none;color:#1A7F3D;border:none;padding:0 8px}.b-link:hover{background:#EDF9F0}
+.kpi{padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.tile{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .k{font-size:12.5px;color:#4E555B;font-weight:600}
+.kpi .v{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:500;color:#30383D}
+.kpi small{font-size:14px;color:#5F656B;font-weight:400}
+.kpi .s{font-size:12.5px;color:#5F656B}
+.th{font-size:12px;font-weight:600;color:#4E555B;text-transform:uppercase;letter-spacing:.04em;min-height:38px;background:#F3FBF5;border-bottom:1px solid #E4E8EB}
+.tr{min-height:56px;font-size:14px;border-bottom:1px solid #ECEFF1}
+.tr:hover{background:#FAFBFC}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right;font-size:13.5px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.r{text-align:right}
+.sub{font-size:12.5px;color:#5F656B}
+.cat{display:inline-block;font-size:11.5px;font-weight:600;color:#4E555B;background:#F0F3F5;border-radius:4px;padding:1px 6px}
+.lot{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;background:#FFEBDD;color:#9A4A0C;border:1px solid #FFC9A3;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.c-ok{background:#E3F7E9;color:#166B33}.c-warn{background:#FEF3C7;color:#92400E}.c-err{background:#FDECEC;color:#991B1B}.c-info{background:#EEF1F3;color:#4E555B}.c-neu{background:#F0F3F5;color:#4E555B}.c-ind{background:#E3F7E9;color:#166B33}
+.icon-btn{width:34px;height:34px;border:none;background:none;border-radius:8px;color:#5F656B;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn:hover{background:#E3F7E9;color:#166B33}
+.pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px 0 14px;border:1px solid #CDD4D9;border-radius:10px;background:#FFFFFF;font-size:13px;color:#5F656B}
+.pill select{border:none;background:transparent;font:inherit;font-size:13.5px;font-weight:600;color:#30383D;appearance:none;padding-right:4px;cursor:pointer}
+.pill:focus-within{border-color:#1A7F3D}
+.bell{position:relative;width:40px;height:40px;border-radius:10px;border:1px solid #CDD4D9;background:#FFFFFF;color:#166B33;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.bell:hover{background:#EDF9F0}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#DC2626;color:#FFFFFF;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+.badge::after{content:"";position:absolute;inset:-4px;border-radius:999px;border:2px solid #DC2626;opacity:0;animation:ring 2s ease-out infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion: reduce){.badge::after{animation:none}}
+.banner{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;font-size:14px}
+.banner.ok{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+.banner.err{background:#FDECEC;color:#991B1B;border:1px solid #FBCACA}
+.banner.info{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+.toast{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:#30383D;color:#FFFFFF;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(48,56,61,.25)}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(48,56,61,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal{width:100%;max-width:880px;background:#FFFFFF;border-radius:16px;box-shadow:0 24px 60px rgba(48,56,61,.3);display:flex;flex-direction:column}
+.mhead{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid #E4E8EB}
+.mbody{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid #E4E8EB;background:#F9FAFB;border-radius:0 0 16px 16px}
+.tbl{border:1px solid #E4E8EB;border-radius:10px;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.dochead{padding:16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+.dochead .tile{width:44px;height:44px;border-radius:12px}
+.fresh{background:#F3FBF5;box-shadow:inset 3px 0 0 #1A7F3D}
+.stepper{display:flex;align-items:center;gap:10px;list-style:none;margin:0;padding:0;font-size:13px}
+.stepper li{display:flex;align-items:center;gap:8px;color:#5F656B}
+.stepper .n{width:24px;height:24px;border-radius:50%;border:1.5px solid #CDD4D9;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:#FFFFFF}
+.stepper li.on{color:#166B33;font-weight:600}.stepper li.on .n{border-color:#1A7F3D;color:#1A7F3D}
+.stepper li.done .n{background:#1A7F3D;border-color:#1A7F3D;color:#FFFFFF}
+.stepper .sep{width:36px;height:1.5px;background:#CDD4D9}
+.drop{border:2px dashed #CDD4D9;border-radius:12px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#F9FAFB}
+.drop.over{border-color:#1A7F3D;background:#E3F7E9}
+.hg{display:grid;grid-template-columns:52px 100px minmax(140px,1fr) minmax(170px,1.2fr) minmax(220px,1.4fr) 90px 100px 130px;gap:10px;align-items:center;padding:0 14px}
+.hg.tr{min-height:52px}
+.hg.bad{background:#FFF8F8}
+.raw{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#4E555B}
+.fbtn{height:32px;padding:0 12px;border-radius:999px;border:1px solid #CDD4D9;background:#FFFFFF;font:inherit;font-size:13px;color:#3A4247;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:#1A7F3D;border-color:#1A7F3D;color:#FFFFFF}
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+
+/* Uniformidad de controles */
+.inp,.btn,.cell,.pill,.tog,.estbox,.date,.fbtn,.uline,.b-link{height:36px !important;min-height:36px;box-sizing:border-box}
+.inp,.cell,.tog,.estbox,.pill,.btn{border-radius:8px !important}
+.inp,.cell,.pill select,.uline{font-size:14px !important}
+.btn{font-size:14px;padding:0 14px}
+.lbl{gap:6px !important;font-size:12.5px !important;font-weight:600 !important;color:#4E555B !important}
+.cell{width:88px !important;max-width:100%;text-align:right}
+:is(label,span,div):has(> .cell){display:flex;justify-content:flex-end}
+.bell{width:36px !important;height:36px !important;border-radius:8px !important}
+.tile{background:#E3F7E9;color:#1A7F3D}
+.seg2 button,.pg,header button{height:36px !important}
+
+/* Paleta app: verde #33C863, menta #A7E8BB, naranja #FFA56B */
+.b-pri{background:#33C863 !important;color:#30383D !important;border-color:#33C863 !important}.b-pri:hover{background:#2BB257 !important;border-color:#2BB257 !important}
+.b-pri svg{stroke:#30383D}
+.est,.estbox{background:#FFEBDD !important;color:#8A3F06 !important}
+.th,.th2{background:#F7F8FA !important}
+
+/* Menú lateral ocultable y altura uniforme de cajas */
+.navtog{width:36px;height:36px;border:1px solid #E4E8EB;border-radius:8px;background:#FFFFFF;color:#30383D;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.navtog:hover{background:#F3FBF5;border-color:#A7E8BB}
+.side{transition:max-width .15s ease,flex-basis .15s ease}
+.side.min{flex:0 0 60px !important;max-width:60px !important;padding:10px 8px 20px !important}
+.side.min a{justify-content:center;padding:0;gap:0;font-size:0}
+.side.min a svg{flex:none}
+.side.min .grp{font-size:0;padding:0;height:1px;background:#E4E8EB;margin:10px 6px}
+@media (prefers-reduced-motion: reduce){.side{transition:none}}
+.inp,.cell{line-height:normal !important;padding-top:0 !important;padding-bottom:0 !important}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:30px !important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235F656B' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+input[type=date].inp{padding-right:8px !important}
+.add label:has(> .cell){display:flex;flex-direction:column;align-items:stretch}
+
+/* Guía de estilo Figma (14-oct): minimalista, bordes suaves, verde como acento */
+body{line-height:1.45}
+.card{border-color:#E5E7EB !important;border-radius:12px !important;box-shadow:none}
+.inp,.cell{border-color:#E5E7EB !important;color:#26323F !important;border-radius:8px !important}
+.inp::placeholder,.cell::placeholder{color:#929292}
+.inp:focus,.cell:focus{border-color:#33C863 !important;outline:3px solid #E3F7E9 !important;outline-offset:0}
+.b-sec{background:transparent !important;border-color:#E5E7EB !important;color:#26323F !important}.b-sec:hover{background:#F7F8FA !important}
+.lbl{font-weight:500 !important;color:#4E555B !important}
+.side{border-right-color:#E5E7EB !important}
+.side a{color:#5F656B}
+.side a:hover{background:#F7F8FA}
+.side a.on{background:transparent !important;color:#1A7F3D !important;font-weight:600}
+.side a.on svg{stroke:#33C863}
+.th{border-bottom-color:#E5E7EB !important}
+.chip.c-ok{background:#E3F7E9;color:#166B33}
+
+/* Botones suaves y tabla única (15-oct) */
+.btn{font-weight:500 !important;font-size:13.5px !important;padding:0 14px;letter-spacing:0;box-shadow:none}
+.btn svg{width:15px;height:15px}
+.b-pri{background:#33C863 !important;border-color:#33C863 !important;color:#14361F !important}
+.b-pri:hover{background:#2EB95B !important;border-color:#2EB95B !important}
+.b-pri svg{stroke:#14361F}
+.b-sec{background:#FFFFFF !important;border:1px solid #E5E7EB !important;color:#4E555B !important}
+.b-sec:hover{background:#F7F8FA !important;color:#26323F !important}
+.b-link,.b-ghost{background:transparent !important;border:none !important;color:#166B33 !important;font-weight:500 !important}
+.b-link:hover,.b-ghost:hover{background:#F3FBF5 !important}
+.btn:disabled{opacity:.45 !important}
+[role="table"] .btn,.tr .btn{height:30px !important;min-height:30px !important;font-size:13px !important;padding:0 10px !important}
+.tog{font-weight:500 !important;border-color:#E5E7EB !important;color:#4E555B !important}
+.tog.on{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.fbtn{height:32px !important;min-height:32px;border-color:#E5E7EB !important;font-weight:500;color:#4E555B}
+.fbtn[aria-pressed="true"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg[aria-current="page"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg{border-color:#E5E7EB !important;font-weight:500 !important}
+/* Tabla: tarjeta, cabecera tenue, filas con línea sutil, sin cuadrícula */
+.th,.th2{background:#F7F8FA !important;color:#5F656B !important;font-size:12px !important;font-weight:500 !important;text-transform:none !important;letter-spacing:0 !important;min-height:40px !important;border-bottom:1px solid #EEF0F2 !important}
+[role="table"] [role="row"]{padding-left:16px !important;padding-right:16px !important;column-gap:16px}
+.tr{min-height:52px !important;font-size:13.5px !important;border-bottom:1px solid #EEF0F2 !important;border-top:none !important}
+.tr:hover{background:#FAFBFC !important}
+.tbl{border:1px solid #EEF0F2 !important;border-radius:10px !important}
+.chip{font-size:12px !important;font-weight:500 !important;padding:2px 10px !important}
+.num{font-size:13.5px}
+
+/* Ajuste tablas y botones (15-oct, revisión Astrid) */
+.th,.th2{font-size:13px !important;font-weight:600 !important;color:#4E555B !important}
+.tr strong,.tr [style*="font-weight: 600; font-size: 14.5px"]{font-size:14px !important}
+[role="table"] .b-pri,[role="table"] .b-sec,.tr .b-pri,.tr .b-sec{background:transparent !important;border-color:transparent !important;color:#166B33 !important;padding:0 8px !important}
+[role="table"] .b-sec,.tr .b-sec{color:#4E555B !important}
+[role="table"] .b-pri:hover,[role="table"] .b-sec:hover,.tr .b-pri:hover,.tr .b-sec:hover{background:#F3FBF5 !important}
+[role="table"] .b-pri svg,.tr .b-pri svg{stroke:#166B33}
+.add .a-btn{width:auto !important;justify-self:start;padding:0 18px !important}
+
+/* Cajas de texto compactas (15-oct) */
+.inp{max-width:360px}
+input[type=date].inp{max-width:170px}
+.inp.num,.inrow .inp.num{max-width:110px}
+.hdrform{grid-template-columns:repeat(auto-fill,minmax(190px,230px)) !important;justify-content:start}
+.form,.dgrid{justify-content:start}
+.dgrid{grid-template-columns:repeat(auto-fill,minmax(180px,230px)) !important}
+.d-prod{grid-column:span 2}
+.d-prod .inp{max-width:none}
+.add .a-prod .inp{max-width:380px}
+.modal .inp{max-width:none}
+
+/* A-12 texto de apoyo */
+.sub,.s2,.kpi .s{font-size:13px !important}
+
+/* Rol en sesión: menú según permisos y contador de riesgo */
+.nbadge{margin-left:auto;font-size:11.5px;font-weight:600;background:#FDECEC;color:#B91C1C;border-radius:999px;padding:0 7px;line-height:18px}
+.side.min .nbadge{display:none}
+.r-bodega .nv-remisiones,.r-bodega .nv-organizaciones,.r-bodega .nv-kits,.r-bodega .nv-riesgo,.r-bodega .nv-reportes,.r-bodega .nv-catalogo,.r-bodega .nv-historicos,.r-bodega .nv-usuarios,.r-bodega .g-dis,.r-bodega .g-ana,.r-bodega .g-adm{display:none !important}
+.r-asist .nv-recepciones,.r-asist .nv-bajas,.r-asist .nv-kits,.r-asist .nv-riesgo,.r-asist .nv-catalogo,.r-asist .nv-historicos,.r-asist .nv-usuarios,.r-asist .g-adm{display:none !important}
+.r-coord .nv-recepciones,.r-coord .nv-bajas,.r-coord .nv-remisiones,.r-coord .nv-organizaciones{display:none !important}
+
+/* ===== App shell responsivo v1 (igual en todas las pantallas) ===== */
+:root{--app-nav-w:232px;--app-nav-w-mini:64px;--app-header-h:56px;--app-gutter:28px;--app-gutter-sm:16px;--app-touch-h:44px;--app-border:#E5E7EB;--app-row-line:#EEF0F2;--app-surface:#FFFFFF;--app-muted:#5F656B;--app-focus:#33C863}
+.app__header{position:sticky;top:0;z-index:40}
+.app__body{display:grid;grid-template-columns:var(--app-nav-w) minmax(0,1fr);flex:1;min-width:0;align-items:start}
+.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+.side{position:sticky;top:var(--app-header-h);height:calc(100vh - var(--app-header-h));overflow-y:auto;box-sizing:border-box;width:auto;background:var(--app-surface);border-right:1px solid var(--app-border);padding:10px 10px 20px;display:flex;flex-direction:column;gap:2px}
+.side.min{max-width:none !important;flex:none !important}
+.app__main{min-width:0;padding:20px var(--app-gutter) 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px}
+.app__main--home{padding-top:24px;gap:20px}
+.app__scroll{position:relative;overflow-x:auto;max-width:100%;scrollbar-width:thin;scrollbar-color:#C9D0D6 transparent}
+.app__scroll:focus-visible{outline:2px solid var(--app-focus);outline-offset:-2px}
+[role="table"]{position:relative}
+.sr{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+[role="cell"],[role="columnheader"]{min-width:0}
+[role="columnheader"]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="cell"]:not(:has(*)){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="table"] [role="row"]{padding-left:12px !important;padding-right:12px !important;column-gap:12px}
+.app__bank,.app__user-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Menos de 1440 px: menú solo íconos para que la tabla completa quepa; el botón de tres líneas lo despliega encima */
+@media (max-width: 1439px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+  .side:not(.is-open){padding:10px 8px 20px !important}
+  .side:not(.is-open) a{justify-content:center;padding:0;gap:0;font-size:0}
+  .side:not(.is-open) .grp{font-size:0;padding:0;height:1px;background:var(--app-border);margin:10px 6px}
+  .side:not(.is-open) .nbadge{display:none}
+  .side.is-open{position:fixed;left:0;top:var(--app-header-h);width:var(--app-nav-w);z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.14)}
+}
+/* 1024 a 1279 px: controles táctiles de 44 px y margen lateral menor */
+@media (max-width: 1279px){
+  .app__main{padding-left:20px;padding-right:20px}
+  [data-touch] .inp,[data-touch] .btn,[data-touch] .cell,[data-touch] .pill,[data-touch] .tog,[data-touch] .fbtn,[data-touch] .pg,[data-touch] .navtog,[data-touch] .estbox{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important}
+  [data-touch] [role="table"] .btn,[data-touch] .tr .btn,[data-touch] .icon-btn{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important;min-width:var(--app-touch-h)}
+  [data-touch] .side a{min-height:var(--app-touch-h)}
+  .app__bank{display:none}
+}
+/* Menos de 1024 px: menú detrás del botón de tres líneas y cada fila como tarjeta */
+@media (max-width: 1023px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:minmax(0,1fr)}
+  .side{display:none !important}
+  .side.is-open{display:flex !important;position:fixed;left:0;top:var(--app-header-h);bottom:0;height:auto;width:var(--app-nav-w);max-width:85vw !important;z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.18)}
+  .app__main{padding:16px var(--app-gutter-sm) 28px}
+  .layout,.home{grid-template-columns:minmax(0,1fr) !important}
+  .app__main [role="table"]:not([data-layout="scroll"]){min-width:0 !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) .th{display:none !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="row"]:not(.th){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px 16px !important;padding:14px 16px !important;min-height:0 !important;height:auto !important;border:1px solid var(--app-row-line) !important;border-radius:12px;margin:8px 0;background:var(--app-surface)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]{display:flex !important;flex-direction:column;align-items:flex-start !important;justify-content:flex-start !important;gap:3px;text-align:left !important;white-space:normal}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:first-child,.app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:nth-child(2):has(input[type="checkbox"]) ~ [role="cell"]:nth-child(2){grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label]:not([data-label=""])::before{content:attr(data-label);font-family:'Asap','Segoe UI',sans-serif;font-size:12px;letter-spacing:0;font-weight:500;color:var(--app-muted)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label=""]{grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) .num{text-align:left !important}
+  .app__scroll:has(> [role="table"]:not([data-layout="scroll"])){overflow-x:visible}
+}
+@media (max-width: 767px){
+  .app__user-text{display:none}
+}
+/* fin app shell */
+</style>
+</helmet>
+<div style="font-family: 'Asap', 'Segoe UI', sans-serif; font-size: 14px; color: #30383D; min-height: 100vh; display: flex; flex-direction: column;">
+  <header class="app__header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 0 20px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E4E8EB;">
+    <button type="button" class="navtog" onClick="{{toggleNav}}" aria-label="{{navLabel}}" aria-expanded="{{navExp}}" title="{{navLabel}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    <a href="Inicio-v2.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #30383D;">
+      <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 8px; background: #33C863; color: #30383D; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
+      <span style="font-family: 'Signika', sans-serif; font-weight: 600; font-size: 16px;">SSD Bancos de Alimentos</span>
+    </a>
+    <span class="app__bank" style="font-size: 13.5px; color: #4E555B; padding-left: 16px; border-left: 1px solid #E4E8EB;">Banco Diocesano de Alimentos de Neiva</span>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;"><span class="app__user-text" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;"><span style="font-weight: 600; font-size: 13.5px;">{{userName}}</span><span style="font-size: 12px; color: #5F656B;">{{userRole}}</span></span><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: #E3F7E9; color: #166B33; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">{{userIni}}</span><a href="Login-v2.dc.html" class="btn b-link" title="Cerrar sesión" aria-label="Cerrar sesión" style="padding: 0 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path></svg></a></div>
+  </header>
+  <div class="app__body">
+    <nav class="{{navCls}}" id="menu-principal" aria-label="Menú principal">
+      <a href="Inicio-v2.dc.html" class="nv-inicio" title="Inicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h14V10"></path><path d="M10 20v-5h4v5"></path></svg>Inicio</a>
+      <div class="grp g-inv">Inventario</div>
+      <a href="Recepciones-v2.dc.html" class="nv-recepciones" title="Recepciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg>Recepciones</a>
+      <a href="Existencias-v2.dc.html" class="nv-existencias" title="Existencias"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"></path><path d="m2 13 10 5 10-5"></path></svg>Existencias</a>
+      <a href="Bajas-v2.dc.html" class="nv-bajas" title="Bajas y compostaje"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 15h10l1-15"></path></svg>Bajas y compostaje</a>
+      <div class="grp g-dis">Distribución</div>
+      <a href="Remisiones-v2.dc.html" class="nv-remisiones" title="Remisiones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>Remisiones</a>
+      <a href="Organizaciones-v2.dc.html" class="nv-organizaciones" title="Organizaciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M10 21v-6h4v6"></path></svg>Organizaciones</a>
+      <a href="Kits-v2.dc.html" class="nv-kits" title="Programas y kits"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M4 10h16M10 4v16"></path></svg>Programas y kits</a>
+      <div class="grp g-ana">Análisis</div>
+      <a href="Riesgo-v2.dc.html" class="nv-riesgo" title="Riesgo de vencimiento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg>Riesgo de vencimiento<span class="nbadge" title="Lotes en riesgo alto">3</span></a>
+      <a href="Reporte-v2.dc.html" class="nv-reportes" title="Reporte mensual"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"></path></svg>Reporte mensual</a>
+      <div class="grp g-adm">Administración</div>
+      <a href="Catalogo-v2.dc.html" class="nv-catalogo" title="Catálogo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Catálogo</a>
+      <a href="Historicos-v2.dc.html" class="on nv-historicos" aria-current="page" title="Importar históricos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 8v4l3 2"></path></svg>Importar históricos</a>
+      <a href="Usuarios-v2.dc.html" class="nv-usuarios" title="Usuarios y roles"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"></circle><path d="M2 21a7 7 0 0 1 14 0"></path><path d="M17 11a3 3 0 1 0 0-6M22 21a6 6 0 0 0-4-5.6"></path></svg>Usuarios y roles</a>
+    </nav>
+    <main class="app__main">
+      <div style="font-size: 13px; color: #5F656B;"><a href="Inicio-v2.dc.html">Inicio</a> / Administración / Importar históricos</div>
+      <section class="card dochead" aria-label="Importar históricos">
+        <span aria-hidden="true" class="tile" style="background: #E3F7E9; color: #1A7F3D;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 8v4l3 2"></path></svg></span>
+        <div style="display: flex; flex-direction: column; gap: 3px;"><h1 style="margin: 0; font-size: 22px; font-weight: 600;">Importar históricos</h1><span class="sub" style="font-size: 13px;">Carga de los Excel anteriores del banco. Cada fila queda importada o reportada con su error; ninguna se pierde.</span></div>
+        <ol class="stepper" aria-label="Pasos de la importación" style="margin-left: auto;"><sc-for list="{{steps}}" as="st" hint-placeholder-count="3"><li class="{{st.cls}}"><span class="n">{{st.n}}</span>{{st.label}}</li><sc-if value="{{st.sep}}" hint-placeholder-val="{{true}}"><li aria-hidden="true"><span class="sep"></span></li></sc-if></sc-for></ol>
+      </section>
+
+      <sc-if value="{{isUpload}}" hint-placeholder-val="{{true}}">
+        <div class="layout" style="display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start;">
+          <section class="card" aria-label="Cargar archivo" style="padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+            <h2 style="margin: 0; font-size: 17px; font-weight: 600;">1. Cargar archivo</h2>
+            <div class="{{dropCls}}" onDragOver="{{onOver}}" onDragLeave="{{onLeave}}" onDrop="{{onDrop}}">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A7F3D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 16v4h16v-4"></path></svg>
+              <strong style="font-weight: 600;">Arrastre aquí el archivo .xlsx o .csv</strong>
+              <span class="sub">Una hoja por archivo. Encabezados en la primera fila.</span>
+              <div style="display: flex; gap: 8px;"><label class="btn b-sec" style="cursor: pointer;">Seleccionar archivo<input type="file" accept=".xlsx,.csv" class="sr" onChange="{{onFile}}"></label><button class="btn b-link" type="button" onClick="{{useSample}}">Probar con un archivo de ejemplo</button></div>
+            </div>
+            <sc-if value="{{hasUploadErr}}" hint-placeholder-val="{{false}}"><div class="banner err" role="alert">{{uploadErr}}</div></sc-if>
+            <div class="banner info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v5h1"></path></svg><span>Los nombres de producto se normalizan con la tabla de <a href="Catalogo-v2.dc.html">equivalencias del catálogo</a>. Lo que no tenga equivalencia se puede asignar durante la validación.</span></div>
+          </section>
+          <section class="card" aria-label="Importaciones anteriores" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+            <h2 style="margin: 0; font-size: 15px; font-weight: 600;">Importaciones anteriores</h2>
+            <sc-for list="{{history}}" as="h" hint-placeholder-count="3"><div style="display: flex; flex-direction: column; gap: 3px; padding: 10px 0; border-bottom: 1px solid #EDF0F2;"><div style="display: flex; gap: 8px; align-items: center;"><span class="mono" style="font-size: 13px;">{{h.file}}</span><span class="sub" style="margin-left: auto;">{{h.date}}</span></div><div style="display: flex; gap: 6px;"><span class="chip c-ok">{{h.ok}} importadas</span><span class="{{h.errCls}}">{{h.err}} con error</span></div></div></sc-for>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isValidate}}" hint-placeholder-val="{{false}}">
+        <section class="card" aria-label="Validación" style="overflow: hidden;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 18px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;"><h2 style="margin: 0; font-size: 17px; font-weight: 600;">2. Validar y normalizar</h2><span class="sub"><span class="mono">{{fileName}}</span> · {{total}} filas leídas</span></div>
+            <div style="margin-left: auto; display: flex; gap: 8px;"><sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><button type="button" class="fbtn" aria-pressed="{{f.on}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div>
+          </div>
+          <div class="sum" style="padding: 0 18px 14px;">
+            <div class="card kpi" style="background: #F3FBF5;"><span class="k">Listas</span><span class="v">{{nOk}}</span><span class="s">Coinciden con un producto</span></div>
+            <div class="card kpi" style="background: #EEF1F3;"><span class="k">Normalizadas</span><span class="v">{{nNorm}}</span><span class="s">Por equivalencia de nombre</span></div>
+            <div class="card kpi" style="background: #FEF3C7;"><span class="k">Sin equivalencia</span><span class="v">{{nPend}}</span><span class="s">Asignar producto o se reportan</span></div>
+            <div class="card kpi" style="background: #FDECEC;"><span class="k">Con error</span><span class="v">{{nErr}}</span><span class="s">Se reportan, no se importan</span></div>
+          </div>
+          <div class="app__scroll" tabindex="0" role="region" aria-label="Filas del archivo (desplazable)" style="max-height: 470px; overflow-y: auto; border-top: 1px solid #E4E8EB;"><div role="table" aria-label="Filas del archivo" style="min-width: 1080px;">
+            <div role="row" class="hg th" style="position: sticky; top: 0; z-index: 1;"><span role="columnheader">Fila</span><span role="columnheader">Fecha</span><span role="columnheader">Donante</span><span role="columnheader">Producto en el archivo</span><span role="columnheader">Producto del catálogo</span><span role="columnheader" class="r">Cantidad</span><span role="columnheader">Vence</span><span role="columnheader">Estado</span></div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+              <div role="row" class="{{r.cls}}"><span role="cell" class="mono sub" data-label="Fila" title="{{r.n}}">{{r.n}}</span><span role="cell" class="mono" style="font-size: 13px;" data-label="Fecha" title="{{r.date}}">{{r.date}}</span><span role="cell" data-label="Donante" title="{{r.donor}}">{{r.donor}}</span><span role="cell" class="raw" data-label="Producto en el archivo" title="{{r.raw}}">{{r.raw}}</span><span role="cell" data-label="Producto del catálogo"><sc-if value="{{r.pending}}" hint-placeholder-val="{{false}}"><select class="inp" style="height: 34px; font-size: 13px;" value="{{r.pick}}" onChange="{{r.onPick}}" aria-label="{{r.pickLabel}}"><option value="">Asignar producto</option><sc-for list="{{presOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.code}}">{{o.label}}</option></sc-for></select></sc-if><sc-if value="{{r.resolved}}" hint-placeholder-val="{{true}}"><span style="display: flex; flex-direction: column;"><span style="font-size: 13.5px;">{{r.pres}}</span></span></sc-if><sc-if value="{{r.isErr}}" hint-placeholder-val="{{false}}"><span class="sub">{{r.pres}}</span></sc-if></span><span role="cell" class="num" data-label="Cantidad" title="{{r.qty}}">{{r.qty}}</span><span role="cell" class="mono" style="font-size: 13px;" data-label="Vence" title="{{r.venc}}">{{r.venc}}</span><span role="cell" style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start;" data-label="Estado"><span class="{{r.stCls}}">{{r.st}}</span><sc-if value="{{r.hasMsg}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: #991B1B;">{{r.msg}}</span></sc-if></span></div>
+            </sc-for>
+          </div></div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid #E4E8EB; background: #F9FAFB;">
+            <label class="chk" style="display: flex; align-items: center; gap: 8px; font-size: 13.5px;"><input type="checkbox" checked="{{saveEq}}" onChange="{{toggleEq}}" style="width: 16px; height: 16px; accent-color: #1A7F3D;">Guardar las asignaciones como equivalencias del catálogo</label>
+            <span class="sub" style="margin-left: auto;">{{importHint}}</span>
+            <button class="btn b-sec" type="button" onClick="{{restart}}">Cambiar archivo</button>
+            <button class="btn b-pri" type="button" onClick="{{doImport}}" disabled="{{cantImport}}">{{importLabel}}</button>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{isDone}}" hint-placeholder-val="{{false}}">
+        <section class="card" aria-label="Resultado" style="padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 600;">3. Resultado de la importación</h2>
+          <div class="banner ok" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg><span><strong>{{res.ok}} filas importadas</strong> y <strong>{{res.err}} reportadas con error</strong> de {{res.total}} leídas. Conciliado: {{res.ok}} + {{res.err}} = {{res.total}}.</span></div>
+          <div class="sum">
+            <div class="card kpi"><span class="k">Recepciones históricas creadas</span><span class="v">{{res.rec}}</span><span class="s">Agrupadas por fecha y donante</span></div>
+            <div class="card kpi"><span class="k">Kg importados</span><span class="v">{{res.kg}}</span><span class="s">Entran al cálculo de tasas del reporte</span></div>
+            <div class="card kpi"><span class="k">Equivalencias nuevas</span><span class="v">{{res.eq}}</span><span class="s">Disponibles para la próxima carga</span></div>
+            <div class="card kpi"><span class="k">Filas con error</span><span class="v">{{res.err}}</span><span class="s">Descargue el reporte, corrija y vuelva a cargar</span></div>
+          </div>
+          <div style="display: flex; gap: 8px;"><button class="btn b-sec" type="button" onClick="{{downloadErr}}" disabled="{{res.noErr}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5"></path><path d="M4 20h16"></path></svg>Descargar reporte de errores (CSV)</button><a class="btn b-link" href="Reporte-v2.dc.html">Ver en el reporte mensual</a><button class="btn b-pri" type="button" onClick="{{restart}}" style="margin-left: auto;">Nueva importación</button></div>
+        </section>
+      </sc-if>
+    </main>
+  </div>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}"><div role="status" class="toast">{{toast}}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.pres = { 'LEC-CAJA-1100': 'Leche entera', 'LEC-PACA-6X1100': 'Leche entera', 'ARZ-BUL-50': 'Arroz', 'ARZ-BOL-1': 'Arroz', 'SAN-KG': 'Sandía', 'PAN-BOL-500': 'Pan tajado', 'POL-BAN-2': 'Pechuga de pollo', 'FRI-BOL-500': 'Fríjol', 'ACE-BOT-1000': 'Aceite vegetal', 'JAB-BAR-300': 'Jabón de loza' };
+this.kgPer = { 'LEC-CAJA-1100': 1.1, 'LEC-PACA-6X1100': 6.6, 'ARZ-BUL-50': 50, 'ARZ-BOL-1': 1, 'SAN-KG': 1, 'PAN-BOL-500': 0.5, 'POL-BAN-2': 2, 'FRI-BOL-500': 0.5, 'ACE-BOT-1000': 0.92, 'JAB-BAR-300': 0.3 };
+this.exact = { 'LEC-CAJA-1100': 1, 'ARZ-BOL-1': 1, 'SAN-KG': 1 };
+this.eq = { 'LECHE ENTERA X 1100': 'LEC-CAJA-1100', 'arroz blanco bulto': 'ARZ-BUL-50', 'PAN TAJADO GDE': 'PAN-BOL-500', 'Pollo pechuga band': 'POL-BAN-2', 'SANDIA KILOS': 'SAN-KG' };
+this.state = { step: 'upload', over: false, uploadErr: '', file: '', rows: [], picks: {}, filter: 'Todas', saveEq: true, res: null, toast: '',
+history: [{ file: 'recepciones_2024.xlsx', date: '14-sep-2026', ok: 1284, err: 0 }, { file: 'recepciones_2025_s1.xlsx', date: '20-sep-2026', ok: 702, err: 11 }] };
+}
+sample() {
+const R = (n, date, donor, raw, qty, venc, err) => ({ n, date, donor, raw, qty, venc, err: err || '' });
+return [
+R(2, '2025-07-03', 'Almacenes Éxito', 'LEC-CAJA-1100', '240', '2025-08-20'),
+R(3, '2025-07-03', 'Almacenes Éxito', 'LECHE ENTERA X 1100', '96', '2025-08-22'),
+R(4, '2025-07-05', 'Supermercados Olímpica', 'arroz blanco bulto', '12', '2026-01-30'),
+R(5, '2025-07-05', 'Supermercados Olímpica', 'ARZ-BOL-1', '180', '2026-02-15'),
+R(6, '2025-07-09', 'Plaza Mercado Sur', 'SANDIA KILOS', '420', ''),
+R(7, '2025-07-09', 'Plaza Mercado Sur', 'SAN-KG', '', '', 'Cantidad vacía'),
+R(8, '2025-07-12', 'Panadería La Espiga', 'PAN TAJADO GDE', '60', '2025-07-15'),
+R(9, '2025-07-12', 'Panadería La Espiga', 'GALLETAS SURTIDAS', '40', '2025-12-01'),
+R(10, '2025-07-18', 'Avícola del Huila', 'Pollo pechuga band', '35', '2025-07-24'),
+R(11, '2025-02-31', 'Avícola del Huila', 'Pollo pechuga band', '20', '2025-03-05', 'Fecha de recepción inválida (31/02/2025)'),
+R(12, '2025-07-21', 'Fundación Alimentar', 'frijol cargamanto 500', '150', '2026-03-10'),
+R(13, '2025-07-21', 'Fundación Alimentar', 'aceite girasol 1L', '48', '2026-05-01'),
+R(14, '2025-07-25', 'Almacenes Éxito', 'LEC-CAJA-1100', '120', '2025-07-20', 'Vencimiento anterior a la fecha de recepción'),
+R(15, '2025-07-28', '', 'ARZ-BOL-1', '90', '2026-01-10', 'Donante vacío')
+];
+}
+classify(r, picks) {
+if (r.err) return { kind: 'err', code: '', msg: r.err };
+if (this.exact[r.raw]) return { kind: 'ok', code: r.raw };
+if (this.eq[r.raw]) return { kind: 'norm', code: this.eq[r.raw] };
+if (picks[r.n]) return { kind: 'assigned', code: picks[r.n] };
+return { kind: 'pend', code: '' };
+}
+fdate(d) { if (!d) return 'Sin fecha'; const p = d.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+flash(m) { this.setState({ toast: m }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); }
+load(name) { this.setState({ step: 'validate', file: name, rows: this.sample(), picks: {}, filter: 'Todas', uploadErr: '', over: false }); }
+handleFile(f) {
+if (!f) return;
+if (!/\.(xlsx|csv)$/i.test(f.name)) { this.setState({ uploadErr: 'El archivo «' + f.name + '» no es .xlsx ni .csv.', over: false }); return; }
+this.load(f.name);
+}
+doImport() {
+const s = this.state; const cls = s.rows.map((r) => ({ r, c: this.classify(r, s.picks) }));
+const ok = cls.filter((x) => x.c.kind !== 'err' && x.c.kind !== 'pend');
+const err = cls.filter((x) => x.c.kind === 'err' || x.c.kind === 'pend');
+const kg = ok.reduce((a, x) => a + parseFloat(x.r.qty) * this.kgPer[x.c.code], 0);
+const rec = new Set(ok.map((x) => x.r.date + '|' + x.r.donor)).size;
+const eqNew = s.saveEq ? Object.keys(s.picks).filter((k) => s.picks[k]).length : 0;
+this.errRows = err.map((x) => ({ n: x.r.n, raw: x.r.raw, msg: x.c.kind === 'pend' ? 'Producto sin equivalencia en el catálogo' : x.c.msg }));
+this.setState({ step: 'done', res: { ok: ok.length, err: err.length, total: s.rows.length, kg: kg.toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 }), rec: rec, eq: eqNew },
+history: [{ file: s.file, date: '10-nov-2026', ok: ok.length, err: err.length }, ...s.history] });
+this.flash('Importación terminada: ' + ok.length + ' filas importadas.');
+}
+downloadErr() {
+const lines = ['fila;producto_en_archivo;error'].concat((this.errRows || []).map((e) => e.n + ';' + e.raw + ';' + e.msg));
+try { const b = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' }); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'errores_importacion.csv'; a.click(); } catch (e) {}
+}
+_rv() {
+const s = this.state; const order = ['upload', 'validate', 'done']; const idx = order.indexOf(s.step);
+const cls = s.rows.map((r) => ({ r, c: this.classify(r, s.picks) }));
+const count = (k) => cls.filter((x) => (Array.isArray(k) ? k.includes(x.c.kind) : x.c.kind === k)).length;
+const nOk = count('ok'); const nNorm = count(['norm', 'assigned']); const nPend = count('pend'); const nErr = count('err');
+const fmap = { 'Todas': null, 'Por revisar': ['pend', 'err'], 'Normalizadas': ['norm', 'assigned'], 'Con error': ['err'] };
+const shown = cls.filter((x) => !fmap[s.filter] || fmap[s.filter].includes(x.c.kind));
+const ST = { ok: ['Lista', 'chip c-ok'], norm: ['Normalizada', 'chip c-info'], assigned: ['Asignada', 'chip c-ind'], pend: ['Sin equivalencia', 'chip c-warn'], err: ['Error', 'chip c-err'] };
+const willImport = nOk + nNorm;
+const res = s.res || { ok: 0, err: 0, total: 0, kg: '0', rec: 0, eq: 0 };
+return {
+steps: ['Cargar archivo', 'Validar y normalizar', 'Resultado'].map((l, i) => ({ n: i < idx ? '✓' : String(i + 1), label: l, cls: i < idx ? 'done' : i === idx ? 'on' : '', sep: i < 2 })),
+isUpload: s.step === 'upload', isValidate: s.step === 'validate', isDone: s.step === 'done',
+dropCls: s.over ? 'drop over' : 'drop', hasUploadErr: !!s.uploadErr, uploadErr: s.uploadErr,
+onOver: (e) => { e.preventDefault(); if (!s.over) this.setState({ over: true }); }, onLeave: () => this.setState({ over: false }),
+onDrop: (e) => { e.preventDefault(); this.handleFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]); },
+onFile: (e) => this.handleFile(e.target.files && e.target.files[0]), useSample: () => this.load('recepciones_2025_s2.xlsx'),
+history: s.history.map((h) => ({ file: h.file, date: h.date, ok: h.ok.toLocaleString('es-CO'), err: String(h.err), errCls: h.err ? 'chip c-err' : 'chip c-neu' })),
+fileName: s.file, total: String(s.rows.length), nOk: String(nOk), nNorm: String(nNorm), nPend: String(nPend), nErr: String(nErr),
+filters: Object.keys(fmap).map((l) => ({ label: l, on: s.filter === l ? 'true' : 'false', pick: () => this.setState({ filter: l }) })),
+presOpts: Object.keys(this.pres).filter((k, i, a) => a.findIndex((x) => this.pres[x] === this.pres[k]) === i).map((k) => ({ code: k, label: this.pres[k] })),
+rows: shown.map(({ r, c }) => ({ n: String(r.n), date: r.err && r.err.startsWith('Fecha') ? r.date.split('-').reverse().join('/') : this.fdate(r.date), donor: r.donor || 'Sin donante', raw: r.raw,
+qty: r.qty || 'Vacía', venc: this.fdate(r.venc), pending: c.kind === 'pend' || c.kind === 'assigned', resolved: c.kind === 'ok' || c.kind === 'norm', isErr: c.kind === 'err',
+pres: c.code ? this.pres[c.code] : (c.kind === 'err' ? 'No se normaliza' : ''), code: c.code, pick: s.picks[r.n] || '', pickLabel: 'Producto para ' + r.raw,
+onPick: (e) => { const v = e.target.value; this.setState((st) => ({ picks: { ...st.picks, [r.n]: v } })); },
+st: ST[c.kind][0], stCls: ST[c.kind][1], hasMsg: c.kind === 'err', msg: c.msg || '', cls: c.kind === 'err' ? 'hg tr bad' : 'hg tr' })),
+saveEq: s.saveEq, toggleEq: () => this.setState({ saveEq: !s.saveEq }),
+importHint: willImport + ' se importan · ' + (nErr + nPend) + ' se reportan',
+importLabel: 'Importar ' + willImport + ' filas', cantImport: willImport === 0, doImport: () => this.doImport(),
+restart: () => this.setState({ step: 'upload', rows: [], picks: {}, res: null, file: '' }),
+res: { ...res, ok: String(res.ok), err: String(res.err), total: String(res.total), rec: String(res.rec), eq: String(res.eq), noErr: res.err === 0 },
+downloadErr: () => this.downloadErr(),
+hasToast: !!s.toast, toast: s.toast
+};
+}
+_rol() {
+let r = null; try { r = localStorage.getItem('ssd.rol'); } catch (e) {}
+if (!r) { try { r = window.parent.__ssdRol || window.__ssdRol; } catch (e) {} }
+if (!this._rolL) { this._rolL = true; const f = () => this.setState({ rolTick: Date.now() }); try { window.addEventListener('storage', (e) => { if (e.key === 'ssd.rol') f(); }); } catch (e) {} try { window.parent.addEventListener('ssd-rol', f); } catch (e) {} }
+return r === 'asist' || r === 'bodega' ? r : 'coord';
+}
+renderVals() {
+const v = this._rv(); let m = this.state ? this.state.navMin : undefined;
+if (m === undefined) { try { m = localStorage.getItem('ssd.navMin') === '1'; } catch (e) { m = false; } }
+const o = !!(this.state && this.state.navOpen); const narrow = () => { try { return window.innerWidth < 1440; } catch (e) { return false; } };
+const r = this._rol();
+const U = { coord: ['Laura Gómez', 'Coordinador del banco', 'LG'], asist: ['Diana Ríos', 'Asistente administrativa', 'DR'], bodega: ['Carlos Perdomo', 'Personal de bodega', 'CP'] }[r] || ['Laura Gómez', 'Coordinador del banco', 'LG'];
+return Object.assign({}, v, { navCls: (m ? 'side min' : 'side') + (o ? ' is-open' : '') + ' r-' + r, navLabel: (narrow() ? !o : m) ? 'Mostrar menú lateral' : 'Ocultar menú lateral', navExp: (narrow() ? o : !m) ? 'true' : 'false',
+userName: U[0], userRole: U[1], userIni: U[2], userFirst: U[0].split(' ')[0],
+toggleNav: () => { if (narrow()) { this.setState({ navOpen: !o }); return; } const n = !m; try { localStorage.setItem('ssd.navMin', n ? '1' : '0'); } catch (e) {} this.setState({ navMin: n }); } });
+}
+
+
+}
+</script>
+</body>
+</html>

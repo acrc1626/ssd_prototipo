@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Organizaciones</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@500;600&amp;family=Asap:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0;background:#F7F8FA}
+a{color:#1A7F3D}a:hover{color:#166B33}
+:focus-visible{outline:2px solid #1A7F3D;outline-offset:2px}
+h1,h2,h3{font-family:'Signika',sans-serif}
+.side a{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 12px;border-radius:8px;text-decoration:none;color:#3A4247;font-size:14px}
+.side a:hover{background:#F0F3F5}
+.side a.on{background:#E3F7E9;color:#166B33;font-weight:600}.side a.on:hover{background:#CDEFD8}
+.side .grp{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#5F656B;padding:14px 12px 6px;font-weight:600}
+.card{background:#FFFFFF;border:1px solid #E4E8EB;border-radius:12px}
+.lbl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:#4E555B}
+.inp{height:38px;box-sizing:border-box;border:1px solid #CDD4D9;border-radius:8px;padding:0 10px;font:inherit;font-size:14px;font-weight:400;color:#30383D;background:#FFFFFF;width:100%}
+.inp:focus{border-color:#1A7F3D;outline:2px solid #A7E8BB;outline-offset:0}
+.btn{height:38px;box-sizing:border-box;padding:0 14px;border-radius:8px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:1px solid transparent;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.b-pri{background:#1A7F3D;color:#FFFFFF}.b-pri:hover{background:#166B33;color:#FFFFFF}
+.b-sec{background:#FFFFFF;color:#30383D;border-color:#CDD4D9}.b-sec:hover{background:#F7F8FA}
+.b-link{background:none;color:#1A7F3D;border:none;padding:0 8px}.b-link:hover{background:#EDF9F0}
+.kpi{padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.tile{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .k{font-size:12.5px;color:#4E555B;font-weight:600}
+.kpi .v{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:500;color:#30383D}
+.kpi small{font-size:14px;color:#5F656B;font-weight:400}
+.kpi .s{font-size:12.5px;color:#5F656B}
+.th{font-size:12px;font-weight:600;color:#4E555B;text-transform:uppercase;letter-spacing:.04em;min-height:38px;background:#F3FBF5;border-bottom:1px solid #E4E8EB}
+.tr{min-height:56px;font-size:14px;border-bottom:1px solid #ECEFF1}
+.tr:hover{background:#FAFBFC}
+.num{font-family:'IBM Plex Mono',monospace;text-align:right;font-size:13.5px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.r{text-align:right}
+.sub{font-size:12.5px;color:#5F656B}
+.cat{display:inline-block;font-size:11.5px;font-weight:600;color:#4E555B;background:#F0F3F5;border-radius:4px;padding:1px 6px}
+.lot{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;background:#FFEBDD;color:#9A4A0C;border:1px solid #FFC9A3;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.c-ok{background:#E3F7E9;color:#166B33}.c-warn{background:#FEF3C7;color:#92400E}.c-err{background:#FDECEC;color:#991B1B}.c-info{background:#EEF1F3;color:#4E555B}.c-neu{background:#F0F3F5;color:#4E555B}.c-ind{background:#E3F7E9;color:#166B33}
+.icon-btn{width:34px;height:34px;border:none;background:none;border-radius:8px;color:#5F656B;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn:hover{background:#E3F7E9;color:#166B33}
+.pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px 0 14px;border:1px solid #CDD4D9;border-radius:10px;background:#FFFFFF;font-size:13px;color:#5F656B}
+.pill select{border:none;background:transparent;font:inherit;font-size:13.5px;font-weight:600;color:#30383D;appearance:none;padding-right:4px;cursor:pointer}
+.pill:focus-within{border-color:#1A7F3D}
+.bell{position:relative;width:40px;height:40px;border-radius:10px;border:1px solid #CDD4D9;background:#FFFFFF;color:#166B33;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.bell:hover{background:#EDF9F0}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#DC2626;color:#FFFFFF;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+.badge::after{content:"";position:absolute;inset:-4px;border-radius:999px;border:2px solid #DC2626;opacity:0;animation:ring 2s ease-out infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion: reduce){.badge::after{animation:none}}
+.banner{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;font-size:14px}
+.banner.ok{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+.banner.err{background:#FDECEC;color:#991B1B;border:1px solid #FBCACA}
+.banner.info{background:#E3F7E9;color:#166B33;border:1px solid #A7E8BB}
+.toast{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:#30383D;color:#FFFFFF;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(48,56,61,.25)}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(48,56,61,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal{width:100%;max-width:880px;background:#FFFFFF;border-radius:16px;box-shadow:0 24px 60px rgba(48,56,61,.3);display:flex;flex-direction:column}
+.mhead{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid #E4E8EB}
+.mbody{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid #E4E8EB;background:#F9FAFB;border-radius:0 0 16px 16px}
+.tbl{border:1px solid #E4E8EB;border-radius:10px;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.dochead{padding:16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+.dochead .tile{width:44px;height:44px;border-radius:12px}
+.fresh{background:#F3FBF5;box-shadow:inset 3px 0 0 #1A7F3D}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:16px;align-items:start}
+.og{display:grid;grid-template-columns:minmax(180px,1.5fr) 120px 130px 170px;gap:12px;align-items:center;padding:0 16px}
+.og.tr{cursor:pointer}
+.og.sel{background:#F3FBF5;box-shadow:inset 3px 0 0 #1A7F3D}
+.fbtn{height:32px;padding:0 12px;border-radius:999px;border:1px solid #CDD4D9;background:#FFFFFF;font:inherit;font-size:13px;color:#3A4247;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:#1A7F3D;border-color:#1A7F3D;color:#FFFFFF}
+.steps{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.steps li{flex:1;display:flex;flex-direction:column;gap:6px;font-size:12px;color:#5F656B}
+.steps li span{height:6px;border-radius:999px;background:#E4E8EB}
+.steps li.done span{background:#1A7F3D}
+.steps li.cur{color:#166B33;font-weight:600}
+.steps li.cur span{background:#A7E8BB}
+.dl{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:13.5px;margin:0}
+.dl dt{color:#5F656B}
+.dl dd{margin:0}
+.sec{padding:14px 18px;border-top:1px solid #EDF0F2;display:flex;flex-direction:column;gap:10px}
+.sec h3{margin:0;font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.lock{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;background:#F7F8FA;border:1px dashed #CDD4D9;font-size:13px;color:#4E555B}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:400;color:#30383D}
+.chk input{width:16px;height:16px;accent-color:#1A7F3D}
+.err{font-size:12.5px;color:#B91C1C;font-weight:600}
+
+/* Uniformidad de controles */
+.inp,.btn,.cell,.pill,.tog,.estbox,.date,.fbtn,.uline,.b-link{height:36px !important;min-height:36px;box-sizing:border-box}
+.inp,.cell,.tog,.estbox,.pill,.btn{border-radius:8px !important}
+.inp,.cell,.pill select,.uline{font-size:14px !important}
+.btn{font-size:14px;padding:0 14px}
+.lbl{gap:6px !important;font-size:12.5px !important;font-weight:600 !important;color:#4E555B !important}
+.cell{width:88px !important;max-width:100%;text-align:right}
+:is(label,span,div):has(> .cell){display:flex;justify-content:flex-end}
+.bell{width:36px !important;height:36px !important;border-radius:8px !important}
+.tile{background:#E3F7E9;color:#1A7F3D}
+.seg2 button,.pg,header button{height:36px !important}
+
+/* Paleta app: verde #33C863, menta #A7E8BB, naranja #FFA56B */
+.b-pri{background:#33C863 !important;color:#30383D !important;border-color:#33C863 !important}.b-pri:hover{background:#2BB257 !important;border-color:#2BB257 !important}
+.b-pri svg{stroke:#30383D}
+.est,.estbox{background:#FFEBDD !important;color:#8A3F06 !important}
+.th,.th2{background:#F7F8FA !important}
+
+/* Menú lateral ocultable y altura uniforme de cajas */
+.navtog{width:36px;height:36px;border:1px solid #E4E8EB;border-radius:8px;background:#FFFFFF;color:#30383D;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.navtog:hover{background:#F3FBF5;border-color:#A7E8BB}
+.side{transition:max-width .15s ease,flex-basis .15s ease}
+.side.min{flex:0 0 60px !important;max-width:60px !important;padding:10px 8px 20px !important}
+.side.min a{justify-content:center;padding:0;gap:0;font-size:0}
+.side.min a svg{flex:none}
+.side.min .grp{font-size:0;padding:0;height:1px;background:#E4E8EB;margin:10px 6px}
+@media (prefers-reduced-motion: reduce){.side{transition:none}}
+.inp,.cell{line-height:normal !important;padding-top:0 !important;padding-bottom:0 !important}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:30px !important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235F656B' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+input[type=date].inp{padding-right:8px !important}
+.add label:has(> .cell){display:flex;flex-direction:column;align-items:stretch}
+
+/* Guía de estilo Figma (14-oct): minimalista, bordes suaves, verde como acento */
+body{line-height:1.45}
+.card{border-color:#E5E7EB !important;border-radius:12px !important;box-shadow:none}
+.inp,.cell{border-color:#E5E7EB !important;color:#26323F !important;border-radius:8px !important}
+.inp::placeholder,.cell::placeholder{color:#929292}
+.inp:focus,.cell:focus{border-color:#33C863 !important;outline:3px solid #E3F7E9 !important;outline-offset:0}
+.b-sec{background:transparent !important;border-color:#E5E7EB !important;color:#26323F !important}.b-sec:hover{background:#F7F8FA !important}
+.lbl{font-weight:500 !important;color:#4E555B !important}
+.side{border-right-color:#E5E7EB !important}
+.side a{color:#5F656B}
+.side a:hover{background:#F7F8FA}
+.side a.on{background:transparent !important;color:#1A7F3D !important;font-weight:600}
+.side a.on svg{stroke:#33C863}
+.th{border-bottom-color:#E5E7EB !important}
+.chip.c-ok{background:#E3F7E9;color:#166B33}
+
+/* Botones suaves y tabla única (15-oct) */
+.btn{font-weight:500 !important;font-size:13.5px !important;padding:0 14px;letter-spacing:0;box-shadow:none}
+.btn svg{width:15px;height:15px}
+.b-pri{background:#33C863 !important;border-color:#33C863 !important;color:#14361F !important}
+.b-pri:hover{background:#2EB95B !important;border-color:#2EB95B !important}
+.b-pri svg{stroke:#14361F}
+.b-sec{background:#FFFFFF !important;border:1px solid #E5E7EB !important;color:#4E555B !important}
+.b-sec:hover{background:#F7F8FA !important;color:#26323F !important}
+.b-link,.b-ghost{background:transparent !important;border:none !important;color:#166B33 !important;font-weight:500 !important}
+.b-link:hover,.b-ghost:hover{background:#F3FBF5 !important}
+.btn:disabled{opacity:.45 !important}
+[role="table"] .btn,.tr .btn{height:30px !important;min-height:30px !important;font-size:13px !important;padding:0 10px !important}
+.tog{font-weight:500 !important;border-color:#E5E7EB !important;color:#4E555B !important}
+.tog.on{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.fbtn{height:32px !important;min-height:32px;border-color:#E5E7EB !important;font-weight:500;color:#4E555B}
+.fbtn[aria-pressed="true"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg[aria-current="page"]{background:#E3F7E9 !important;border-color:#A7E8BB !important;color:#166B33 !important}
+.pg{border-color:#E5E7EB !important;font-weight:500 !important}
+/* Tabla: tarjeta, cabecera tenue, filas con línea sutil, sin cuadrícula */
+.th,.th2{background:#F7F8FA !important;color:#5F656B !important;font-size:12px !important;font-weight:500 !important;text-transform:none !important;letter-spacing:0 !important;min-height:40px !important;border-bottom:1px solid #EEF0F2 !important}
+[role="table"] [role="row"]{padding-left:16px !important;padding-right:16px !important;column-gap:16px}
+.tr{min-height:52px !important;font-size:13.5px !important;border-bottom:1px solid #EEF0F2 !important;border-top:none !important}
+.tr:hover{background:#FAFBFC !important}
+.tbl{border:1px solid #EEF0F2 !important;border-radius:10px !important}
+.chip{font-size:12px !important;font-weight:500 !important;padding:2px 10px !important}
+.num{font-size:13.5px}
+.steps2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));list-style:none;margin:6px 0 2px;padding:0}
+.steps2 li{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;line-height:1.3;color:#5F656B;text-align:center}
+.steps2 li::before{content:"";position:absolute;top:5px;left:-50%;width:100%;height:2px;background:#E5E7EB}
+.steps2 li:first-child::before{display:none}
+.steps2 li .dot{width:12px;height:12px;border-radius:50%;background:#FFFFFF;border:2px solid #CDD4D9;position:relative;z-index:1;box-sizing:border-box}
+.steps2 li.done::before,.steps2 li.cur::before{background:#33C863}
+.steps2 li.done .dot{background:#33C863;border-color:#33C863}
+.steps2 li.cur .dot{border-color:#33C863;box-shadow:0 0 0 3px #E3F7E9}
+.steps2 li.cur{color:#166B33;font-weight:600}
+
+/* Ajuste tablas y botones (15-oct, revisión Astrid) */
+.th,.th2{font-size:13px !important;font-weight:600 !important;color:#4E555B !important}
+.tr strong,.tr [style*="font-weight: 600; font-size: 14.5px"]{font-size:14px !important}
+[role="table"] .b-pri,[role="table"] .b-sec,.tr .b-pri,.tr .b-sec{background:transparent !important;border-color:transparent !important;color:#166B33 !important;padding:0 8px !important}
+[role="table"] .b-sec,.tr .b-sec{color:#4E555B !important}
+[role="table"] .b-pri:hover,[role="table"] .b-sec:hover,.tr .b-pri:hover,.tr .b-sec:hover{background:#F3FBF5 !important}
+[role="table"] .b-pri svg,.tr .b-pri svg{stroke:#166B33}
+.add .a-btn{width:auto !important;justify-self:start;padding:0 18px !important}
+
+/* Cajas de texto compactas (15-oct) */
+.inp{max-width:360px}
+input[type=date].inp{max-width:170px}
+.inp.num,.inrow .inp.num{max-width:110px}
+.hdrform{grid-template-columns:repeat(auto-fill,minmax(190px,230px)) !important;justify-content:start}
+.form,.dgrid{justify-content:start}
+.dgrid{grid-template-columns:repeat(auto-fill,minmax(180px,230px)) !important}
+.d-prod{grid-column:span 2}
+.d-prod .inp{max-width:none}
+.add .a-prod .inp{max-width:380px}
+.modal .inp{max-width:none}
+
+/* A-12 texto de apoyo */
+.sub,.s2,.kpi .s{font-size:13px !important}
+
+/* Rol en sesión: menú según permisos y contador de riesgo */
+.nbadge{margin-left:auto;font-size:11.5px;font-weight:600;background:#FDECEC;color:#B91C1C;border-radius:999px;padding:0 7px;line-height:18px}
+.side.min .nbadge{display:none}
+.r-bodega .nv-remisiones,.r-bodega .nv-organizaciones,.r-bodega .nv-kits,.r-bodega .nv-riesgo,.r-bodega .nv-reportes,.r-bodega .nv-catalogo,.r-bodega .nv-historicos,.r-bodega .nv-usuarios,.r-bodega .g-dis,.r-bodega .g-ana,.r-bodega .g-adm{display:none !important}
+.r-asist .nv-recepciones,.r-asist .nv-bajas,.r-asist .nv-kits,.r-asist .nv-riesgo,.r-asist .nv-catalogo,.r-asist .nv-historicos,.r-asist .nv-usuarios,.r-asist .g-adm{display:none !important}
+.r-coord .nv-recepciones,.r-coord .nv-bajas,.r-coord .nv-remisiones,.r-coord .nv-organizaciones{display:none !important}
+
+/* ===== App shell responsivo v1 (igual en todas las pantallas) ===== */
+:root{--app-nav-w:232px;--app-nav-w-mini:64px;--app-header-h:56px;--app-gutter:28px;--app-gutter-sm:16px;--app-touch-h:44px;--app-border:#E5E7EB;--app-row-line:#EEF0F2;--app-surface:#FFFFFF;--app-muted:#5F656B;--app-focus:#33C863}
+.app__header{position:sticky;top:0;z-index:40}
+.app__body{display:grid;grid-template-columns:var(--app-nav-w) minmax(0,1fr);flex:1;min-width:0;align-items:start}
+.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+.side{position:sticky;top:var(--app-header-h);height:calc(100vh - var(--app-header-h));overflow-y:auto;box-sizing:border-box;width:auto;background:var(--app-surface);border-right:1px solid var(--app-border);padding:10px 10px 20px;display:flex;flex-direction:column;gap:2px}
+.side.min{max-width:none !important;flex:none !important}
+.app__main{min-width:0;padding:20px var(--app-gutter) 32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px}
+.app__main--home{padding-top:24px;gap:20px}
+.app__scroll{position:relative;overflow-x:auto;max-width:100%;scrollbar-width:thin;scrollbar-color:#C9D0D6 transparent}
+.app__scroll:focus-visible{outline:2px solid var(--app-focus);outline-offset:-2px}
+[role="table"]{position:relative}
+.sr{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+[role="cell"],[role="columnheader"]{min-width:0}
+[role="columnheader"]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="cell"]:not(:has(*)){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app__main [role="table"] [role="row"]{padding-left:12px !important;padding-right:12px !important;column-gap:12px}
+.app__bank,.app__user-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Menos de 1440 px: menú solo íconos para que la tabla completa quepa; el botón de tres líneas lo despliega encima */
+@media (max-width: 1439px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:var(--app-nav-w-mini) minmax(0,1fr)}
+  .side:not(.is-open){padding:10px 8px 20px !important}
+  .side:not(.is-open) a{justify-content:center;padding:0;gap:0;font-size:0}
+  .side:not(.is-open) .grp{font-size:0;padding:0;height:1px;background:var(--app-border);margin:10px 6px}
+  .side:not(.is-open) .nbadge{display:none}
+  .side.is-open{position:fixed;left:0;top:var(--app-header-h);width:var(--app-nav-w);z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.14)}
+}
+/* 1024 a 1279 px: controles táctiles de 44 px y margen lateral menor */
+@media (max-width: 1279px){
+  .app__main{padding-left:20px;padding-right:20px}
+  [data-touch] .inp,[data-touch] .btn,[data-touch] .cell,[data-touch] .pill,[data-touch] .tog,[data-touch] .fbtn,[data-touch] .pg,[data-touch] .navtog,[data-touch] .estbox{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important}
+  [data-touch] [role="table"] .btn,[data-touch] .tr .btn,[data-touch] .icon-btn{height:var(--app-touch-h) !important;min-height:var(--app-touch-h) !important;min-width:var(--app-touch-h)}
+  [data-touch] .side a{min-height:var(--app-touch-h)}
+  .app__bank{display:none}
+}
+/* Menos de 1024 px: menú detrás del botón de tres líneas y cada fila como tarjeta */
+@media (max-width: 1023px){
+  .app__body,.app__body:has(> .side.min){grid-template-columns:minmax(0,1fr)}
+  .side{display:none !important}
+  .side.is-open{display:flex !important;position:fixed;left:0;top:var(--app-header-h);bottom:0;height:auto;width:var(--app-nav-w);max-width:85vw !important;z-index:45;box-shadow:8px 0 24px rgba(48,56,61,.18)}
+  .app__main{padding:16px var(--app-gutter-sm) 28px}
+  .layout,.home{grid-template-columns:minmax(0,1fr) !important}
+  .app__main [role="table"]:not([data-layout="scroll"]){min-width:0 !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) .th{display:none !important}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="row"]:not(.th){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px 16px !important;padding:14px 16px !important;min-height:0 !important;height:auto !important;border:1px solid var(--app-row-line) !important;border-radius:12px;margin:8px 0;background:var(--app-surface)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]{display:flex !important;flex-direction:column;align-items:flex-start !important;justify-content:flex-start !important;gap:3px;text-align:left !important;white-space:normal}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:first-child,.app__main [role="table"]:not([data-layout="scroll"]) [role="cell"]:nth-child(2):has(input[type="checkbox"]) ~ [role="cell"]:nth-child(2){grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label]:not([data-label=""])::before{content:attr(data-label);font-family:'Asap','Segoe UI',sans-serif;font-size:12px;letter-spacing:0;font-weight:500;color:var(--app-muted)}
+  .app__main [role="table"]:not([data-layout="scroll"]) [role="cell"][data-label=""]{grid-column:1 / -1}
+  .app__main [role="table"]:not([data-layout="scroll"]) .num{text-align:left !important}
+  .app__scroll:has(> [role="table"]:not([data-layout="scroll"])){overflow-x:visible}
+}
+@media (max-width: 767px){
+  .app__user-text{display:none}
+}
+/* fin app shell */
+</style>
+</helmet>
+<div style="font-family: 'Asap', 'Segoe UI', sans-serif; font-size: 14px; color: #30383D; min-height: 100vh; display: flex; flex-direction: column;">
+  <header class="app__header" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 0 20px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E4E8EB;">
+    <button type="button" class="navtog" onClick="{{toggleNav}}" aria-label="{{navLabel}}" aria-expanded="{{navExp}}" title="{{navLabel}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    <a href="Inicio-v2.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #30383D;">
+      <span aria-hidden="true" style="width: 30px; height: 30px; border-radius: 8px; background: #33C863; color: #30383D; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
+      <span style="font-family: 'Signika', sans-serif; font-weight: 600; font-size: 16px;">SSD Bancos de Alimentos</span>
+    </a>
+    <span class="app__bank" style="font-size: 13.5px; color: #4E555B; padding-left: 16px; border-left: 1px solid #E4E8EB;">Banco Diocesano de Alimentos de Neiva</span>
+    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;"><span class="app__user-text" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;"><span style="font-weight: 600; font-size: 13.5px;">{{userName}}</span><span style="font-size: 12px; color: #5F656B;">{{userRole}}</span></span><span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 50%; background: #E3F7E9; color: #166B33; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;">{{userIni}}</span><a href="Login-v2.dc.html" class="btn b-link" title="Cerrar sesión" aria-label="Cerrar sesión" style="padding: 0 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path></svg></a></div>
+  </header>
+  <div class="app__body">
+    <nav class="{{navCls}}" id="menu-principal" aria-label="Menú principal">
+      <a href="Inicio-v2.dc.html" class="nv-inicio" title="Inicio"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h14V10"></path><path d="M10 20v-5h4v5"></path></svg>Inicio</a>
+      <div class="grp g-inv">Inventario</div>
+      <a href="Recepciones-v2.dc.html" class="nv-recepciones" title="Recepciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"></path><path d="m3 8 9 5 9-5"></path><path d="M12 13v8"></path></svg>Recepciones</a>
+      <a href="Existencias-v2.dc.html" class="nv-existencias" title="Existencias"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5z"></path><path d="m2 13 10 5 10-5"></path></svg>Existencias</a>
+      <a href="Bajas-v2.dc.html" class="nv-bajas" title="Bajas y compostaje"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M6 6l1 15h10l1-15"></path></svg>Bajas y compostaje</a>
+      <div class="grp g-dis">Distribución</div>
+      <a href="Remisiones-v2.dc.html" class="nv-remisiones" title="Remisiones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"></path><path d="M14 10h4l3 3v3h-7"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>Remisiones</a>
+      <a href="Organizaciones-v2.dc.html" class="on nv-organizaciones" aria-current="page" title="Organizaciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M10 21v-6h4v6"></path></svg>Organizaciones</a>
+      <a href="Kits-v2.dc.html" class="nv-kits" title="Programas y kits"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M4 10h16M10 4v16"></path></svg>Programas y kits</a>
+      <div class="grp g-ana">Análisis</div>
+      <a href="Riesgo-v2.dc.html" class="nv-riesgo" title="Riesgo de vencimiento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg>Riesgo de vencimiento<span class="nbadge" title="Lotes en riesgo alto">3</span></a>
+      <a href="Reporte-v2.dc.html" class="nv-reportes" title="Reporte mensual"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"></path></svg>Reporte mensual</a>
+      <div class="grp g-adm">Administración</div>
+      <a href="Catalogo-v2.dc.html" class="nv-catalogo" title="Catálogo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Catálogo</a>
+      <a href="Historicos-v2.dc.html" class="nv-historicos" title="Importar históricos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 8v4l3 2"></path></svg>Importar históricos</a>
+      <a href="Usuarios-v2.dc.html" class="nv-usuarios" title="Usuarios y roles"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"></circle><path d="M2 21a7 7 0 0 1 14 0"></path><path d="M17 11a3 3 0 1 0 0-6M22 21a6 6 0 0 0-4-5.6"></path></svg>Usuarios y roles</a>
+    </nav>
+    <main class="app__main">
+      <div style="font-size: 13px; color: #5F656B;"><a href="Inicio-v2.dc.html">Inicio</a> / Distribución / Organizaciones</div>
+      <section class="card dochead" aria-label="Organizaciones beneficiarias">
+        <span aria-hidden="true" class="tile" style="background: #E3F7E9; color: #1A7F3D;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M10 21v-6h4v6"></path></svg></span>
+        <div style="display: flex; flex-direction: column; gap: 3px;"><h1 style="margin: 0; font-size: 22px; font-weight: 600;">Organizaciones beneficiarias</h1><span class="sub" style="font-size: 13px;">Vinculación, autorización de tratamiento de datos (Ley 1581 de 2012) y población atendida registrada en cifras por grupo.</span></div>
+        <button class="btn b-pri" type="button" onClick="{{nwOpenFn}}" style="margin-left: auto;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nueva organización</button>
+      </section>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+        <div class="card kpi"><div class="kh"><span class="tile" aria-hidden="true" style="background: #E3F7E9; color: #1A7F3D;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"></path></svg></span><span class="k">Vinculadas</span></div><span class="v">{{kActive}}</span><span class="s">Pueden recibir remisiones</span></div>
+        <div class="card kpi"><div class="kh"><span class="tile" aria-hidden="true" style="background: #E3F7E9; color: #1A7F3D;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span><span class="k">En vinculación</span></div><span class="v">{{kLinking}}</span><span class="s">Radicación a visita</span></div>
+        <div class="card kpi"><div class="kh"><span class="tile" aria-hidden="true" style="background: #FEF3C7; color: #92400E;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17h.01"></path></svg></span><span class="k">Autorizaciones por actualizar</span></div><span class="v">{{kAuth}}</span><span class="s">Sin autorización o con política anterior</span></div>
+        <div class="card kpi"><div class="kh"><span class="tile" aria-hidden="true" style="background: #EEF1F3; color: #4E555B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"></circle><path d="M2 21a7 7 0 0 1 14 0"></path></svg></span><span class="k">Población atendida</span></div><span class="v">{{kPeople}}</span><span class="s">Suma de organizaciones vinculadas</span></div>
+      </div>
+      <div class="layout">
+        <section class="card" aria-label="Listado de organizaciones" style="overflow: hidden;">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 14px 16px;">
+            <sc-for list="{{filters}}" as="f" hint-placeholder-count="4"><button type="button" class="fbtn" aria-pressed="{{f.on}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+            <label style="margin-left: auto; width: 240px;"><span class="sr">Buscar organización</span><input class="inp" placeholder="Buscar por nombre o municipio" value="{{q}}" onInput="{{onQ}}"></label>
+          </div>
+          <div class="app__scroll" tabindex="0" role="region" aria-label="Organizaciones (desplazable)"><div role="table" aria-label="Organizaciones" style="min-width: 640px;">
+            <div role="row" class="og th"><span role="columnheader">Organización</span><span role="columnheader">Etapa</span><span role="columnheader">Autorización</span><span role="columnheader">Población</span></div>
+            <sc-for list="{{rows}}" as="o" hint-placeholder-count="6">
+              <div role="row" class="{{o.cls}}" tabindex="0" onClick="{{o.pick}}" onKeyDown="{{o.key}}" aria-selected="{{o.selA}}"><span role="cell" style="display: flex; flex-direction: column; gap: 2px;" data-label="Organización"><strong style="font-weight: 600;">{{o.name}}</strong><span class="sub">{{o.city}} · {{o.type}}</span></span><span role="cell" data-label="Etapa"><span class="{{o.stCls}}">{{o.stage}}</span></span><span role="cell" data-label="Autorización"><span class="{{o.auCls}}">{{o.auth}}</span></span><span role="cell" class="sub" style="font-size: 13px;" data-label="Población" title="{{o.people}}">{{o.people}}</span></div>
+            </sc-for>
+            <sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><div style="padding: 24px 16px; color: #5F656B;">Ninguna organización coincide con el filtro.</div></sc-if>
+          </div></div>
+        </section>
+        <section class="card" aria-label="Detalle de la organización" style="overflow: hidden;">
+          <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: flex-start; gap: 10px;"><div style="display: flex; flex-direction: column; gap: 2px;"><h2 style="margin: 0; font-size: 18px; font-weight: 600;">{{d.name}}</h2><span class="sub">{{d.type}} · NIT {{d.nit}} · {{d.city}}</span></div><span class="{{d.stCls}}" style="margin-left: auto;">{{d.stage}}</span></div>
+            <ol class="steps2" aria-label="Etapas de vinculación"><sc-for list="{{d.steps}}" as="st" hint-placeholder-count="5"><li class="{{st.cls}}"><span class="dot" aria-hidden="true"></span><span>{{st.label}}</span></li></sc-for></ol>
+            <sc-if value="{{d.canAdvance}}" hint-placeholder-val="{{true}}"><div style="display: flex; align-items: center; gap: 10px;"><span class="sub" style="flex: 1;">{{d.nextHint}}</span><button class="btn b-pri" type="button" onClick="{{advance}}" disabled="{{d.advBlocked}}" style="height: 34px;">{{d.advLabel}}</button></div></sc-if>
+            <sc-if value="{{d.advBlocked}}" hint-placeholder-val="{{false}}"><span class="err" role="note">Para vincular se necesita una autorización de tratamiento de datos con la política vigente ({{policy}}).</span></sc-if>
+          </div>
+          <div class="sec">
+            <h3>Autorización de tratamiento de datos<span class="{{d.auCls}}" style="margin-left: auto;">{{d.auth}}</span></h3>
+            <sc-if value="{{d.hasAuth}}" hint-placeholder-val="{{true}}"><dl class="dl"><dt>Fecha</dt><dd class="mono">{{d.a.date}}</dd><dt>Medio</dt><dd>{{d.a.medium}}</dd><dt>Finalidades</dt><dd style="display: flex; flex-wrap: wrap; gap: 4px;"><sc-for list="{{d.a.purposes}}" as="p" hint-placeholder-count="2"><span class="chip c-neu">{{p}}</span></sc-for></dd><dt>Versión de política</dt><dd class="mono">{{d.a.version}}</dd><dt>Soporte</dt><dd><a href="#">{{d.a.file}}</a></dd></dl></sc-if>
+            <sc-if value="{{d.authAction}}" hint-placeholder-val="{{false}}"><button class="btn b-sec" type="button" onClick="{{openAuth}}" style="align-self: flex-start;">{{d.authBtn}}</button></sc-if>
+          </div>
+          <div class="sec">
+            <h3>Representantes</h3>
+            <sc-if value="{{showReps}}" hint-placeholder-val="{{false}}"><ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px;"><sc-for list="{{d.reps}}" as="r" hint-placeholder-count="1"><li style="display: flex; flex-direction: column;"><strong style="font-weight: 600;">{{r.name}}</strong><span class="sub">Documento {{r.doc}} · Teléfono {{r.phone}}</span></li></sc-for></ul><span class="sub">Consulta registrada en la bitácora de auditoría.</span></sc-if>
+            <sc-if value="{{repsLocked}}" hint-placeholder-val="{{true}}"><div class="lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span style="flex: 1;">{{lockText}}</span><sc-if value="{{puedeVerRepresentantes}}" hint-placeholder-val="{{true}}"><button class="btn b-link" type="button" onClick="{{reveal}}">Mostrar</button></sc-if></div></sc-if>
+          </div>
+          <div class="sec">
+            <h3>Población atendida</h3>
+            <div class="tbl"><div role="table" aria-label="Población por grupo"><div role="row" class="th" style="display: grid; grid-template-columns: 1fr 110px; gap: 10px; align-items: center; padding: 0 12px;"><span role="columnheader">Grupo</span><span role="columnheader" class="r">Cantidad</span></div>
+              <sc-for list="{{d.pop}}" as="p" hint-placeholder-count="2"><div role="row" style="display: grid; grid-template-columns: 1fr 110px; gap: 10px; align-items: center; padding: 0 12px; min-height: 40px; border-bottom: 1px solid #ECEFF1; font-size: 13.5px;"><span role="cell" data-label="Grupo" title="{{p.grp}}">{{p.grp}}</span><span role="cell" class="num" data-label="Cantidad" title="{{p.n}}">{{p.n}}</span></div></sc-for>
+            </div></div>
+            <span class="sub">Solo cifras agregadas. No se registran datos de beneficiarios individuales.</span>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <sc-if value="{{authOpen}}" hint-placeholder-val="{{false}}">
+    <div class="overlay" onClick="{{closeAuth}}">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authT" onClick="{{stop}}" style="max-width: 620px;">
+        <div class="mhead"><h2 id="authT" style="margin: 0; font-size: 18px; font-weight: 600;">Registrar autorización · {{d.name}}</h2><button class="icon-btn" type="button" aria-label="Cerrar" onClick="{{closeAuth}}" style="margin-left: auto;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>
+        <div class="mbody">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <label class="lbl">Fecha de la autorización<input class="inp" type="date" value="{{f.date}}" onChange="{{f.onDate}}"></label>
+            <label class="lbl">Medio<select class="inp" value="{{f.medium}}" onChange="{{f.onMedium}}"><option value="">Seleccione</option><option value="Formato físico firmado">Formato físico firmado</option><option value="Formulario digital">Formulario digital</option><option value="Correo electrónico">Correo electrónico</option></select></label>
+          </div>
+          <fieldset style="border: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;"><legend class="lbl" style="margin-bottom: 6px;">Finalidades autorizadas</legend>
+            <sc-for list="{{f.purposes}}" as="p" hint-placeholder-count="4"><label class="chk"><input type="checkbox" checked="{{p.on}}" onChange="{{p.toggle}}">{{p.label}}</label></sc-for>
+          </fieldset>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <label class="lbl">Versión de la política<input class="inp mono" value="{{policy}}" readonly></label>
+            <label class="lbl">Soporte (PDF o imagen)<input class="inp" type="file" accept=".pdf,.jpg,.png" onChange="{{f.onFile}}" style="padding-top: 6px;"></label>
+          </div>
+          <sc-if value="{{f.hasErr}}" hint-placeholder-val="{{false}}"><div class="banner err" role="alert">{{f.err}}</div></sc-if>
+        </div>
+        <div class="mfoot"><button class="btn b-sec" type="button" onClick="{{closeAuth}}">Cancelar</button><button class="btn b-pri" type="button" onClick="{{saveAuth}}">Guardar autorización</button></div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{false}}"><div role="status" class="toast">{{toast}}</div></sc-if>
+  <sc-if value="{{nwOpen}}" hint-placeholder-val="{{false}}">
+    <div class="overlay" onClick="{{nwClose}}">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nw-t" onClick="{{nwStop}}" style="max-width: 520px;">
+        <div class="mhead"><h2 id="nw-t" style="margin: 0; font-size: 17px; font-weight: 600;">Nueva organización</h2></div>
+        <div class="mbody"><label class="lbl">Nombre<input class="inp" value="{{nw.name}}" onChange="{{nwOn.name}}"></label><div style="display: flex; gap: 12px;"><label class="lbl">NIT<input class="inp" value="{{nw.nit}}" onChange="{{nwOn.nit}}" placeholder="900.000.000-0"></label><label class="lbl">Municipio<input class="inp" value="{{nw.city}}" onChange="{{nwOn.city}}" placeholder="Neiva"></label></div><label class="lbl">Estado<select class="inp" value="{{nw.est}}" onChange="{{nwOn.est}}"><option value="Permanente">Permanente</option><option value="Esporádica">Esporádica</option></select></label><span class="sub">Queda en la etapa Radicación. Para vincularla se necesita la autorización de datos de su representante.</span><sc-if value="{{nwHasErr}}" hint-placeholder-val="{{false}}"><div class="banner err" role="alert">{{nwErr}}</div></sc-if></div>
+        <div class="mfoot"><button class="btn b-sec" type="button" onClick="{{nwClose}}">Cancelar</button><button class="btn b-pri" type="button" onClick="{{nwSave}}">Registrar organización</button></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250},"puedeVerRepresentantes":{"editor":"boolean","default":true}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+const A = (date, medium, purposes, version, file) => ({ date, medium, purposes, version, file });
+this.stages = ['Radicación', 'Verificación', 'Contacto', 'Visita', 'Vinculada'];
+this.purposeOpts = ['Gestión de la vinculación', 'Programación y entrega de remisiones', 'Reportes agregados a la red de bancos', 'Comunicaciones del banco'];
+this.state = { filter: 'Todas', q: '', sel: 'hf', reveal: false, authOpen: false, toast: '', form: null,
+orgs: [
+{ id: 'hf', name: 'Hogar Feliz', type: 'Permanente', nit: '900.412.336-1', city: 'Neiva', stage: 4, auth: A('2026-02-10', 'Formato físico firmado', ['Gestión de la vinculación', 'Programación y entrega de remisiones', 'Reportes agregados a la red de bancos'], 'v2.1', 'autorizacion_hogar_feliz.pdf'),
+reps: [{ name: 'María Elena Ruiz', doc: '1.075.xxx.214', phone: '310 *** 4471' }], pop: [['Niños y niñas', 52], ['Adultos mayores', 34]] },
+{ id: 'sj', name: 'Comedor Parroquial San José', type: 'Permanente', nit: '891.180.077-4', city: 'Neiva', stage: 4, auth: A('2026-03-04', 'Formulario digital', ['Gestión de la vinculación', 'Programación y entrega de remisiones'], 'v2.1', 'autorizacion_san_jose.pdf'),
+reps: [{ name: 'Jorge Iván Cabrera', doc: '12.130.xxx', phone: '315 *** 2208' }], pop: [['Adultos mayores', 120], ['Personas en situación de calle', 90]] },
+{ id: 'hv', name: 'Fundación Huellas de Vida', type: 'Permanente', nit: '900.877.120-9', city: 'Pitalito', stage: 4, auth: A('2024-08-21', 'Formato físico firmado', ['Gestión de la vinculación', 'Programación y entrega de remisiones'], 'v1.0', 'autorizacion_huellas_2024.pdf'),
+reps: [{ name: 'Diana Patricia Losada', doc: '36.172.xxx', phone: '312 *** 9015' }], pop: [['Familias desplazadas', 54]] },
+{ id: 'ac', name: 'Asociación Mujeres del Sur', type: 'Esporádica', nit: '901.334.508-2', city: 'Garzón', stage: 3, auth: null,
+reps: [{ name: 'Luz Marina Perdomo', doc: '26.420.xxx', phone: '318 *** 6630' }], pop: [['Madres cabeza de hogar', 40]] },
+{ id: 'jc', name: 'JAC Barrio Las Palmas', type: 'Esporádica', nit: '900.990.214-7', city: 'Neiva', stage: 2, auth: null,
+reps: [{ name: 'Hernán Darío Trujillo', doc: '7.689.xxx', phone: '311 *** 1187' }], pop: [['Niños y niñas', 60]] },
+{ id: 'hs', name: 'Hogar Infantil Semillas', type: 'Permanente', nit: '900.551.802-3', city: 'Campoalegre', stage: 0, auth: null,
+reps: [{ name: 'Claudia Milena Ortiz', doc: '55.168.xxx', phone: '313 *** 5542' }], pop: [['Niños y niñas', 45]] }
+] };
+}
+fmt(n) { return n.toLocaleString('es-CO'); }
+flash(m) { this.setState({ toast: m }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); }
+policy() { return 'v2.1'; }
+authState(o) { if (!o.auth) return ['Sin autorización', 'chip c-err']; if (o.auth.version !== this.policy()) return ['Política ' + o.auth.version, 'chip c-warn']; return ['Vigente', 'chip c-ok']; }
+stageChip(o) { return o.stage === 4 ? 'chip c-ok' : 'chip c-ind'; }
+people(o) { return o.pop.reduce((a, p) => a + p[1], 0); }
+upd(fn) { this.setState((st) => ({ orgs: st.orgs.map((o) => (o.id === st.sel ? fn(o) : o)) })); }
+advance() {
+const o = this.state.orgs.find((x) => x.id === this.state.sel);
+if (o.stage >= 4) return;
+if (o.stage === 3 && this.authState(o)[0] !== 'Vigente') return;
+this.upd((x) => ({ ...x, stage: x.stage + 1 }));
+this.flash(o.name + ' pasa a ' + this.stages[o.stage + 1].toLowerCase() + '.');
+}
+openAuth() { this.setState({ authOpen: true, form: { date: '', medium: '', purposes: ['Gestión de la vinculación'], file: '', err: '' } }); }
+saveAuth() {
+const f = this.state.form; const miss = [];
+if (!f.date) miss.push('fecha'); if (!f.medium) miss.push('medio'); if (!f.purposes.length) miss.push('al menos una finalidad'); if (!f.file) miss.push('soporte');
+if (miss.length) { this.setState({ form: { ...f, err: 'Falta: ' + miss.join(', ') + '.' } }); return; }
+this.upd((o) => ({ ...o, auth: { date: f.date, medium: f.medium, purposes: f.purposes, version: this.policy(), file: f.file } }));
+this.setState({ authOpen: false, form: null });
+this.flash('Autorización registrada con la política ' + this.policy() + '.');
+}
+_rv() {
+const s = this.state; const canSee = this.props.puedeVerRepresentantes !== false;
+const q = s.q.trim().toLowerCase();
+const match = (o) => (s.filter === 'Todas' || (s.filter === 'Vinculadas' && o.stage === 4) || (s.filter === 'En vinculación' && o.stage < 4) || (s.filter === 'Autorización pendiente' && this.authState(o)[0] !== 'Vigente'))
+&& (!q || (o.name + ' ' + o.city).toLowerCase().includes(q));
+const list = s.orgs.filter(match);
+const o = s.orgs.find((x) => x.id === s.sel); const [au, auCls] = this.authState(o);
+const f = s.form;
+return {
+kActive: String(s.orgs.filter((x) => x.stage === 4).length), kLinking: String(s.orgs.filter((x) => x.stage < 4).length),
+kAuth: String(s.orgs.filter((x) => this.authState(x)[0] !== 'Vigente').length),
+kPeople: this.fmt(s.orgs.filter((x) => x.stage === 4).reduce((a, x) => a + this.people(x), 0)),
+filters: ['Todas', 'Vinculadas', 'En vinculación', 'Autorización pendiente'].map((l) => ({ label: l, on: s.filter === l ? 'true' : 'false', pick: () => this.setState({ filter: l }) })),
+q: s.q, onQ: (e) => this.setState({ q: e.target.value }), empty: list.length === 0,
+rows: list.map((x) => { const pick = () => this.setState({ sel: x.id, reveal: false }); const a = this.authState(x);
+return { name: x.name, type: x.type, city: x.city, stage: this.stages[x.stage], stCls: this.stageChip(x), auth: a[0], auCls: a[1], people: this.fmt(this.people(x)) + ' personas',
+cls: x.id === s.sel ? 'og tr sel' : 'og tr', selA: x.id === s.sel ? 'true' : 'false', pick: pick, key: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } } }; }),
+d: { name: o.name, type: o.type, nit: o.nit, city: o.city, stage: this.stages[o.stage], stCls: this.stageChip(o),
+steps: this.stages.map((l, i) => ({ label: l, cls: i < o.stage ? 'done' : i === o.stage ? (o.stage === 4 ? 'done cur' : 'cur') : '' })),
+canAdvance: o.stage < 4, advLabel: o.stage < 4 ? 'Pasar a ' + this.stages[o.stage + 1].toLowerCase() : '',
+nextHint: ['Solicitud radicada; pasa a verificación.', 'Verificación de documentos.', 'Contacto con la organización.', 'Visita realizada; se vincula con autorización vigente.', ''][o.stage],
+advBlocked: o.stage === 3 && au !== 'Vigente',
+auth: au, auCls: auCls, hasAuth: !!o.auth, a: o.auth || { date: '', medium: '', purposes: [], version: '', file: '' },
+authAction: au !== 'Vigente', authBtn: o.auth ? 'Renovar con la política ' + this.policy() : 'Registrar autorización',
+reps: o.reps, pop: o.pop.map((p) => ({ grp: p[0], n: this.fmt(p[1]) })),
+},
+policy: this.policy(), advance: () => this.advance(),
+puedeVerRepresentantes: canSee, showReps: canSee && s.reveal, repsLocked: !(canSee && s.reveal),
+lockText: canSee ? 'Datos personales protegidos. Se muestran a solicitud y la consulta queda registrada.' : 'Su rol no tiene el permiso «Ver representantes de organizaciones».',
+reveal: () => this.setState({ reveal: true }),
+openAuth: () => this.openAuth(), closeAuth: () => this.setState({ authOpen: false, form: null }), stop: (e) => e.stopPropagation(), saveAuth: () => this.saveAuth(),
+authOpen: s.authOpen && !!f,
+f: f ? { date: f.date, medium: f.medium, hasErr: !!f.err, err: f.err,
+onDate: (e) => this.setState({ form: { ...s.form, date: e.target.value } }), onMedium: (e) => this.setState({ form: { ...s.form, medium: e.target.value } }),
+onFile: (e) => this.setState({ form: { ...s.form, file: (e.target.files && e.target.files[0] && e.target.files[0].name) || '' } }),
+purposes: this.purposeOpts.map((p) => ({ label: p, on: f.purposes.includes(p), toggle: () => this.setState((st) => ({ form: { ...st.form, purposes: st.form.purposes.includes(p) ? st.form.purposes.filter((x) => x !== p) : [...st.form.purposes, p] } })) })) }
+: { date: '', medium: '', hasErr: false, err: '', onDate: () => {}, onMedium: () => {}, onFile: () => {}, purposes: [] },
+nwOpen: !!s.nw, nw: s.nw || { name: '', nit: '', city: '', est: 'Permanente' }, nwHasErr: !!(s.nw && s.nw.err), nwErr: s.nw ? s.nw.err : '',
+nwOpenFn: () => this.setState({ nw: { ...{ name: '', nit: '', city: '', est: 'Permanente' }, err: '' } }), nwClose: () => this.setState({ nw: null }), nwStop: (e) => e.stopPropagation(),
+nwOn: { name: (e) => this.setState({ nw: { ...this.state.nw, name: e.target.value, err: '' } }), nit: (e) => this.setState({ nw: { ...this.state.nw, nit: e.target.value, err: '' } }), city: (e) => this.setState({ nw: { ...this.state.nw, city: e.target.value, err: '' } }), est: (e) => this.setState({ nw: { ...this.state.nw, est: e.target.value, err: '' } }) },
+nwSave: () => { const n = this.state.nw; if (!n.name.trim() || !n.nit.trim() || !n.city.trim()) { this.setState({ nw: { ...n, err: 'Completa nombre, NIT y municipio.' } }); return; } const id = 'o' + Date.now(); this.setState((st) => ({ nw: null, orgs: [...st.orgs, { id: id, name: n.name.trim(), type: n.est, nit: n.nit.trim(), city: n.city.trim(), stage: 0, auth: null, reps: [], pop: [] }], sel: id, toast: 'Organización registrada en Radicación.' })); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); },
+hasToast: !!s.toast, toast: s.toast
+};
+}
+_rol() {
+let r = null; try { r = localStorage.getItem('ssd.rol'); } catch (e) {}
+if (!r) { try { r = window.parent.__ssdRol || window.__ssdRol; } catch (e) {} }
+if (!this._rolL) { this._rolL = true; const f = () => this.setState({ rolTick: Date.now() }); try { window.addEventListener('storage', (e) => { if (e.key === 'ssd.rol') f(); }); } catch (e) {} try { window.parent.addEventListener('ssd-rol', f); } catch (e) {} }
+return r === 'asist' || r === 'bodega' ? r : 'coord';
+}
+renderVals() {
+const v = this._rv(); let m = this.state ? this.state.navMin : undefined;
+if (m === undefined) { try { m = localStorage.getItem('ssd.navMin') === '1'; } catch (e) { m = false; } }
+const o = !!(this.state && this.state.navOpen); const narrow = () => { try { return window.innerWidth < 1440; } catch (e) { return false; } };
+const r = this._rol();
+const U = { coord: ['Laura Gómez', 'Coordinador del banco', 'LG'], asist: ['Diana Ríos', 'Asistente administrativa', 'DR'], bodega: ['Carlos Perdomo', 'Personal de bodega', 'CP'] }[r] || ['Laura Gómez', 'Coordinador del banco', 'LG'];
+return Object.assign({}, v, { navCls: (m ? 'side min' : 'side') + (o ? ' is-open' : '') + ' r-' + r, navLabel: (narrow() ? !o : m) ? 'Mostrar menú lateral' : 'Ocultar menú lateral', navExp: (narrow() ? o : !m) ? 'true' : 'false',
+userName: U[0], userRole: U[1], userIni: U[2], userFirst: U[0].split(' ')[0],
+toggleNav: () => { if (narrow()) { this.setState({ navOpen: !o }); return; } const n = !m; try { localStorage.setItem('ssd.navMin', n ? '1' : '0'); } catch (e) {} this.setState({ navMin: n }); } });
+}
+
+
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<title>Recorrido de un lote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: diagrama del modelo fijo a la izquierda, recorrido paso a paso a la derecha; en teléfono se apilan */
+:root {
+  --bg: #F3F5F4;
+  --surface: #FFFFFF;
+  --ink: #1D2624;
+  --muted: #5B6A66;
+  --line: #CBD5D2;
+  --tag: #F2C230;        /* etiqueta amarilla de lote en bodega */
+  --tag-ink: #2A2200;
+  --accent: #1F6F5C;     /* verde de bodega */
+  --accent-soft: #DCEDE7;
+  --prop: #3D5BA9;       /* propuestas de cambio al modelo */
+  --prop-soft: #E3E9F7;
+  --minus: #A63D2F;
+  --plus: #1F6F5C;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121816; --surface: #1A2220; --ink: #E4ECE9; --muted: #9AABA6; --line: #33413D;
+    --tag: #E8B923; --tag-ink: #1E1800; --accent: #5CC3A4; --accent-soft: #1E3A33;
+    --prop: #9DB4F0; --prop-soft: #232C44; --minus: #F08A7A; --plus: #5CC3A4; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121816; --surface: #1A2220; --ink: #E4ECE9; --muted: #9AABA6; --line: #33413D;
+  --tag: #E8B923; --tag-ink: #1E1800; --accent: #5CC3A4; --accent-soft: #1E3A33;
+  --prop: #9DB4F0; --prop-soft: #232C44; --minus: #F08A7A; --plus: #5CC3A4; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 64px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.01em; }
+.lede { max-width: 66ch; color: var(--muted); margin: 10px 0 0; font-size: 1.05rem; }
+.eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+.glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 28px 0 36px; }
+.term { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.term b { font-family: var(--display); font-size: 1rem; display: block; }
+.term span { color: var(--muted); font-size: 0.93rem; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: 32px; align-items: start; }
+.diagram-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; }
+.diagram svg { width: 100%; min-width: 420px; height: auto; display: block; }
+.diagram .caption { font-size: 0.85rem; color: var(--muted); margin: 8px 4px 0; }
+.ent rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: fill .2s, stroke .2s; }
+.ent text { fill: var(--muted); font-family: var(--display); font-weight: 700; font-size: 14px; transition: fill .2s; }
+.ent.on rect { fill: var(--tag); stroke: var(--tag); }
+.ent.on text { fill: var(--tag-ink); }
+.ent.core rect { stroke: var(--ink); stroke-width: 2; }
+.rel { stroke: var(--line); stroke-width: 1.5; fill: none; transition: stroke .2s; }
+.rel.on { stroke: var(--ink); stroke-width: 2.2; }
+.rel.new { stroke-dasharray: 5 4; }
+.arrowhead { fill: var(--muted); }
+.rel-label { fill: var(--muted); font-family: var(--body); font-size: 11px; }
+.rel-label.new { fill: var(--prop); }
+
+.steps { display: flex; flex-direction: column; gap: 18px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: border-color .2s, box-shadow .2s; min-width: 0; }
+.step:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.step.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.step-head { display: flex; gap: 12px; align-items: baseline; }
+.num { font-family: var(--mono); font-weight: 500; font-size: 0.85rem; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 7px; flex-shrink: 0; }
+.step h3 { font-size: 1.15rem; font-weight: 700; }
+.physical { margin-top: 10px; max-width: 70ch; }
+.physical p { margin: 0 0 6px; }
+.lab { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 12px 0 2px; }
+.tbl { overflow-x: auto; margin-top: 4px; }
+table { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+caption { text-align: left; font-family: var(--display); font-weight: 700; font-size: 0.85rem; padding: 6px 0 4px; color: var(--ink); }
+th, td { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; }
+td.n, th.n { text-align: right; }
+tr.total td { font-weight: 500; border-bottom: none; }
+.lot { background: var(--tag); color: var(--tag-ink); padding: 0 5px; border-radius: 3px; font-weight: 500; }
+.est { color: var(--prop); }
+.minus { color: var(--minus); } .plus { color: var(--plus); }
+.result { margin: 8px 0 0; font-size: 0.95rem; max-width: 72ch; }
+.result b { font-family: var(--display); }
+.rule { margin-top: 10px; font-size: 0.93rem; background: var(--accent-soft); border-radius: 6px; padding: 8px 12px; max-width: 72ch; }
+.prop { margin-top: 12px; border: 1px dashed var(--prop); background: var(--prop-soft); border-radius: 6px; padding: 10px 12px; font-size: 0.93rem; max-width: 72ch; }
+.prop b:first-child { color: var(--prop); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 2px; }
+.trace { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; font-family: var(--mono); font-size: 0.8rem; }
+.trace span { background: var(--accent-soft); border-radius: 4px; padding: 2px 8px; }
+.trace i { font-style: normal; color: var(--muted); }
+.pill { font-family: var(--mono); font-size: 0.72rem; border-radius: 10px; padding: 0 8px; }
+.alto { background: #F6D5CF; color: #7A2318; } .medio { background: #F7E7B5; color: #5C4600; } .bajo { background: var(--accent-soft); color: var(--accent); }
+:root[data-theme="dark"] .alto { background: #4A231D; color: #F5B5AA; } :root[data-theme="dark"] .medio { background: #463A12; color: #F2D98A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .alto { background: #4A231D; color: #F5B5AA; } :root:not([data-theme="light"]) .medio { background: #463A12; color: #F2D98A; } }
+.summary { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; min-width: 0; }
+.box h2 { font-size: 1.15rem; }
+.box p, .box li { max-width: 75ch; }
+.box ul { margin: 8px 0 0; padding-left: 20px; }
+.box.p { border-style: dashed; border-color: var(--prop); }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .diagram-col { position: static; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Banco Diocesano de Alimentos de Neiva · modelo de datos</div>
+  <h1>Recorrido de una donación por la bodega</h1>
+  <p class="lede">Una donación real y mezclada: leche en caja, arroz en bulto de 50 kg, sandía a granel, pan sin fecha y pollo congelado. Cada paso cuenta qué pasa en la bodega y muestra las filas que quedan en el sistema. El diagrama resalta las tablas que intervienen. Lo que aparece en azul con borde punteado es una propuesta de ajuste al modelo.</p>
+
+  <div class="glossary">
+    <div class="term"><b>Presentación</b><span>Cómo viene empacado un producto y cuánto trae cada unidad, en g o ml. «Arroz bulto 50 kg» y «Arroz bolsa 1 kg» son dos presentaciones del mismo producto.</span></div>
+    <div class="term"><b>Recepción</b><span>Una llegada de donación: quién la trajo, cuándo y con qué soporte. Es el FT-ADM-002.</span></div>
+    <div class="term"><b>Lote</b><span>Una presentación de esa llegada con una misma fecha de vencimiento. Es lo que se rastrea.</span></div>
+    <div class="term"><b>Movimiento</b><span>Cada cosa que le pasa a un lote: entra, se desecha, se fracciona, sale. Nunca se borra.</span></div>
+    <div class="term"><b>Remisión</b><span>El documento de salida que firma la organización. Es el FT-ADM-006. Sus renglones dicen de qué lote salió cada cosa.</span></div>
+  </div>
+
+  <div class="layout">
+    <div class="diagram-col">
+      <div class="diagram">
+        <svg viewBox="0 0 780 450" role="img" aria-label="Tablas principales del esquema de un banco y cómo se relacionan">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="arrowhead"/>
+            </marker>
+          </defs>
+          <path class="rel" data-r="categoria producto" d="M170,63 H215" marker-end="url(#ah)"/>
+          <path class="rel" data-r="producto presentacion" d="M365,63 H410" marker-end="url(#ah)"/>
+          <path class="rel" data-r="presentacion lote" d="M485,86 V145" marker-end="url(#ah)"/>
+          <path class="rel" data-r="donante recepcion" d="M170,170 H215" marker-end="url(#ah)"/>
+          <path class="rel" data-r="recepcion lote" d="M365,170 H410" marker-end="url(#ah)"/>
+          <path class="rel" data-r="lote movimiento" d="M560,170 H605" marker-end="url(#ah)"/>
+          <path class="rel" data-r="lote riesgo" d="M545,147 V63 H603" marker-end="url(#ah)"/>
+          <path class="rel new" data-r="lote lote" d="M425,193 V222 H392 V186 H408" marker-end="url(#ah)"/>
+          <path class="rel" data-r="lote detalle" d="M485,193 V255" marker-end="url(#ah)"/>
+          <path class="rel" data-r="organizacion remision" d="M170,280 H215" marker-end="url(#ah)"/>
+          <path class="rel" data-r="remision detalle" d="M365,280 H410" marker-end="url(#ah)"/>
+          <path class="rel" data-r="programa remision" d="M290,377 V305" marker-end="url(#ah)"/>
+          <path class="rel" data-r="detalle movimiento" d="M560,280 H680 V195" marker-end="url(#ah)"/>
+          <text class="rel-label" x="572" y="232">genera</text>
+          <text class="rel-label" x="492" y="238">sale en</text>
+          <text class="rel-label" x="492" y="122">describe</text>
+          <text class="rel-label" x="551" y="110">riesgo</text>
+          <text class="rel-label new" x="318" y="238">se fracciona</text>
+
+          <g class="ent" data-e="categoria"><rect x="20" y="40" width="150" height="46" rx="6"/><text x="95" y="68" text-anchor="middle">Categoría</text></g>
+          <g class="ent" data-e="producto"><rect x="215" y="40" width="150" height="46" rx="6"/><text x="290" y="68" text-anchor="middle">Producto</text></g>
+          <g class="ent" data-e="presentacion"><rect x="410" y="40" width="150" height="46" rx="6"/><text x="485" y="68" text-anchor="middle">Presentación</text></g>
+          <g class="ent" data-e="riesgo"><rect x="605" y="40" width="150" height="46" rx="6"/><text x="680" y="68" text-anchor="middle">RiesgoLote</text></g>
+          <g class="ent" data-e="donante"><rect x="20" y="147" width="150" height="46" rx="6"/><text x="95" y="175" text-anchor="middle">Donante</text></g>
+          <g class="ent" data-e="recepcion"><rect x="215" y="147" width="150" height="46" rx="6"/><text x="290" y="175" text-anchor="middle">Recepción</text></g>
+          <g class="ent core" data-e="lote"><rect x="410" y="147" width="150" height="46" rx="6"/><text x="485" y="175" text-anchor="middle">Lote</text></g>
+          <g class="ent" data-e="movimiento"><rect x="605" y="147" width="150" height="46" rx="6"/><text x="680" y="175" text-anchor="middle">Movimiento</text></g>
+          <g class="ent" data-e="organizacion"><rect x="20" y="257" width="150" height="46" rx="6"/><text x="95" y="285" text-anchor="middle">Organización</text></g>
+          <g class="ent" data-e="remision"><rect x="215" y="257" width="150" height="46" rx="6"/><text x="290" y="285" text-anchor="middle">Remisión</text></g>
+          <g class="ent" data-e="detalle"><rect x="410" y="257" width="150" height="46" rx="6"/><text x="485" y="285" text-anchor="middle">DetalleRemisión</text></g>
+          <g class="ent" data-e="programa"><rect x="215" y="377" width="150" height="46" rx="6"/><text x="290" y="405" text-anchor="middle">Programa (kit)</text></g>
+        </svg>
+        <p class="caption">Arriba, el catálogo: qué es cada cosa. En medio, lo que entra. Abajo, lo que sale. El Lote une las tres filas. La flecha punteada es la propuesta de fraccionamiento.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+
+      <article class="step" tabindex="0" data-entities="categoria producto presentacion" data-rels="categoria producto|producto presentacion">
+        <div class="step-head"><span class="num">0</span><h3>Antes de recibir: cómo se describe un producto</h3></div>
+        <div class="physical">
+          <p>El catálogo tiene tres niveles. La <b>categoría</b> es una de las 16 del banco y define la vida útil cuando el producto no trae fecha. El <b>producto</b> es «Arroz» o «Leche entera». La <b>presentación</b> es cómo viene empacado y cuánto contiene cada unidad.</p>
+        </div>
+        <div class="tbl"><table><caption>Presentación (ejemplos tomados de los formatos del banco)</caption>
+          <tr><th>Categoría</th><th>Producto</th><th>Presentación</th><th class="n">Contenido por unidad</th></tr>
+          <tr><td>1 Cereales</td><td>Arroz</td><td>Bulto 50 kg</td><td class="n">50.000 g</td></tr>
+          <tr><td>1 Cereales</td><td>Arroz</td><td>Bolsa 1 kg</td><td class="n">1.000 g</td></tr>
+          <tr><td>4 Lácteos</td><td>Leche entera</td><td>Caja 1.100 ml</td><td class="n">1.100 ml</td></tr>
+          <tr><td>4 Lácteos</td><td>Leche entera</td><td>Paca 6 × 1.100 ml</td><td class="n">6.600 ml</td></tr>
+          <tr><td>2 Frutas y verduras</td><td>Sandía</td><td>A granel, por kg</td><td class="n">1.000 g</td></tr>
+          <tr><td>1 Cereales</td><td>Pan tajado</td><td>Bolsa 500 g</td><td class="n">500 g</td></tr>
+          <tr><td>3 Carnes</td><td>Pechuga de pollo</td><td>Bandeja congelada 2 kg</td><td class="n">2.000 g</td></tr>
+        </table></div>
+        <div class="rule"><b>Regla de los kilos:</b> kg = contenido × cantidad ÷ 1.000, contando 1 ml como 1 g. Un bulto de arroz da 50.000 × 1 ÷ 1.000 = 50 kg. Para lo que llega a granel (frutas, verduras, carnes por peso) la presentación es «por kg»: el contenido es 1.000 g y la cantidad es directamente el peso en la báscula.</div>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="donante recepcion" data-rels="donante recepcion">
+        <div class="step-head"><span class="num">1</span><h3>Llega una donación mezclada</h3></div>
+        <div class="physical">
+          <p>El sábado 8 de noviembre llega un camión de Almacenes Éxito con la hoja del donante (anuncio EatCloud #55120). Trae 48 cajas de leche, 4 bultos de arroz, 20 bultos de sandía, 60 bolsas de pan y 15 bandejas de pollo. La sandía viene en bultos de distinto tamaño, así que se pesa: 800 kg.</p>
+        </div>
+        <div class="tbl"><table><caption>Recepción</caption>
+          <tr><th>Id</th><th>Donante</th><th>Fecha</th><th>Origen</th><th>Soporte</th></tr>
+          <tr><td>R-0458</td><td>Almacenes Éxito</td><td>08-nov</td><td>DONACION</td><td>EatCloud #55120</td></tr>
+        </table></div>
+        <p class="result">Hay una sola fila por llegada, sin importar cuántos productos traiga. El detalle de lo que trajo queda en los lotes del paso siguiente.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="recepcion lote presentacion" data-rels="recepcion lote|presentacion lote">
+        <div class="step-head"><span class="num">2</span><h3>Cada renglón de la hoja se vuelve un lote</h3></div>
+        <div class="physical">
+          <p>Por cada renglón (una presentación con una misma fecha de vencimiento) se crea un lote. Si llegaran 48 cajas de leche con dos fechas distintas, serían dos lotes. Lo que no trae fecha recibe una <span class="est">fecha estimada</span> con la vida útil de su categoría.</p>
+        </div>
+        <div class="tbl"><table><caption>Lote</caption>
+          <tr><th>Id</th><th>Recepción</th><th>Presentación</th><th class="n">Cantidad</th><th class="n">Kg</th><th>Vence</th><th>Fecha</th></tr>
+          <tr><td><span class="lot">L-101</span></td><td>R-0458</td><td>Leche caja 1.100 ml</td><td class="n">48</td><td class="n">52,8</td><td>20-nov</td><td>impresa</td></tr>
+          <tr><td><span class="lot">L-102</span></td><td>R-0458</td><td>Arroz bulto 50 kg</td><td class="n">4</td><td class="n">200,0</td><td>15-mar</td><td>impresa</td></tr>
+          <tr><td><span class="lot">L-103</span></td><td>R-0458</td><td>Sandía por kg</td><td class="n">800</td><td class="n">800,0</td><td class="est">15-nov</td><td class="est">estimada: frutas, 7 días</td></tr>
+          <tr><td><span class="lot">L-104</span></td><td>R-0458</td><td>Pan bolsa 500 g</td><td class="n">60</td><td class="n">30,0</td><td class="est">11-nov</td><td class="est">estimada: panadería, 3 días</td></tr>
+          <tr><td><span class="lot">L-105</span></td><td>R-0458</td><td>Pollo bandeja 2 kg</td><td class="n">15</td><td class="n">30,0</td><td>12-nov</td><td>impresa</td></tr>
+          <tr class="total"><td colspan="4">Peso total recibido</td><td class="n">1.112,8</td><td colspan="2"></td></tr>
+        </table></div>
+        <p class="result">La cantidad del lote siempre se cuenta en unidades de su presentación: cajas, bultos o kg en el caso del granel. Los kg salen de la regla del paso 0.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="lote movimiento" data-rels="lote movimiento">
+        <div class="step-head"><span class="num">3</span><h3>Selección: aprovechado y desechado</h3></div>
+        <div class="physical">
+          <p>Al revisar, 6 cajas de leche llegaron rotas y 120 kg de sandía están golpeados. Lo que no sirve sale a compostaje. El formato del banco ya lo pide: peso total = aprovechado + desechado.</p>
+        </div>
+        <div class="tbl"><table><caption>Movimiento</caption>
+          <tr><th>Lote</th><th>Tipo</th><th class="n">Cantidad</th><th class="n">Kg</th></tr>
+          <tr><td><span class="lot">L-101</span></td><td>ENTRADA</td><td class="n plus">+48</td><td class="n">52,8</td></tr>
+          <tr><td><span class="lot">L-101</span></td><td>DESECHO_RECEPCION</td><td class="n minus">−6</td><td class="n">6,6</td></tr>
+          <tr><td><span class="lot">L-103</span></td><td>ENTRADA</td><td class="n plus">+800</td><td class="n">800,0</td></tr>
+          <tr><td><span class="lot">L-103</span></td><td>DESECHO_RECEPCION</td><td class="n minus">−120</td><td class="n">120,0</td></tr>
+          <tr><td>L-102, L-104, L-105</td><td>ENTRADA</td><td class="n plus">+4, +60, +15</td><td class="n">260,0</td></tr>
+        </table></div>
+        <div class="tbl"><table><caption>Lo que el sistema calcula para R-0458</caption>
+          <tr><th>Recibido</th><th>Desechado</th><th>Aprovechado</th></tr>
+          <tr><td>1.112,8 kg</td><td>126,6 kg</td><td>986,2 kg</td></tr>
+        </table></div>
+        <p class="result">Nadie digita «kg desechados» a mano: salen de sumar los movimientos DESECHO_RECEPCION. Así se mide el desperdicio por donante y por categoría, como pide el objetivo.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="lote movimiento presentacion" data-rels="lote lote|lote movimiento|presentacion lote">
+        <div class="step-head"><span class="num">4</span><h3>Fraccionar un bulto de arroz</h3></div>
+        <div class="physical">
+          <p>Los mercados llevan 1 kg de arroz, no un bulto. El lunes abren un bulto y lo empacan en 50 bolsas de 1 kg. Lo mismo pasa al abrir una paca de 6 leches para entregarlas por unidad.</p>
+        </div>
+        <div class="tbl"><table><caption>Lote nuevo, que nace del bulto</caption>
+          <tr><th>Id</th><th>Lote origen</th><th>Presentación</th><th class="n">Cantidad</th><th>Vence</th></tr>
+          <tr><td><span class="lot">L-106</span></td><td><span class="lot">L-102</span></td><td>Arroz bolsa 1 kg</td><td class="n">50</td><td>15-mar (heredada)</td></tr>
+        </table></div>
+        <div class="tbl"><table><caption>Movimiento</caption>
+          <tr><th>Lote</th><th>Tipo</th><th class="n">Cantidad</th><th class="n">Kg</th></tr>
+          <tr><td><span class="lot">L-102</span></td><td>FRACCIONAMIENTO_SALIDA</td><td class="n minus">−1</td><td class="n">50,0</td></tr>
+          <tr><td><span class="lot">L-106</span></td><td>FRACCIONAMIENTO_ENTRADA</td><td class="n plus">+50</td><td class="n">50,0</td></tr>
+        </table></div>
+        <p class="result">Los kg se conservan: salen 50 de un lote y entran 50 al otro. Si al empacar se pierde algo, se registra como una BAJA. El lote nuevo hereda el vencimiento y apunta a su origen, así la trazabilidad no se corta.</p>
+        <div class="prop"><b>Propuesta de ajuste al modelo</b>Agregar <code>Lote.IdLoteOrigen</code> (opcional) y los tipos de movimiento FRACCIONAMIENTO_SALIDA y FRACCIONAMIENTO_ENTRADA. El modelo actual no contempla el fraccionamiento. Falta confirmar con el banco si lo hacen (pregunta 12 de la caracterización).</div>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="lote movimiento presentacion" data-rels="lote movimiento|presentacion lote">
+        <div class="step-head"><span class="num">5</span><h3>¿Qué hay en bodega?</h3></div>
+        <div class="physical">
+          <p>El coordinador consulta las existencias el 9 de noviembre. Aparece también un lote de leche de una donación anterior de Lácteos del Huila (L-090, recepción R-0431).</p>
+        </div>
+        <div class="tbl"><table><caption>Existencias (suma de movimientos por lote)</caption>
+          <tr><th>Producto</th><th>Presentación</th><th>Lote</th><th>Vence</th><th class="n">Cantidad</th><th class="n">Kg</th></tr>
+          <tr><td>Leche entera</td><td>Caja 1.100 ml</td><td><span class="lot">L-090</span></td><td>18-nov</td><td class="n">10</td><td class="n">11,0</td></tr>
+          <tr><td>Leche entera</td><td>Caja 1.100 ml</td><td><span class="lot">L-101</span></td><td>20-nov</td><td class="n">42</td><td class="n">46,2</td></tr>
+          <tr><td>Arroz</td><td>Bulto 50 kg</td><td><span class="lot">L-102</span></td><td>15-mar</td><td class="n">3</td><td class="n">150,0</td></tr>
+          <tr><td>Arroz</td><td>Bolsa 1 kg</td><td><span class="lot">L-106</span></td><td>15-mar</td><td class="n">50</td><td class="n">50,0</td></tr>
+          <tr><td>Sandía</td><td>Por kg</td><td><span class="lot">L-103</span></td><td class="est">15-nov</td><td class="n">680</td><td class="n">680,0</td></tr>
+          <tr><td>Pan tajado</td><td>Bolsa 500 g</td><td><span class="lot">L-104</span></td><td class="est">11-nov</td><td class="n">60</td><td class="n">30,0</td></tr>
+          <tr><td>Pechuga de pollo</td><td>Bandeja 2 kg</td><td><span class="lot">L-105</span></td><td>12-nov</td><td class="n">15</td><td class="n">30,0</td></tr>
+        </table></div>
+        <p class="result">Nada de esto se guarda como saldo: se calcula sumando los movimientos de cada lote. Por eso cuadra siempre con la historia.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="lote riesgo categoria" data-rels="lote riesgo">
+        <div class="step-head"><span class="num">6</span><h3>El sistema vigila el vencimiento</h3></div>
+        <div class="physical">
+          <p>Cada noche, y con cada movimiento, el análisis recalcula el riesgo de los lotes vigentes. El aseo y los electrodomésticos (categorías 14 a 16) no vencen y no se evalúan.</p>
+        </div>
+        <div class="tbl"><table><caption>RiesgoLote, calculado el 10-nov</caption>
+          <tr><th>Lote</th><th>Producto</th><th>Faltan</th><th class="n">Kg en riesgo</th><th>Nivel</th></tr>
+          <tr><td><span class="lot">L-104</span></td><td>Pan</td><td>1 día</td><td class="n">30,0</td><td><span class="pill alto">ALTO</span></td></tr>
+          <tr><td><span class="lot">L-105</span></td><td>Pollo</td><td>2 días</td><td class="n">30,0</td><td><span class="pill alto">ALTO</span></td></tr>
+          <tr><td><span class="lot">L-103</span></td><td>Sandía</td><td>5 días</td><td class="n">680,0</td><td><span class="pill medio">MEDIO</span></td></tr>
+          <tr><td><span class="lot">L-090</span></td><td>Leche</td><td>8 días</td><td class="n">11,0</td><td><span class="pill medio">MEDIO</span></td></tr>
+          <tr><td><span class="lot">L-101</span></td><td>Leche</td><td>10 días</td><td class="n">46,2</td><td><span class="pill bajo">BAJO</span></td></tr>
+        </table></div>
+        <p class="result">El coordinador ve primero el pan y el pollo. Esa es la decisión que el sistema apoya: qué sacar ya.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="programa organizacion remision detalle lote movimiento" data-rels="programa remision|organizacion remision|remision detalle|lote detalle|detalle movimiento">
+        <div class="step-head"><span class="num">7</span><h3>Se arma la entrega</h3></div>
+        <div class="physical">
+          <p>La Fundación Hogar Feliz recibe 20 mercados del programa «Mercado solidario». Cada mercado lleva 1 kg de arroz, 1 caja de leche, 3 kg de sandía y 1 pan. Por cada producto, el sistema propone los lotes que vencen primero (FEFO) y solo en presentaciones que se pueden entregar: el arroz sale en bolsas de 1 kg, no del bulto.</p>
+        </div>
+        <div class="tbl"><table><caption>Remisión</caption>
+          <tr><th>Id</th><th>Organización</th><th>Programa</th><th class="n">Mercados</th><th class="n">Kg</th></tr>
+          <tr><td>S-0912</td><td>Hogar Feliz</td><td>Mercado solidario</td><td class="n">20</td><td class="n">112,0</td></tr>
+        </table></div>
+        <div class="tbl"><table><caption>DetalleRemisión: un renglón por lote</caption>
+          <tr><th>Lote</th><th>Presentación</th><th class="n">Cantidad</th><th class="n">Kg</th><th>Por qué ese lote</th></tr>
+          <tr><td><span class="lot">L-106</span></td><td>Arroz bolsa 1 kg</td><td class="n">20</td><td class="n">20,0</td><td>único en bolsa</td></tr>
+          <tr><td><span class="lot">L-090</span></td><td>Leche caja</td><td class="n">10</td><td class="n">11,0</td><td>vence primero (18-nov)</td></tr>
+          <tr><td><span class="lot">L-101</span></td><td>Leche caja</td><td class="n">10</td><td class="n">11,0</td><td>completa las 20 cajas</td></tr>
+          <tr><td><span class="lot">L-103</span></td><td>Sandía por kg</td><td class="n">60</td><td class="n">60,0</td><td>único lote</td></tr>
+          <tr><td><span class="lot">L-104</span></td><td>Pan bolsa 500 g</td><td class="n">20</td><td class="n">10,0</td><td>único lote</td></tr>
+        </table></div>
+        <p class="result">La leche sale de dos lotes de dos donantes distintos, y cada renglón lo deja escrito. Cada renglón genera su movimiento SALIDA_REMISION. Si la asistente cambia el lote sugerido, el sistema le pide un motivo.</p>
+        <div class="prop"><b>Propuesta de ajuste al modelo</b>Definir la composición del kit (<code>ComponenteKit</code>) por producto y kg, por ejemplo «Arroz: 1 kg», y no por presentación. Así el kit funciona con cualquier presentación entregable que haya en bodega, y el sistema convierte los kg en unidades del lote elegido.</div>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="lote movimiento" data-rels="lote movimiento">
+        <div class="step-head"><span class="num">8</span><h3>Lo que no alcanzó a salir</h3></div>
+        <div class="physical">
+          <p>El 12 de noviembre quedan 40 bolsas de pan vencidas y una bandeja de pollo que se descongeló. El pan va a compostaje. El pollo se descarta.</p>
+        </div>
+        <div class="tbl"><table><caption>Movimiento</caption>
+          <tr><th>Lote</th><th>Tipo</th><th class="n">Cantidad</th><th class="n">Kg</th><th>Motivo</th></tr>
+          <tr><td><span class="lot">L-104</span></td><td>COMPOSTAJE</td><td class="n minus">−40</td><td class="n">20,0</td><td>vencido</td></tr>
+          <tr><td><span class="lot">L-105</span></td><td>BAJA</td><td class="n minus">−1</td><td class="n">2,0</td><td>cadena de frío</td></tr>
+        </table></div>
+        <p class="result">Este es el desperdicio en bodega, que hoy no se registra en ningún formato. Junto con el desecho en recepción del paso 3, completa la medición de pérdidas.</p>
+      </article>
+
+      <article class="step" tabindex="0" data-entities="organizacion remision detalle lote recepcion donante" data-rels="organizacion remision|remision detalle|lote detalle|lote lote|recepcion lote|donante recepcion">
+        <div class="step-head"><span class="num">9</span><h3>Trazabilidad: el camino de vuelta</h3></div>
+        <div class="physical"><p>¿De dónde salió lo que recibió Hogar Feliz?</p></div>
+        <div class="lab">El arroz</div>
+        <div class="trace"><span>S-0912</span><i>→</i><span class="lot">L-106</span><i>fraccionado de</i><span class="lot">L-102</span><i>→</i><span>R-0458</span><i>→</i><span>Éxito, 08-nov, EatCloud #55120</span></div>
+        <div class="lab">La leche</div>
+        <div class="trace"><span>S-0912</span><i>→</i><span class="lot">L-090</span><i>→</i><span>R-0431</span><i>→</i><span>Lácteos del Huila</span></div>
+        <div class="trace"><span>S-0912</span><i>→</i><span class="lot">L-101</span><i>→</i><span>R-0458</span><i>→</i><span>Éxito</span></div>
+        <p class="result">Es recorrer las flechas del diagrama al revés. Con el fraccionamiento, el camino pasa por el lote de origen. Esto es QA-01.</p>
+      </article>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="box">
+      <h2>En una frase</h2>
+      <p>El donante entrega una <b>Recepción</b>. Cada renglón es un <b>Lote</b> de una <b>Presentación</b>, con su vencimiento real o estimado. Cada lote acumula <b>Movimientos</b> (entrada, desecho, fraccionamiento, salida, baja) y tiene un <b>Riesgo</b>. Los lotes salen hacia una organización en una <b>Remisión</b>, cuyos <b>Detalles</b> dicen de qué lote salió cada cosa.</p>
+    </div>
+    <div class="box p">
+      <h2>Cambios que esto propone al modelo</h2>
+      <ul>
+        <li><b>Fraccionamiento:</b> <code>Lote.IdLoteOrigen</code> y los tipos FRACCIONAMIENTO_SALIDA y FRACCIONAMIENTO_ENTRADA.</li>
+        <li><b>Kits en kg por producto:</b> <code>ComponenteKit</code> con <code>KgPorKit</code> en vez de una cantidad en unidades.</li>
+        <li><b>Granel:</b> sin cambio. Se maneja como una presentación «por kg» de 1.000 g.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>Por confirmar con el banco</h2>
+      <ul>
+        <li>¿Fraccionan bultos o pacas? ¿En qué presentaciones? (pregunta 12)</li>
+        <li>¿Los kits se definen en kg o en unidades? (pregunta 10)</li>
+        <li>Vida útil de frutas, panadería y carnes cuando no traen fecha (pregunta 7).</li>
+        <li>¿El desechado se pesa o se estima? (pregunta 4)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const ents = Array.from(document.querySelectorAll('.ent'));
+  const rels = Array.from(document.querySelectorAll('.rel'));
+  function activate(step) {
+    steps.forEach(s => s.classList.toggle('active', s === step));
+    const on = new Set((step.dataset.entities || '').split(' '));
+    const onRels = new Set((step.dataset.rels || '').split('|'));
+    ents.forEach(g => g.classList.toggle('on', on.has(g.dataset.e)));
+    rels.forEach(r => r.classList.toggle('on', onRels.has(r.dataset.r)));
+  }
+  steps.forEach(s => {
+    s.addEventListener('click', () => activate(s));
+    s.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(s); } });
+  });
+  if ('IntersectionObserver' in window && window.matchMedia('(min-width: 901px)').matches) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) activate(en.target); });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    steps.forEach(s => io.observe(s));
+  }
+  activate(steps[0]);
+})();
+</script>

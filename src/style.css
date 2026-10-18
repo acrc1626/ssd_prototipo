@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "../styles/ssd-theme.css";
+
+html,
+body,
+#app {
+  height: 100%;
+}

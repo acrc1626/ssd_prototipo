@@ -1,0 +1,188 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import { useInicioAplicacion } from '../application/inicio';
+import EstadoVacio from '../components/EstadoVacio.vue';
+import TarjetaIndicador from '../components/TarjetaIndicador.vue';
+import { formatearEntero, formatearNumero } from '../domain/formato';
+import { useDatosStore } from '../stores/datos';
+import { useSesionStore } from '../stores/sesion';
+
+const inicio = useInicioAplicacion();
+const sesion = useSesionStore();
+const datos = useDatosStore();
+
+const primerNombre = computed(() => (sesion.usuario?.Nombre ?? '').split(' ')[0]);
+
+const fechaFormateada = computed(() => {
+  const fecha = new Date(datos.fechaReferencia + 'T00:00:00');
+  const diaSemana = fecha.toLocaleDateString('es-CO', { weekday: 'long' });
+  const mes = fecha.toLocaleDateString('es-CO', { month: 'short' }).replace('.', '');
+  const diaSemanaCap = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+  return `${diaSemanaCap} ${fecha.getDate()}-${mes}-${fecha.getFullYear()}`;
+});
+
+const kgEnBodegaTexto = computed(() => formatearNumero(inicio.kgEnBodega.value));
+const lotesVigentesNota = computed(() => `${formatearEntero(inicio.lotesVigentes.value)} lotes vigentes`);
+const kgRiesgoAltoTexto = computed(() => formatearNumero(inicio.kgRiesgoAlto.value));
+const notaRiesgoAlto = computed(() => {
+  const n = inicio.conteoPorNivel.value.alto;
+  return n === 0 ? 'Sin lotes en riesgo alto' : `${n} ${n === 1 ? 'lote vence' : 'lotes vencen'} en 2 días o menos`;
+});
+const mesReporte = computed(() => inicio.reporteDelMes.value?.name.split(' ')[0]?.toLowerCase() ?? '');
+const tasaReporteTexto = computed(() => formatearNumero(inicio.reporteDelMes.value?.rate ?? 0));
+const notaReporte = computed(() => {
+  const r = inicio.reporteDelMes.value;
+  if (!r) return '';
+  const diferencia = +(r.prevRate - r.rate).toFixed(1);
+  return diferencia >= 0
+    ? `${formatearNumero(Math.abs(diferencia))} pp frente a ${r.prev}`
+    : `+${formatearNumero(Math.abs(diferencia))} pp frente a ${r.prev}`;
+});
+
+function porcentaje(nivel: 'alto' | 'medio' | 'bajo'): number {
+  const conteo = inicio.conteoPorNivel.value;
+  const total = conteo.alto + conteo.medio + conteo.bajo;
+  return total === 0 ? 0 : (conteo[nivel] / total) * 100;
+}
+
+function textoDias(dias: number): string {
+  return dias <= 0 ? 'vence hoy' : dias === 1 ? 'vence en 1 día' : `vence en ${dias} días`;
+}
+
+/** "Ver todas" de alertas: Riesgo de vencimiento es la pantalla natural, pero solo la
+ *  coordinadora la tiene en su menú (CLAUDE.md, sección Roles) — para los demás roles
+ *  se manda a Existencias, que sí ven. */
+const destinoAlertas = computed(() => (sesion.itemsMenu.some((i) => i.ruta === '/riesgo') ? '/riesgo' : '/existencias'));
+</script>
+
+<template>
+  <div class="flex flex-col gap-2">
+    <h1>Hola, {{ primerNombre }}</h1>
+    <p class="text-sm text-muted">{{ fechaFormateada }} · esto es lo que necesita atención hoy</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
+    <TarjetaIndicador
+      compacto
+      titulo="En bodega"
+      :valor="kgEnBodegaTexto"
+      unidad="kg"
+      :nota="lotesVigentesNota"
+      icono="existencias"
+    />
+    <TarjetaIndicador
+      compacto
+      titulo="Riesgo alto"
+      :valor="kgRiesgoAltoTexto"
+      unidad="kg"
+      :nota="notaRiesgoAlto"
+      icono="riesgo"
+      tono="alerta"
+    />
+    <TarjetaIndicador
+      v-if="inicio.mostrarRecepcionesBorrador.value"
+      compacto
+      titulo="Recepciones en borrador"
+      :valor="inicio.recepcionesBorrador.value.toString()"
+      nota="Aún no crean lotes"
+      icono="recepciones"
+    />
+    <TarjetaIndicador
+      v-else
+      compacto
+      titulo="Vencimiento estimado"
+      :valor="inicio.vencimientoEstimadoCount.value.toString()"
+      unidad="lotes"
+      nota="Sin fecha impresa"
+      icono="historicos"
+      tono="lote"
+    />
+    <TarjetaIndicador
+      compacto
+      :titulo="'Desperdicio de ' + mesReporte"
+      :valor="tasaReporteTexto"
+      unidad="%"
+      :nota="notaReporte"
+      icono="reporte"
+      tono="lote"
+    />
+  </div>
+
+  <div class="grid grid-cols-1 items-start gap-4 desk:grid-cols-[2fr_1fr]">
+    <section class="card">
+      <div class="card-body">
+        <div class="flex items-center gap-2">
+          <h2>Pendientes</h2>
+          <span class="chip-neutral">{{ inicio.pendientes.value.length }}</span>
+        </div>
+
+        <EstadoVacio v-if="inicio.pendientes.value.length === 0" titulo="No hay pendientes" descripcion="Todo al día por ahora." />
+        <ul v-else class="flex flex-col divide-y divide-line-row">
+          <li
+            v-for="p in inicio.pendientes.value"
+            :key="p.id"
+            class="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+          >
+            <span class="chip-neutral w-10 shrink-0 justify-center">{{ p.etiqueta }}</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-ink">{{ p.titulo }}</p>
+              <p class="text-xs text-muted">{{ p.descripcion }}</p>
+            </div>
+            <router-link
+              v-if="p.accion"
+              :to="p.accion.ruta"
+              class="shrink-0 text-sm font-medium text-brand-text hover:underline"
+            >
+              {{ p.accion.etiqueta }}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-body">
+        <div class="flex items-center justify-between gap-2">
+          <h2>Alertas de vencimiento</h2>
+          <router-link :to="destinoAlertas" class="text-sm font-medium text-brand-text hover:underline">
+            Ver todas
+          </router-link>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs text-muted">
+          <span class="flex items-center gap-1">
+            <span class="h-2 w-2 rounded-full bg-risk-high"></span>Alto {{ inicio.conteoPorNivel.value.alto }}
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="h-2 w-2 rounded-full bg-risk-mid"></span>Medio {{ inicio.conteoPorNivel.value.medio }}
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="h-2 w-2 rounded-full bg-risk-low"></span>Bajo {{ inicio.conteoPorNivel.value.bajo }}
+          </span>
+        </div>
+
+        <div class="flex h-2 overflow-hidden rounded-full bg-line" role="presentation">
+          <div class="h-full bg-risk-high" :style="{ width: porcentaje('alto') + '%' }"></div>
+          <div class="h-full bg-risk-mid" :style="{ width: porcentaje('medio') + '%' }"></div>
+          <div class="h-full bg-risk-low" :style="{ width: porcentaje('bajo') + '%' }"></div>
+        </div>
+
+        <EstadoVacio v-if="inicio.alertas.value.length === 0" titulo="Sin alertas de vencimiento" />
+        <ul v-else class="flex flex-col divide-y divide-line-row">
+          <li
+            v-for="a in inicio.alertas.value"
+            :key="a.idLote"
+            class="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
+          >
+            <span class="lot">{{ a.codigo }}</span>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium text-ink">{{ a.producto }}</p>
+              <p class="text-xs text-muted">{{ formatearNumero(a.kg) }} kg · {{ textoDias(a.diasParaVencer) }}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</template>

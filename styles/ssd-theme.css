@@ -1,0 +1,401 @@
+/* SSD Bancos de Alimentos · tema para Tailwind CSS v4 · sistema visual del Figma del equipo
+   Uso: en tu CSS principal
+     @import "tailwindcss";
+     @import "./ssd-theme.css";
+   Fuentes en el index.html:
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+   Escala (tal como se diseñó en Figma, no una grilla de 8 px): espaciado 4/8/12/16/20/24/32/40
+   (coincide con la escala nativa de Tailwind, así que se usa directo: p-1=4, p-2=8, p-3=12, p-4=16,
+   p-5=20, p-6=24, p-8=32, p-10=40). Texto 10/11 etiquetas, 13 cuerpo, 15 título de tarjeta,
+   25 métrica/título móvil, 32 título principal.
+
+   Contraste: todo color de texto de esta ficha se verificó contra WCAG AA (4.5:1). Un puñado de
+   tonos de la ficha original (verde institucional en texto chico, el extremo claro del degradado
+   del botón, azul informativo, gris de encabezado de tabla, placeholder) no pasaban: se ajustaron
+   un poco más oscuros manteniendo el mismo matiz; el resto de la paleta quedó igual. */
+
+@theme {
+  --font-sans: "DM Sans", "Segoe UI", sans-serif;
+  --font-display: "Manrope", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  /* Escala de texto (tamaño / alto de línea) */
+  --text-xs: 11px;   --text-xs--line-height: 16px;   /* etiquetas, texto auxiliar, tabla secundaria */
+  --text-sm: 13px;   --text-sm--line-height: 20px;   /* texto normal, botones, tabla principal */
+  --text-base: 15px; --text-base--line-height: 22px; /* interfaz, título de tarjeta */
+  --text-lg: 15px;   --text-lg--line-height: 22px;   /* título de tarjeta (alias de base) */
+  --text-xl: 25px;   --text-xl--line-height: 32px;   /* métrica destacada / título en móvil */
+
+  /* Verde institucional: marca y acción */
+  --color-brand: #2F8F48;
+  --color-brand-ink: #173F28;
+  --color-brand-text: #297E3F;   /* ajustado desde #2F8F48: 4.08:1 no pasaba en texto chico, 5.06:1 corregido */
+  --color-brand-hover: #173F28;
+  --color-brand-vivid: #65C84F;
+  /* Degradado del botón primario: decisión explícita de la usuaria (ficha propia), confirmada
+     tras ver que el extremo claro (#62C94F) da 2.10:1 con texto blanco, por debajo del mínimo
+     AA de 4.5:1 que pide la regla 5 de CLAUDE.md. No es un error de implementación: es una
+     excepción consciente, aceptada a sabiendas del contraste real. No "corregir" sin que ella
+     lo pida de nuevo. */
+  --color-brand-start: #31984B;
+  --color-brand-end: #62C94F;
+  --color-brand-lime: #98DB78;
+  --color-brand-sage: #76C86A;
+  --color-mint: #98DB78;
+  --color-mint-soft: #E9F7E7;
+  --color-mint-faint: #F4FBF3;
+
+  /* Complementarios: azul (información/entradas), turquesa (categorías), violeta (dato secundario/moderado).
+     Los tonos *-text/*-bg están más saturados que una simple mezcla con blanco (HSL, no solo aclarar en
+     RGB) para que no se sientan lavados; igual pasan AA. */
+  --color-info: #4B9ED8;
+  --color-info-text: #2174A1;    /* antes #356F97, se sentía apagado */
+  --color-info-bg: #E5F3FA;
+  --color-teal: #35A891;
+  --color-teal-text: #187764;    /* antes #257A69 */
+  --color-teal-bg: #D7F4EE;
+  --color-violet: #7C79D1;
+  --color-violet-text: #5050B9;  /* antes #625FB0, muy lavanda */
+  --color-violet-bg: #E5E5F5;
+
+  /* Lotes: naranja cálido, a juego con el resto de la paleta (vuelta atrás del violeta) */
+  --color-lot: #FCF2E9;
+  --color-lot-border: #DA7F2F;
+  --color-lot-ink: #864113;
+  --color-loss: #DA7F2F;
+
+  /* Neutros */
+  --color-page: #F3F7F4;
+  --color-surface: #FFFFFF;
+  --color-ink: #1D2922;
+  --color-ink-2: #1D2922;
+  --color-muted: #536E5C;        /* antes #5F6B63: gris liso, se sentía sin carácter; este conserva el verde de marca */
+  --color-label: #536E5C;
+  --color-line: #E5EBE6;
+  --color-line-row: #E5EBE6;
+  --color-neutral-chip: #F2F2EC;
+  --color-placeholder: #536E5C;
+  /* #63796A (antes #70756E) daba 4.34:1 sobre --color-page — no pasa AA de texto (4.5:1),
+     hallazgo de auditoría. Esta variable la usa .tbl-head, compartida por las 9 pantallas
+     con tabla (Recepciones, Existencias, Riesgo, Catálogo, Kits, Bajas, Usuarios,
+     Organizaciones, Remisiones): un solo cambio de token corrige las 9 a la vez, igual
+     que ya se hizo antes solo para .rcp-head con este mismo matiz oscurecido. */
+  --color-table-head: #586b5e;   /* 5.28:1, mismo matiz que --color-table-head anterior */
+
+  /* Tabla interactiva (Recepciones): estados de fila que no existían antes (hover/abierta) */
+  --color-row-hover: #f8fbf8;
+  --color-row-expanded: #f3faf2;
+  --color-row-expanded-border: #d5e8d4;
+
+  /* Estados: Óptimo (verde), Informativo (azul), Moderado (violeta), Crítico (frambuesa) */
+  --color-risk-high: #A43F57;
+  --color-risk-mid-bg: #E5E5F5;
+  --color-risk-mid: #5050B9;
+  --color-risk-low-bg: #E9F7E7;
+  --color-risk-low: #297E3F;
+  --color-error-bg: #F8E7EB;
+  --color-error: #A43F57;
+
+  /* Radios */
+  --radius-sm: 10px;  /* inputs y botones */
+  --radius-md: 10px;
+  --radius-lg: 14px;  /* tarjetas */
+  --radius-xl: 16px;  /* paneles destacados */
+
+  /* Cortes responsive */
+  --breakpoint-tablet: 1024px;  /* menos de esto: filas de tabla como tarjeta */
+  --breakpoint-desk: 1280px;    /* debajo de esto: controles táctiles de 48 */
+  --breakpoint-wide: 1440px;    /* desde aquí: menú lateral completo; debajo, cajón con hamburguesa */
+
+  /* Medidas del app shell */
+  --spacing-nav: 246px;
+  --spacing-nav-mini: 64px;
+  --spacing-header: 56px;
+  --spacing-control: 42px;
+  --spacing-touch: 48px;
+  --spacing-row: 55px;
+}
+
+@layer base {
+  body { @apply bg-page font-sans text-sm text-ink-2; }
+  h1 { @apply font-display text-[25px] font-bold leading-tight tablet:text-[32px]; }
+  h2 { @apply font-display text-base font-bold leading-snug; }
+  /* --color-brand-sage da 2.05:1 contra blanco, ni siquiera a opacidad completa pasa el
+     3:1 que pide 1.4.11 para límites de componentes de UI como el anillo de foco — las
+     versiones con rgba(...,0.2-0.35) de abajo quedaban todavía más claras. --color-brand
+     (4.4:1) sí pasa de sobra y se sigue leyendo como el verde de marca. */
+  :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+}
+
+@utility btn { @apply inline-flex items-center justify-center gap-2 h-control px-[17px] rounded-md border border-transparent text-sm font-semibold whitespace-nowrap cursor-pointer max-desk:h-touch; }
+@utility input { @apply h-control w-full max-w-[360px] rounded-md border border-line bg-surface px-4 text-sm text-ink placeholder:text-placeholder max-desk:h-touch; }
+@utility select { @apply input max-w-none appearance-none bg-no-repeat pr-8 cursor-pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23536E5C' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: right 8px center; background-size: 16px; }
+@utility chip { @apply inline-flex items-center gap-1 rounded-full px-2 py-[5px] text-xs font-bold whitespace-nowrap leading-none; }
+@utility nav-panel { @apply flex flex-col gap-[5px] bg-surface; padding: 30px 18px 20px; }
+
+@layer components {
+  /* App shell: cabecera y menú fijos, contenido con minmax(0,1fr); la página nunca hace scroll horizontal */
+  .app { @apply min-h-screen flex flex-col; }
+  .app-header { @apply sticky top-0 z-40 h-header flex items-center gap-4 px-6 bg-surface border-b border-line; }
+  .app-body { @apply grid flex-1 min-w-0 items-start grid-cols-[minmax(0,1fr)] wide:grid-cols-[var(--spacing-nav)_minmax(0,1fr)]; }
+  .app-nav { @apply nav-panel hidden wide:flex sticky top-header h-[calc(100vh-var(--spacing-header))] overflow-y-auto border-r border-line; }
+
+  /* Menú lateral: base blanca y neutra; el verde solo aparece en hover/activo/foco, nunca
+     todo a la vez. #929b94 (etiqueta de sección) y #647069 (texto normal) de la ficha del
+     equipo: el normal sí pasa AA (5.17:1), la etiqueta no (2.86:1); se oscureció solo la
+     etiqueta a #6e7870 (4.58:1) manteniendo el mismo matiz gris-verdoso. El texto activo usa
+     el token --color-brand-text (ya ajustado a 5.06:1 en blanco) en vez del verde literal de
+     la ficha (#2F8F48), porque ese literal cae a 3.68:1 sobre el fondo menta activo de la
+     ficha (--color-brand-text da 4.56:1 ahí). Un solo recurso de énfasis para "activo" (fondo
+     menta), no fondo + barra lateral juntos, como recomienda la propia ficha. */
+  .nav-section-label { padding: 0 13px 10px; color: #6e7870; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; line-height: 1; text-transform: uppercase; }
+
+  .nav-item {
+    @apply flex w-full items-center gap-[13px] rounded-md text-left no-underline cursor-pointer max-desk:min-h-12;
+    min-height: 45px;
+    padding: 0 13px;
+    color: #647069;
+    background-color: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 160ms ease, background-color 160ms ease, transform 120ms ease;
+  }
+  .nav-item:not([aria-current="page"]):hover { color: var(--color-brand-text); background-color: #f1f8f1; }
+  .nav-item:not([aria-current="page"]):active { background-color: #dff1dc; transform: translateX(1px) scale(0.99); }
+  .nav-item[aria-current="page"] { @apply font-bold; color: var(--color-brand-text); background-color: var(--color-mint-soft); }
+  .nav-item:focus-visible { outline: 3px solid var(--color-brand); outline-offset: 2px; }
+  .app-main { @apply min-w-0 flex flex-col gap-6 px-4 pt-4 pb-8 tablet:px-6 tablet:pt-6 desk:px-8; }
+
+  /* Botones: ficha "Diseño detallado de botones" del equipo. .btn ya da 42 px (48 bajo 1280,
+     por encima del mínimo táctil de 44 que pide la ficha), padding 17, radio 10, texto 13/600.
+     Primario: color plano, no degradado. Probamos un degradado claro→oscuro, pero el tono
+     más claro que pasa AA con texto blanco es #2B8442 (4.69:1; nada más claro en este verde
+     llega a 4.5) y no hay otro tono igual de claro para emparejarlo, así que el degradado
+     terminaba leyéndose "siempre oscuro" por la esquina oscura. Con color plano el botón se
+     ve claro en reposo y cambia a un verde oscuro franco (--color-brand-ink) al pasar el
+     mouse, que es la lectura que se buscaba. Un solo botón primario por bloque; el ícono va
+     a la izquierda. */
+  .btn {
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease,
+      box-shadow 180ms ease, transform 180ms ease;
+  }
+  .btn:disabled { @apply cursor-not-allowed pointer-events-none; }
+
+  .btn-primary {
+    @apply btn text-white border-transparent;
+    background-color: var(--color-brand-start);
+    background-image: linear-gradient(135deg, var(--color-brand-start) 0%, var(--color-brand-end) 100%);
+    box-shadow: 0 7px 18px -4px rgba(47, 143, 72, 0.3);
+    transition: filter 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+  .btn-primary:not(:disabled):hover { filter: brightness(0.94) saturate(1.08); box-shadow: 0 9px 22px -3px rgba(47, 143, 72, 0.35); transform: translateY(-1px); }
+  .btn-primary:not(:disabled):active { filter: brightness(0.9); transform: translateY(0); box-shadow: 0 3px 9px -2px rgba(47, 143, 72, 0.3); }
+  .btn-primary:focus-visible { outline: 3px solid var(--color-brand); outline-offset: 3px; }
+  .btn-primary:disabled { background-image: none; background-color: #b7c8ba; color: rgba(255, 255, 255, 0.85); box-shadow: none; filter: none; transform: none; }
+
+  .btn-secondary { @apply btn bg-surface border-line text-ink; box-shadow: 0 2px 7px rgba(29, 41, 34, 0.04); }
+  .btn-secondary:not(:disabled):hover { @apply text-brand-text; border-color: var(--color-brand-sage); background-color: #f7fbf7; }
+  .btn-secondary:not(:disabled):active { background-color: var(--color-mint-soft); border-color: var(--color-brand-vivid); }
+  .btn-secondary:focus-visible { outline: 3px solid var(--color-brand); outline-offset: 2px; }
+  .btn-secondary:disabled { color: #a5ada7; background-color: #f5f7f5; border-color: var(--color-line); box-shadow: none; }
+
+  /* Peligro: solo para acciones destructivas (eliminar, descartar), nunca con el verde principal */
+  .btn-danger { @apply btn text-white border-transparent bg-risk-high; }
+  .btn-danger:not(:disabled):hover { background-color: #8d3248; box-shadow: 0 6px 16px -4px rgba(164, 63, 87, 0.3); transform: translateY(-1px); }
+  .btn-danger:not(:disabled):active { background-color: #79283d; transform: translateY(0); }
+  .btn-danger:focus-visible { outline: 3px solid var(--color-error); outline-offset: 3px; }
+  .btn-danger:disabled { background-color: #d3aeb7; color: rgba(255, 255, 255, 0.85); box-shadow: none; }
+
+  /* Informativo: solo para importar/datos de entrada, con moderación */
+  .btn-info { @apply btn text-white border-transparent; background-color: var(--color-info-text); }
+  .btn-info:not(:disabled):hover { background-color: #3689c4; box-shadow: 0 6px 16px -4px rgba(75, 158, 216, 0.3); transform: translateY(-1px); }
+  .btn-info:not(:disabled):active { background-color: #287caf; transform: translateY(0); }
+  .btn-info:focus-visible { outline: 3px solid var(--color-info-text); outline-offset: 3px; }
+  .btn-info:disabled { background-color: #b8cedd; color: rgba(255, 255, 255, 0.85); box-shadow: none; }
+
+  /* Terciario / acción de tabla: texto verde, sin fondo */
+  .btn-link { @apply inline-flex h-8 items-center gap-1.5 rounded-[7px] px-2 text-xs font-bold text-brand-text bg-transparent whitespace-nowrap cursor-pointer max-desk:h-touch; transition: color 160ms ease, background-color 160ms ease; }
+  .btn-link:not(:disabled):hover { @apply text-brand-hover; background-color: var(--color-mint-soft); }
+  .btn-link:not(:disabled):active { background-color: #dff1dc; }
+  .btn-link:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+  .btn-link:disabled { @apply cursor-not-allowed pointer-events-none; color: #a5ada7; }
+
+  /* Ícono: 40×40 estándar (usar h-[34px] w-[34px] para el compacto de tabla) */
+  .btn-icon { @apply inline-grid h-10 w-10 shrink-0 place-items-center rounded-md border border-line bg-surface text-brand-text cursor-pointer max-desk:h-touch max-desk:w-touch; transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 120ms ease; }
+  .btn-icon:not(:disabled):hover { @apply text-brand-hover; background-color: var(--color-mint-soft); border-color: #cfe6cf; }
+  .btn-icon:not(:disabled):active { background-color: #dff1dc; transform: scale(0.97); }
+  .btn-icon:focus-visible { outline: 3px solid var(--color-brand); outline-offset: 2px; }
+  .btn-icon:disabled { @apply cursor-not-allowed pointer-events-none; color: #a5ada7; background-color: #f5f7f5; }
+
+  /* Segmentado: cambios de vista o periodo */
+  /* flex-wrap: con 4 pestañas (Catálogo: Categorías/Productos/Presentaciones/
+     Equivalencias) el control no cabía en una sola fila bajo ~420px y desbordaba la
+     página entera (CLAUDE.md regla 6: nunca scroll horizontal de página). Envolver a una
+     segunda fila es más simple que un scroll propio y no pierde ninguna pestaña de vista. */
+  .segmented { @apply inline-flex flex-wrap gap-0.5 rounded-md border border-line bg-page p-[3px]; }
+  .segmented-option { @apply flex h-8 items-center rounded-[7px] px-3 text-xs font-semibold text-muted bg-transparent whitespace-nowrap cursor-pointer border-0; transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
+  .segmented-option:not([aria-selected="true"]):hover { @apply text-ink; background-color: rgba(255, 255, 255, 0.55); }
+  .segmented-option[aria-selected="true"] { @apply bg-surface text-ink; box-shadow: 0 2px 7px rgba(29, 41, 34, 0.08); }
+  .segmented-option:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 1px; }
+
+  /* Botón procesando una acción: conserva el ancho, el texto y bloquea clics repetidos */
+  .btn-loading { @apply pointer-events-none opacity-[0.82]; }
+
+  /* Campos */
+  .input-date { @apply input max-w-[176px]; }
+  .input-num { @apply input max-w-[112px] text-right tabular-nums; }
+  .label { @apply flex flex-col gap-2 text-xs font-bold text-label; }
+  /* El rótulo (texto + asterisco de requerido) va en una sola fila del flex-col:
+     .lbl-cap los agrupa para que el "*" no caiga a una línea aparte y descuadre el
+     campo. El campo (select/input/div) sigue siendo el siguiente hijo, en su fila. */
+  .lbl-cap { @apply inline-flex items-center gap-1; }
+  .help { @apply text-xs text-muted; }
+
+  /* Tarjetas: radio 14, padding 20 en escritorio, 16 angosto, sombra muy suave gris-verdosa */
+  .card { @apply bg-surface border border-line rounded-lg shadow-[0_1px_2px_rgba(23,63,40,0.04),0_2px_8px_rgba(23,63,40,0.05)]; }
+  .card-body { @apply p-4 desk:p-5 flex flex-col gap-4; }
+
+  /* Chips y badges: píldora, 9-10 px, peso 700 */
+  .chip-ok { @apply chip bg-mint-soft text-brand-hover; }
+  .chip-warn { @apply chip bg-risk-mid-bg text-risk-mid; }
+  .chip-error { @apply chip bg-error-bg text-error; }
+  .chip-neutral { @apply chip bg-neutral-chip text-label; }
+  .lot { @apply chip border border-lot-border bg-lot font-mono font-bold text-lot-ink; }
+  .cat { @apply chip bg-neutral-chip font-bold text-label; }
+  .risk-alto { @apply chip font-bold bg-risk-high text-white; }
+  .risk-medio { @apply chip font-bold bg-risk-mid-bg text-risk-mid; }
+  .risk-bajo { @apply chip font-bold bg-risk-low-bg text-risk-low; }
+  /* Neutro por defecto: el rojo queda reservado para chips de riesgo, no para la navegación */
+  .nav-badge { @apply ml-auto inline-flex min-w-[22px] items-center justify-center rounded-full leading-tight text-muted; padding: 3px 7px; font-size: 10px; font-weight: 700; background-color: #f0f3f0; }
+  .nav-item[aria-current="page"] .nav-badge { @apply text-brand-text bg-surface; }
+
+  /* Tablas: encabezado 34, filas 55; scroll solo dentro de su contenedor; bajo 1024 px cada fila es una tarjeta */
+  .tbl-scroll { @apply relative overflow-x-auto max-w-full focus-visible:outline-offset-[-2px]; } /* poner tabindex="0" y aria-label */
+  .tbl-head { @apply max-tablet:hidden grid items-center gap-x-5 h-[34px] px-4 bg-page text-xs font-bold uppercase tracking-[0.08em] text-table-head; }
+  .tbl-row { @apply grid items-center gap-x-5 min-h-row py-2 px-4 text-sm border-b border-line-row
+                    max-tablet:grid-cols-2! max-tablet:gap-y-2 max-tablet:my-2 max-tablet:p-4 max-tablet:rounded-lg max-tablet:border max-tablet:bg-surface; }
+  .tbl-cell { @apply min-w-0 truncate max-tablet:whitespace-normal max-tablet:flex max-tablet:flex-col max-tablet:items-start max-tablet:gap-1; }
+  /* En móvil la celda es flex-col: sin items-start los chips (riesgo, lote, estado) se
+     estirarían a todo el ancho de la columna. Los controles de formulario sí los
+     queremos a ancho completo para que sean cómodos al tacto. */
+  .tbl-cell > :where(select, input, textarea) { @apply max-tablet:w-full; }
+  .tbl-cell[data-label]::before { @apply hidden max-tablet:block text-xs font-bold text-muted; content: attr(data-label); }
+  .num { @apply tabular-nums text-right max-tablet:text-left; }
+  /* Tabla con muchas columnas (Existencias): gap entre columnas más chico (16 en vez de
+     20) para que quepa en el ancho de la pantalla sin scroll horizontal y la columna
+     flexible llene hasta el borde. Se pone en el contenedor .tbl-scroll. */
+  .tbl-fit .tbl-head, .tbl-fit .tbl-row { column-gap: 1rem; }
+
+  /* Tabla de Recepciones: fila expandible. Clases propias (prefijo rcp-), no se tocan
+     .tbl-head/.tbl-row porque Existencias.vue también las usa. El color de encabezado
+     (#586b5e) ya coincide con --color-table-head: ambos quedaron en el mismo tono
+     oscurecido tras la auditoría de contraste (ver la variable arriba). */
+  .rcp-head {
+    @apply max-tablet:hidden grid items-center gap-x-5 px-4 bg-page uppercase;
+    height: 38px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--color-table-head);
+  }
+
+  .rcp-row {
+    @apply grid items-center gap-x-5 px-4 text-sm border-b border-line-row
+      max-tablet:grid-cols-2! max-tablet:gap-y-2 max-tablet:my-2 max-tablet:p-4 max-tablet:rounded-lg max-tablet:border max-tablet:bg-surface;
+    min-height: 58px;
+    transition: background-color 160ms ease;
+  }
+  .rcp-row:hover { background-color: var(--color-row-hover); }
+  .rcp-row[data-abierta="true"],
+  .rcp-row[data-abierta="true"]:hover { background-color: var(--color-row-expanded); }
+
+  /* Flecha de expandir: 32×32, sin borde (el énfasis es solo de color), gira 90deg al abrir */
+  .rcp-chevron {
+    @apply inline-grid place-items-center rounded-[8px] border-0 bg-transparent cursor-pointer max-desk:h-touch max-desk:w-touch;
+    width: 32px;
+    height: 32px;
+    color: var(--color-brand);
+    transition: color 160ms ease, background-color 160ms ease, transform 180ms ease;
+  }
+  .rcp-chevron:hover { color: var(--color-brand-ink); background-color: var(--color-mint-soft); }
+  .rcp-chevron:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+  .rcp-chevron[aria-expanded="true"] { background-color: var(--color-mint-soft); transform: rotate(90deg); }
+
+  .rcp-detalle {
+    @apply col-span-full;
+    background-color: var(--color-row-expanded);
+    border-top: 1px dashed var(--color-row-expanded-border);
+    padding: 16px 20px 18px;
+    animation: table-detail-enter 180ms ease;
+  }
+  .rcp-detalle-grid { @apply grid grid-cols-1 gap-5 tablet:grid-cols-2 desk:grid-cols-4; }
+  .rcp-detalle-label { @apply text-[9px] font-bold uppercase tracking-[0.08em] text-muted; }
+  .rcp-detalle-valor { @apply mt-1 text-xs font-semibold text-ink; }
+
+  /* Resumen de renglones: antes eran 4 TarjetaIndicador apiladas (cada una ~130-150px) que
+     empujaban el formulario de "Agregar renglón" fuera de la vista. Se reemplaza por una
+     franja de una sola línea, integrada en el encabezado de la card de Renglones en vez de
+     ser una card aparte. No se toca TarjetaIndicador.vue (Inicio y Existencias la siguen
+     usando igual). */
+  .rcp-resumen { @apply flex flex-wrap items-start gap-6 rounded-md bg-page px-4 py-3; }
+  .rcp-resumen-item { @apply flex flex-col gap-0.5; }
+  .rcp-resumen-label { @apply text-[10px] font-bold uppercase tracking-[0.06em] text-muted; }
+  .rcp-resumen-valor { @apply font-display text-base font-semibold text-ink tabular-nums; }
+
+  @keyframes table-detail-enter {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rcp-detalle { animation: none; }
+  }
+
+  /* Ingresar: panel institucional con degradado verde propio de esta pantalla (no son
+     tokens reutilizados en ningún otro lugar, de ahí el prefijo ingresar-) + textura de
+     puntos muy discreta, solo CSS, sin imágenes. --color-brand-ink y --color-brand-end
+     sí son tokens del tema (ver sección "Verde institucional"). */
+  .ingresar-hero {
+    background: linear-gradient(145deg, var(--color-brand-ink) 0%, #24743d 55%, var(--color-brand-end) 125%);
+  }
+  .ingresar-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.12) 1px, transparent 0);
+    background-size: 28px 28px;
+    pointer-events: none;
+  }
+
+  .ingresar-panel {
+    background:
+      radial-gradient(circle at 100% 0, var(--color-mint-faint) 0%, transparent 30%),
+      var(--color-surface);
+  }
+
+  /* Buscador de "Producto y presentación" en Recepción: lista flotante bajo el input,
+     mismo tratamiento visual que el hover del menú lateral (mint-soft + brand-text) para
+     que la opción resaltada se sienta parte del mismo sistema, no un componente aparte. */
+  .rcp-combo-lista {
+    @apply absolute z-20 mt-1 max-h-[260px] w-full overflow-y-auto rounded-md border border-line bg-surface p-1;
+    box-shadow: 0 8px 24px rgba(23, 63, 40, 0.12);
+  }
+  .rcp-combo-opcion {
+    @apply block w-full cursor-pointer rounded-[6px] px-3 py-2 text-left text-sm text-ink;
+  }
+  .rcp-combo-opcion:hover,
+  .rcp-combo-opcion-activa {
+    background-color: var(--color-mint-soft);
+    color: var(--color-brand-text);
+  }
+
+  /* Tendencia de Reporte: serie única (tasa de desperdicio), un solo matiz — no hace
+     falta paleta categórica. El mes vigente se resalta con el verde de marca sólido;
+     los anteriores quedan en menta, más discretos (extremo enfatizado). */
+  .rpt-tendencia { @apply flex items-end justify-between gap-3 px-2 pt-6 pb-1; }
+  .rpt-tendencia-col { @apply flex flex-1 flex-col items-center gap-2; }
+  .rpt-tendencia-valor { @apply text-xs font-semibold text-muted tabular-nums; }
+  .rpt-tendencia-barra { @apply w-full rounded-t-[4px] bg-mint; min-height: 4px; transition: height 220ms ease; }
+  .rpt-tendencia-barra-actual { @apply bg-brand; }
+  .rpt-tendencia-mes { @apply text-xs font-medium text-muted uppercase; }
+}

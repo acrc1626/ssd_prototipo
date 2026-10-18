@@ -1,0 +1,2310 @@
+{
+  "Banco": [
+    {
+      "IdBanco": "banco-neiva",
+      "Nombre": "Banco Diocesano de Alimentos de Neiva",
+      "Esquema": "banco_neiva",
+      "Activo": true
+    }
+  ],
+  "Rol": [
+    {
+      "IdRol": "rol-coord",
+      "IdBanco": "banco-neiva",
+      "Nombre": "Coordinadora del banco",
+      "Descripcion": "Consulta existencias y riesgo; gestiona catálogo, kits, históricos y usuarios."
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdBanco": "banco-neiva",
+      "Nombre": "Asistente administrativa",
+      "Descripcion": "Arma kits y emite remisiones, vincula organizaciones y genera el reporte mensual."
+    },
+    {
+      "IdRol": "rol-bodega",
+      "IdBanco": "banco-neiva",
+      "Nombre": "Personal de bodega",
+      "Descripcion": "Registra recepciones, bajas y compostaje."
+    }
+  ],
+  "Permiso": [
+    {
+      "IdPermiso": "perm-rec",
+      "Codigo": "REGISTRAR_RECEPCION",
+      "Descripcion": "Registrar recepción"
+    },
+    {
+      "IdPermiso": "perm-recok",
+      "Codigo": "CONFIRMAR_RECEPCION",
+      "Descripcion": "Confirmar recepción y crear lotes"
+    },
+    {
+      "IdPermiso": "perm-baja",
+      "Codigo": "REGISTRAR_BAJA",
+      "Descripcion": "Registrar baja o compostaje"
+    },
+    {
+      "IdPermiso": "perm-exi",
+      "Codigo": "CONSULTAR_EXISTENCIAS",
+      "Descripcion": "Consultar existencias y trazabilidad"
+    },
+    {
+      "IdPermiso": "perm-rem",
+      "Codigo": "EMITIR_REMISION",
+      "Descripcion": "Emitir remisión"
+    },
+    {
+      "IdPermiso": "perm-fefo",
+      "Codigo": "REASIGNAR_FUERA_DE_FEFO",
+      "Descripcion": "Reasignar lote fuera de FEFO"
+    },
+    {
+      "IdPermiso": "perm-org",
+      "Codigo": "GESTIONAR_ORGANIZACIONES",
+      "Descripcion": "Gestionar organizaciones y autorizaciones"
+    },
+    {
+      "IdPermiso": "perm-rep",
+      "Codigo": "VER_REPRESENTANTES",
+      "Descripcion": "Ver representantes de organizaciones"
+    },
+    {
+      "IdPermiso": "perm-kit",
+      "Codigo": "EDITAR_KITS",
+      "Descripcion": "Editar composición de kits"
+    },
+    {
+      "IdPermiso": "perm-rsk",
+      "Codigo": "CONSULTAR_RIESGO",
+      "Descripcion": "Consultar riesgo de vencimiento"
+    },
+    {
+      "IdPermiso": "perm-red",
+      "Codigo": "GENERAR_REPORTE_RED",
+      "Descripcion": "Generar reporte para la red de bancos"
+    },
+    {
+      "IdPermiso": "perm-cat",
+      "Codigo": "EDITAR_CATALOGO",
+      "Descripcion": "Editar catálogo, categorías y vida útil"
+    },
+    {
+      "IdPermiso": "perm-his",
+      "Codigo": "IMPORTAR_HISTORICOS",
+      "Descripcion": "Importar históricos"
+    },
+    {
+      "IdPermiso": "perm-usr",
+      "Codigo": "GESTIONAR_USUARIOS",
+      "Descripcion": "Gestionar usuarios y roles"
+    }
+  ],
+  "RolPermiso": [
+    {
+      "IdRol": "rol-bodega",
+      "IdPermiso": "perm-rec"
+    },
+    {
+      "IdRol": "rol-bodega",
+      "IdPermiso": "perm-recok"
+    },
+    {
+      "IdRol": "rol-bodega",
+      "IdPermiso": "perm-baja"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-exi"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-exi"
+    },
+    {
+      "IdRol": "rol-bodega",
+      "IdPermiso": "perm-exi"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-rem"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-fefo"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-org"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-rep"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-rep"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-kit"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-rsk"
+    },
+    {
+      "IdRol": "rol-asist",
+      "IdPermiso": "perm-red"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-cat"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-his"
+    },
+    {
+      "IdRol": "rol-coord",
+      "IdPermiso": "perm-usr"
+    }
+  ],
+  "Usuario": [
+    {
+      "IdUsuario": "usr-laura-gomez",
+      "IdBanco": "banco-neiva",
+      "SubCognito": "google-oauth2|laura-gomez",
+      "Correo": "coordinacion@bancoalimentosneiva.org",
+      "Nombre": "Laura Gómez",
+      "Activo": true
+    },
+    {
+      "IdUsuario": "usr-diana-rios",
+      "IdBanco": "banco-neiva",
+      "SubCognito": "google-oauth2|diana-rios",
+      "Correo": "asistente@bancoalimentosneiva.org",
+      "Nombre": "Diana Ríos",
+      "Activo": true
+    },
+    {
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdBanco": "banco-neiva",
+      "SubCognito": "google-oauth2|carlos-perdomo",
+      "Correo": "bodega1@bancoalimentosneiva.org",
+      "Nombre": "Carlos Perdomo",
+      "Activo": true
+    },
+    {
+      "IdUsuario": "usr-andres-cuellar",
+      "IdBanco": "banco-neiva",
+      "SubCognito": "google-oauth2|andres-cuellar",
+      "Correo": "bodega2@bancoalimentosneiva.org",
+      "Nombre": "Andrés Cuéllar",
+      "Activo": true
+    },
+    {
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdBanco": "banco-neiva",
+      "SubCognito": "google-oauth2|sofia-trujillo",
+      "Correo": "voluntario.recepcion@bancoalimentosneiva.org",
+      "Nombre": "Sofía Trujillo",
+      "Activo": false
+    }
+  ],
+  "UsuarioRol": [
+    {
+      "IdUsuario": "usr-laura-gomez",
+      "IdRol": "rol-coord"
+    },
+    {
+      "IdUsuario": "usr-diana-rios",
+      "IdRol": "rol-asist"
+    },
+    {
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRol": "rol-bodega"
+    },
+    {
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRol": "rol-bodega"
+    },
+    {
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRol": "rol-bodega"
+    }
+  ],
+  "Categoria": [
+    {
+      "IdCategoria": "cat-cereales",
+      "Nombre": "Cereales",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-frutas-y-verduras",
+      "Nombre": "Frutas y verduras",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": 7
+    },
+    {
+      "IdCategoria": "cat-carnes",
+      "Nombre": "Carnes",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-lacteos",
+      "Nombre": "Lácteos",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-panaderia",
+      "Nombre": "Panadería",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": 3
+    },
+    {
+      "IdCategoria": "cat-granos",
+      "Nombre": "Granos",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-aceites",
+      "Nombre": "Aceites",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-aseo",
+      "Nombre": "Aseo",
+      "AplicaVencimiento": false,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-electrodomesticos",
+      "Nombre": "Electrodomésticos",
+      "AplicaVencimiento": false,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-huevos",
+      "Nombre": "Huevos",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-endulzantes",
+      "Nombre": "Endulzantes",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    },
+    {
+      "IdCategoria": "cat-enlatados",
+      "Nombre": "Enlatados",
+      "AplicaVencimiento": true,
+      "VidaUtilDias": null
+    }
+  ],
+  "Producto": [
+    {
+      "IdProducto": "prod-leche-entera",
+      "IdCategoria": "cat-lacteos",
+      "Nombre": "Leche entera"
+    },
+    {
+      "IdProducto": "prod-yogur",
+      "IdCategoria": "cat-lacteos",
+      "Nombre": "Yogur"
+    },
+    {
+      "IdProducto": "prod-queso-campesino",
+      "IdCategoria": "cat-lacteos",
+      "Nombre": "Queso campesino"
+    },
+    {
+      "IdProducto": "prod-arroz",
+      "IdCategoria": "cat-cereales",
+      "Nombre": "Arroz"
+    },
+    {
+      "IdProducto": "prod-pasta",
+      "IdCategoria": "cat-cereales",
+      "Nombre": "Pasta"
+    },
+    {
+      "IdProducto": "prod-avena-en-hojuelas",
+      "IdCategoria": "cat-cereales",
+      "Nombre": "Avena en hojuelas"
+    },
+    {
+      "IdProducto": "prod-frijol",
+      "IdCategoria": "cat-granos",
+      "Nombre": "Fríjol"
+    },
+    {
+      "IdProducto": "prod-lenteja",
+      "IdCategoria": "cat-granos",
+      "Nombre": "Lenteja"
+    },
+    {
+      "IdProducto": "prod-sandia",
+      "IdCategoria": "cat-frutas-y-verduras",
+      "Nombre": "Sandía"
+    },
+    {
+      "IdProducto": "prod-tomate",
+      "IdCategoria": "cat-frutas-y-verduras",
+      "Nombre": "Tomate"
+    },
+    {
+      "IdProducto": "prod-banano",
+      "IdCategoria": "cat-frutas-y-verduras",
+      "Nombre": "Banano"
+    },
+    {
+      "IdProducto": "prod-pan-tajado",
+      "IdCategoria": "cat-panaderia",
+      "Nombre": "Pan tajado"
+    },
+    {
+      "IdProducto": "prod-pechuga-de-pollo",
+      "IdCategoria": "cat-carnes",
+      "Nombre": "Pechuga de pollo"
+    },
+    {
+      "IdProducto": "prod-huevos",
+      "IdCategoria": "cat-huevos",
+      "Nombre": "Huevos"
+    },
+    {
+      "IdProducto": "prod-panela",
+      "IdCategoria": "cat-endulzantes",
+      "Nombre": "Panela"
+    },
+    {
+      "IdProducto": "prod-aceite-vegetal",
+      "IdCategoria": "cat-aceites",
+      "Nombre": "Aceite vegetal"
+    },
+    {
+      "IdProducto": "prod-atun-en-lata",
+      "IdCategoria": "cat-enlatados",
+      "Nombre": "Atún en lata"
+    },
+    {
+      "IdProducto": "prod-jabon-de-loza",
+      "IdCategoria": "cat-aseo",
+      "Nombre": "Jabón de loza"
+    }
+  ],
+  "Presentacion": [
+    {
+      "IdPresentacion": "pres-leche-caja",
+      "IdProducto": "prod-leche-entera",
+      "Contenido": 1100,
+      "Unidad": "ML",
+      "Nombre_PENDIENTE": "Caja 1.100 ml",
+      "UnidadConteo_PROTOTIPO": "cajas"
+    },
+    {
+      "IdPresentacion": "pres-leche-paca",
+      "IdProducto": "prod-leche-entera",
+      "Contenido": 6600,
+      "Unidad": "ML",
+      "Nombre_PENDIENTE": "Paca 6 × 1.100 ml",
+      "UnidadConteo_PROTOTIPO": "pacas"
+    },
+    {
+      "IdPresentacion": "pres-yogur-botella",
+      "IdProducto": "prod-yogur",
+      "Contenido": 1000,
+      "Unidad": "ML",
+      "Nombre_PENDIENTE": "Botella 1.000 ml",
+      "UnidadConteo_PROTOTIPO": "botellas"
+    },
+    {
+      "IdPresentacion": "pres-queso-bloque",
+      "IdProducto": "prod-queso-campesino",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bloque 500 g",
+      "UnidadConteo_PROTOTIPO": "bloques"
+    },
+    {
+      "IdPresentacion": "pres-arroz-bulto",
+      "IdProducto": "prod-arroz",
+      "Contenido": 50000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bulto 50 kg",
+      "UnidadConteo_PROTOTIPO": "bultos"
+    },
+    {
+      "IdPresentacion": "pres-arroz-bolsa",
+      "IdProducto": "prod-arroz",
+      "Contenido": 1000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 1 kg",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-pasta-bolsa",
+      "IdProducto": "prod-pasta",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 500 g",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-avena-bolsa",
+      "IdProducto": "prod-avena-en-hojuelas",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 500 g",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-frijol-bolsa",
+      "IdProducto": "prod-frijol",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 500 g",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-lenteja-bolsa",
+      "IdProducto": "prod-lenteja",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 500 g",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-sandia-kg",
+      "IdProducto": "prod-sandia",
+      "Contenido": 1000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Granel, por kg",
+      "UnidadConteo_PROTOTIPO": "kg"
+    },
+    {
+      "IdPresentacion": "pres-tomate-kg",
+      "IdProducto": "prod-tomate",
+      "Contenido": 1000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Granel, por kg",
+      "UnidadConteo_PROTOTIPO": "kg"
+    },
+    {
+      "IdPresentacion": "pres-banano-kg",
+      "IdProducto": "prod-banano",
+      "Contenido": 1000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Granel, por kg",
+      "UnidadConteo_PROTOTIPO": "kg"
+    },
+    {
+      "IdPresentacion": "pres-pan-bolsa",
+      "IdProducto": "prod-pan-tajado",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bolsa 500 g",
+      "UnidadConteo_PROTOTIPO": "bolsas"
+    },
+    {
+      "IdPresentacion": "pres-pollo-bandeja",
+      "IdProducto": "prod-pechuga-de-pollo",
+      "Contenido": 2000,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bandeja congelada 2 kg",
+      "UnidadConteo_PROTOTIPO": "bandejas"
+    },
+    {
+      "IdPresentacion": "pres-huevos-bandeja",
+      "IdProducto": "prod-huevos",
+      "Contenido": 1800,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bandeja 30 unidades",
+      "UnidadConteo_PROTOTIPO": "bandejas"
+    },
+    {
+      "IdPresentacion": "pres-panela-bloque",
+      "IdProducto": "prod-panela",
+      "Contenido": 500,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Bloque 500 g",
+      "UnidadConteo_PROTOTIPO": "bloques"
+    },
+    {
+      "IdPresentacion": "pres-aceite-botella",
+      "IdProducto": "prod-aceite-vegetal",
+      "Contenido": 1000,
+      "Unidad": "ML",
+      "Nombre_PENDIENTE": "Botella 1.000 ml",
+      "UnidadConteo_PROTOTIPO": "botellas"
+    },
+    {
+      "IdPresentacion": "pres-atun-lata",
+      "IdProducto": "prod-atun-en-lata",
+      "Contenido": 170,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Lata 170 g",
+      "UnidadConteo_PROTOTIPO": "latas"
+    },
+    {
+      "IdPresentacion": "pres-jabon-barra",
+      "IdProducto": "prod-jabon-de-loza",
+      "Contenido": 300,
+      "Unidad": "G",
+      "Nombre_PENDIENTE": "Barra 300 g",
+      "UnidadConteo_PROTOTIPO": "barras"
+    }
+  ],
+  "Donante": [
+    {
+      "IdDonante": "don-carulla",
+      "Nombre": "Carulla",
+      "NIT": null
+    },
+    {
+      "IdDonante": "don-plaza-mercado-sur",
+      "Nombre": "Plaza Mercado Sur",
+      "NIT": null
+    },
+    {
+      "IdDonante": "don-almacenes-exito",
+      "Nombre": "Almacenes Éxito",
+      "NIT": null
+    },
+    {
+      "IdDonante": "don-lacteos-del-huila",
+      "Nombre": "Lácteos del Huila",
+      "NIT": null
+    },
+    {
+      "IdDonante": "don-olimpica",
+      "Nombre": "Olímpica",
+      "NIT": null
+    }
+  ],
+  "Recepcion": [
+    {
+      "IdRecepcion": "rec-R-0460",
+      "Origen": "DONACION",
+      "IdDonante": "don-carulla",
+      "Fecha": "2026-11-10",
+      "NumeroSoporte": "EatCloud #55188",
+      "SoporteUrl": "soportes/R-0460.pdf",
+      "IdUsuario": "usr-carlos-perdomo",
+      "Numero_PENDIENTE": "R-0460",
+      "Estado_PENDIENTE": "BORRADOR"
+    },
+    {
+      "IdRecepcion": "rec-R-0459",
+      "Origen": "COMPRA",
+      "IdDonante": "don-plaza-mercado-sur",
+      "Fecha": "2026-11-09",
+      "NumeroSoporte": "Factura 3321",
+      "SoporteUrl": "soportes/R-0459.pdf",
+      "IdUsuario": "usr-andres-cuellar",
+      "Numero_PENDIENTE": "R-0459",
+      "Estado_PENDIENTE": "BORRADOR"
+    },
+    {
+      "IdRecepcion": "rec-R-0458",
+      "Origen": "DONACION",
+      "IdDonante": "don-almacenes-exito",
+      "Fecha": "2026-11-08",
+      "NumeroSoporte": "EatCloud #55120",
+      "SoporteUrl": "soportes/R-0458.pdf",
+      "IdUsuario": "usr-carlos-perdomo",
+      "Numero_PENDIENTE": "R-0458",
+      "Estado_PENDIENTE": "BORRADOR"
+    },
+    {
+      "IdRecepcion": "rec-R-0446",
+      "Origen": "DONACION",
+      "IdDonante": "don-lacteos-del-huila",
+      "Fecha": "2026-10-24",
+      "NumeroSoporte": "Remisión 2251",
+      "SoporteUrl": "soportes/R-0446.pdf",
+      "IdUsuario": "usr-carlos-perdomo",
+      "Numero_PENDIENTE": "R-0446",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0445",
+      "Origen": "DONACION",
+      "IdDonante": "don-carulla",
+      "Fecha": "2026-10-23",
+      "NumeroSoporte": "EatCloud #54930",
+      "SoporteUrl": "soportes/R-0445.pdf",
+      "IdUsuario": "usr-sofia-trujillo",
+      "Numero_PENDIENTE": "R-0445",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0440",
+      "Origen": "DONACION",
+      "IdDonante": "don-olimpica",
+      "Fecha": "2026-10-20",
+      "NumeroSoporte": "EatCloud #54871",
+      "SoporteUrl": "soportes/R-0440.pdf",
+      "IdUsuario": "usr-andres-cuellar",
+      "Numero_PENDIENTE": "R-0440",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0438",
+      "Origen": "DONACION",
+      "IdDonante": "don-almacenes-exito",
+      "Fecha": "2026-10-17",
+      "NumeroSoporte": "EatCloud #54820",
+      "SoporteUrl": "soportes/R-0438.pdf",
+      "IdUsuario": "usr-carlos-perdomo",
+      "Numero_PENDIENTE": "R-0438",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0435",
+      "Origen": "DONACION",
+      "IdDonante": "don-olimpica",
+      "Fecha": "2026-10-14",
+      "NumeroSoporte": "EatCloud #54788",
+      "SoporteUrl": "soportes/R-0435.pdf",
+      "IdUsuario": "usr-andres-cuellar",
+      "Numero_PENDIENTE": "R-0435",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0431",
+      "Origen": "DONACION",
+      "IdDonante": "don-lacteos-del-huila",
+      "Fecha": "2026-10-10",
+      "NumeroSoporte": "Remisión 2210",
+      "SoporteUrl": "soportes/R-0431.pdf",
+      "IdUsuario": "usr-sofia-trujillo",
+      "Numero_PENDIENTE": "R-0431",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0422",
+      "Origen": "DONACION",
+      "IdDonante": "don-carulla",
+      "Fecha": "2026-10-02",
+      "NumeroSoporte": "EatCloud #54650",
+      "SoporteUrl": "soportes/R-0422.pdf",
+      "IdUsuario": "usr-carlos-perdomo",
+      "Numero_PENDIENTE": "R-0422",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    },
+    {
+      "IdRecepcion": "rec-R-0420",
+      "Origen": "DONACION",
+      "IdDonante": "don-olimpica",
+      "Fecha": "2026-09-30",
+      "NumeroSoporte": "EatCloud #54612",
+      "SoporteUrl": "soportes/R-0420.pdf",
+      "IdUsuario": "usr-andres-cuellar",
+      "Numero_PENDIENTE": "R-0420",
+      "Estado_PENDIENTE": "CONFIRMADA"
+    }
+  ],
+  "Lote": [
+    {
+      "IdLote": "lot-L-104",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-pan-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-11",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-104"
+    },
+    {
+      "IdLote": "lot-L-105",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-pollo-bandeja",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-12",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-105"
+    },
+    {
+      "IdLote": "lot-L-095",
+      "IdRecepcion": "rec-R-0440",
+      "IdPresentacion": "pres-yogur-botella",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-12",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-095"
+    },
+    {
+      "IdLote": "lot-L-097",
+      "IdRecepcion": "rec-R-0445",
+      "IdPresentacion": "pres-tomate-kg",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-13",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-097"
+    },
+    {
+      "IdLote": "lot-L-099",
+      "IdRecepcion": "rec-R-0446",
+      "IdPresentacion": "pres-queso-bloque",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-13",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-099"
+    },
+    {
+      "IdLote": "lot-L-098",
+      "IdRecepcion": "rec-R-0445",
+      "IdPresentacion": "pres-banano-kg",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-14",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-098"
+    },
+    {
+      "IdLote": "lot-L-103",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-sandia-kg",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-15",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-103"
+    },
+    {
+      "IdLote": "lot-L-090",
+      "IdRecepcion": "rec-R-0431",
+      "IdPresentacion": "pres-leche-caja",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-18",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-090"
+    },
+    {
+      "IdLote": "lot-L-096",
+      "IdRecepcion": "rec-R-0440",
+      "IdPresentacion": "pres-huevos-bandeja",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-19",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-096"
+    },
+    {
+      "IdLote": "lot-L-101",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-leche-caja",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-20",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-101"
+    },
+    {
+      "IdLote": "lot-L-091",
+      "IdRecepcion": "rec-R-0435",
+      "IdPresentacion": "pres-pasta-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-12-10",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-091"
+    },
+    {
+      "IdLote": "lot-L-092",
+      "IdRecepcion": "rec-R-0435",
+      "IdPresentacion": "pres-avena-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-12-22",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-092"
+    },
+    {
+      "IdLote": "lot-L-093",
+      "IdRecepcion": "rec-R-0438",
+      "IdPresentacion": "pres-panela-bloque",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-01-18",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-093"
+    },
+    {
+      "IdLote": "lot-L-085",
+      "IdRecepcion": "rec-R-0420",
+      "IdPresentacion": "pres-frijol-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-01-20",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-085"
+    },
+    {
+      "IdLote": "lot-L-086",
+      "IdRecepcion": "rec-R-0420",
+      "IdPresentacion": "pres-lenteja-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-02-05",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-086"
+    },
+    {
+      "IdLote": "lot-L-102",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-arroz-bulto",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-03-15",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-102"
+    },
+    {
+      "IdLote": "lot-L-106",
+      "IdRecepcion": "rec-R-0458",
+      "IdPresentacion": "pres-arroz-bolsa",
+      "IdLoteOrigen": "lot-L-102",
+      "FechaVencimiento": "2027-03-15",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-106"
+    },
+    {
+      "IdLote": "lot-L-087",
+      "IdRecepcion": "rec-R-0422",
+      "IdPresentacion": "pres-aceite-botella",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-04-30",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-087"
+    },
+    {
+      "IdLote": "lot-L-088",
+      "IdRecepcion": "rec-R-0422",
+      "IdPresentacion": "pres-atun-lata",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2027-08-15",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-088"
+    },
+    {
+      "IdLote": "lot-L-094",
+      "IdRecepcion": "rec-R-0438",
+      "IdPresentacion": "pres-jabon-barra",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": null,
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-094"
+    },
+    {
+      "IdLote": "lot-L-082",
+      "IdRecepcion": null,
+      "IdPresentacion": "pres-banano-kg",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-05",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-082"
+    },
+    {
+      "IdLote": "lot-L-079",
+      "IdRecepcion": null,
+      "IdPresentacion": "pres-pollo-bandeja",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-07",
+      "VencimientoEstimado": false,
+      "Codigo_PROTOTIPO": "L-079"
+    },
+    {
+      "IdLote": "lot-L-084",
+      "IdRecepcion": null,
+      "IdPresentacion": "pres-pan-bolsa",
+      "IdLoteOrigen": null,
+      "FechaVencimiento": "2026-11-08",
+      "VencimientoEstimado": true,
+      "Codigo_PROTOTIPO": "L-084"
+    }
+  ],
+  "MovimientoInventario": [
+    {
+      "IdMovimiento": "mov-001",
+      "IdLote": "lot-L-104",
+      "Tipo": "ENTRADA",
+      "Cantidad": 60,
+      "Kg": 30.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-002",
+      "IdLote": "lot-L-105",
+      "Tipo": "ENTRADA",
+      "Cantidad": 15,
+      "Kg": 30.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-003",
+      "IdLote": "lot-L-095",
+      "Tipo": "ENTRADA",
+      "Cantidad": 30,
+      "Kg": 30.0,
+      "Fecha": "2026-10-20T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-004",
+      "IdLote": "lot-L-095",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 2,
+      "Kg": 2.0,
+      "Fecha": "2026-10-20T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-005",
+      "IdLote": "lot-L-095",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 4,
+      "Kg": 4.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-006",
+      "IdLote": "lot-L-097",
+      "Tipo": "ENTRADA",
+      "Cantidad": 160,
+      "Kg": 160.0,
+      "Fecha": "2026-10-23T08:00:00-05:00",
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-007",
+      "IdLote": "lot-L-097",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 20,
+      "Kg": 20.0,
+      "Fecha": "2026-10-23T08:00:00-05:00",
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-008",
+      "IdLote": "lot-L-099",
+      "Tipo": "ENTRADA",
+      "Cantidad": 30,
+      "Kg": 15.0,
+      "Fecha": "2026-10-24T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-009",
+      "IdLote": "lot-L-098",
+      "Tipo": "ENTRADA",
+      "Cantidad": 230,
+      "Kg": 230.0,
+      "Fecha": "2026-10-23T08:00:00-05:00",
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-010",
+      "IdLote": "lot-L-098",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 20,
+      "Kg": 20.0,
+      "Fecha": "2026-10-23T08:00:00-05:00",
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-011",
+      "IdLote": "lot-L-103",
+      "Tipo": "ENTRADA",
+      "Cantidad": 800,
+      "Kg": 800.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-012",
+      "IdLote": "lot-L-103",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 120,
+      "Kg": 120.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-013",
+      "IdLote": "lot-L-090",
+      "Tipo": "ENTRADA",
+      "Cantidad": 30,
+      "Kg": 33.0,
+      "Fecha": "2026-10-10T08:00:00-05:00",
+      "IdUsuario": "usr-sofia-trujillo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-014",
+      "IdLote": "lot-L-090",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 20,
+      "Kg": 22.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-015",
+      "IdLote": "lot-L-096",
+      "Tipo": "ENTRADA",
+      "Cantidad": 15,
+      "Kg": 27.0,
+      "Fecha": "2026-10-20T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-016",
+      "IdLote": "lot-L-096",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 1,
+      "Kg": 1.8,
+      "Fecha": "2026-10-20T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-017",
+      "IdLote": "lot-L-096",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 2,
+      "Kg": 3.6,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-018",
+      "IdLote": "lot-L-101",
+      "Tipo": "ENTRADA",
+      "Cantidad": 48,
+      "Kg": 52.8,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-019",
+      "IdLote": "lot-L-101",
+      "Tipo": "DESECHO_RECEPCION",
+      "Cantidad": 6,
+      "Kg": 6.6,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-020",
+      "IdLote": "lot-L-091",
+      "Tipo": "ENTRADA",
+      "Cantidad": 120,
+      "Kg": 60.0,
+      "Fecha": "2026-10-14T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-021",
+      "IdLote": "lot-L-091",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 20,
+      "Kg": 10.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-022",
+      "IdLote": "lot-L-092",
+      "Tipo": "ENTRADA",
+      "Cantidad": 40,
+      "Kg": 20.0,
+      "Fecha": "2026-10-14T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-023",
+      "IdLote": "lot-L-093",
+      "Tipo": "ENTRADA",
+      "Cantidad": 60,
+      "Kg": 30.0,
+      "Fecha": "2026-10-17T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-024",
+      "IdLote": "lot-L-093",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 10,
+      "Kg": 5.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-025",
+      "IdLote": "lot-L-085",
+      "Tipo": "ENTRADA",
+      "Cantidad": 100,
+      "Kg": 50.0,
+      "Fecha": "2026-09-30T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-026",
+      "IdLote": "lot-L-085",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 20,
+      "Kg": 10.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-027",
+      "IdLote": "lot-L-086",
+      "Tipo": "ENTRADA",
+      "Cantidad": 60,
+      "Kg": 30.0,
+      "Fecha": "2026-09-30T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-028",
+      "IdLote": "lot-L-102",
+      "Tipo": "ENTRADA",
+      "Cantidad": 4,
+      "Kg": 200.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-029",
+      "IdLote": "lot-L-102",
+      "Tipo": "FRACCIONAMIENTO_SALIDA",
+      "Cantidad": 1,
+      "Kg": 50.0,
+      "Fecha": "2026-11-10T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-030",
+      "IdLote": "lot-L-106",
+      "Tipo": "FRACCIONAMIENTO_ENTRADA",
+      "Cantidad": 50,
+      "Kg": 50.0,
+      "Fecha": "2026-11-10T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-031",
+      "IdLote": "lot-L-087",
+      "Tipo": "ENTRADA",
+      "Cantidad": 40,
+      "Kg": 40.0,
+      "Fecha": "2026-10-02T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-032",
+      "IdLote": "lot-L-087",
+      "Tipo": "SALIDA_REMISION",
+      "Cantidad": 4,
+      "Kg": 4.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-diana-rios",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-033",
+      "IdLote": "lot-L-088",
+      "Tipo": "ENTRADA",
+      "Cantidad": 96,
+      "Kg": 16.32,
+      "Fecha": "2026-10-02T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-034",
+      "IdLote": "lot-L-094",
+      "Tipo": "ENTRADA",
+      "Cantidad": 40,
+      "Kg": 12.0,
+      "Fecha": "2026-10-17T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-035",
+      "IdLote": "lot-L-082",
+      "Tipo": "ENTRADA",
+      "Cantidad": 35,
+      "Kg": 35.0,
+      "Fecha": "2026-10-28T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-036",
+      "IdLote": "lot-L-082",
+      "Tipo": "COMPOSTAJE",
+      "Cantidad": 35,
+      "Kg": 35.0,
+      "Fecha": "2026-11-05T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-037",
+      "IdLote": "lot-L-079",
+      "Tipo": "ENTRADA",
+      "Cantidad": 2,
+      "Kg": 4.0,
+      "Fecha": "2026-10-28T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-038",
+      "IdLote": "lot-L-079",
+      "Tipo": "BAJA",
+      "Cantidad": 2,
+      "Kg": 4.0,
+      "Fecha": "2026-11-07T08:00:00-05:00",
+      "IdUsuario": "usr-andres-cuellar",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-039",
+      "IdLote": "lot-L-084",
+      "Tipo": "ENTRADA",
+      "Cantidad": 30,
+      "Kg": 15.0,
+      "Fecha": "2026-10-28T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    },
+    {
+      "IdMovimiento": "mov-040",
+      "IdLote": "lot-L-084",
+      "Tipo": "COMPOSTAJE",
+      "Cantidad": 30,
+      "Kg": 15.0,
+      "Fecha": "2026-11-08T08:00:00-05:00",
+      "IdUsuario": "usr-carlos-perdomo",
+      "IdRemision": null,
+      "IdMovimientoCorregido": null
+    }
+  ],
+  "RiesgoLote": [
+    {
+      "IdLote": "lot-L-104",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "ALTO",
+      "DiasParaVencer": 1,
+      "KgEnRiesgo": 30,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-105",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "ALTO",
+      "DiasParaVencer": 2,
+      "KgEnRiesgo": 30,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-095",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "ALTO",
+      "DiasParaVencer": 2,
+      "KgEnRiesgo": 24,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-097",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "MEDIO",
+      "DiasParaVencer": 3,
+      "KgEnRiesgo": 140,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-099",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "MEDIO",
+      "DiasParaVencer": 3,
+      "KgEnRiesgo": 15,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-098",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "MEDIO",
+      "DiasParaVencer": 4,
+      "KgEnRiesgo": 210,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-096",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "BAJO",
+      "DiasParaVencer": 9,
+      "KgEnRiesgo": 21.6,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-103",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "MEDIO",
+      "DiasParaVencer": 5,
+      "KgEnRiesgo": 680,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-090",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "MEDIO",
+      "DiasParaVencer": 8,
+      "KgEnRiesgo": 11,
+      "VersionModelo": "reglas-vida-util-v1"
+    },
+    {
+      "IdLote": "lot-L-101",
+      "FechaCalculo": "2026-11-10T06:00:00-05:00",
+      "Nivel": "BAJO",
+      "DiasParaVencer": 10,
+      "KgEnRiesgo": 46.2,
+      "VersionModelo": "reglas-vida-util-v1"
+    }
+  ],
+  "Organizacion": [
+    {
+      "IdOrganizacion": "org-hogar-feliz",
+      "Nombre": "Hogar Feliz",
+      "NIT": "900.412.336-1",
+      "Municipio": "Neiva",
+      "Estado": "PERMANENTE",
+      "Etapa": "VINCULADA"
+    },
+    {
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "Nombre": "Comedor Parroquial San José",
+      "NIT": "891.180.077-4",
+      "Municipio": "Neiva",
+      "Estado": "PERMANENTE",
+      "Etapa": "VINCULADA"
+    },
+    {
+      "IdOrganizacion": "org-fundacion-huellas-de-vida",
+      "Nombre": "Fundación Huellas de Vida",
+      "NIT": "900.877.120-9",
+      "Municipio": "Pitalito",
+      "Estado": "PERMANENTE",
+      "Etapa": "VINCULADA"
+    },
+    {
+      "IdOrganizacion": "org-asociacion-mujeres-del-sur",
+      "Nombre": "Asociación Mujeres del Sur",
+      "NIT": "901.334.508-2",
+      "Municipio": "Garzón",
+      "Estado": "ESPORADICA",
+      "Etapa": "VISITA"
+    },
+    {
+      "IdOrganizacion": "org-jac-barrio-las-palmas",
+      "Nombre": "JAC Barrio Las Palmas",
+      "NIT": "900.990.214-7",
+      "Municipio": "Neiva",
+      "Estado": "ESPORADICA",
+      "Etapa": "CONTACTO"
+    },
+    {
+      "IdOrganizacion": "org-hogar-infantil-semillas",
+      "Nombre": "Hogar Infantil Semillas",
+      "NIT": "900.551.802-3",
+      "Municipio": "Campoalegre",
+      "Estado": "PERMANENTE",
+      "Etapa": "RADICACION"
+    }
+  ],
+  "Representante": [
+    {
+      "IdRepresentante": "rep-hogar-feliz-1",
+      "IdOrganizacion": "org-hogar-feliz",
+      "Nombre": "María Elena Ruiz",
+      "Documento": "1.075.xxx.214",
+      "Telefono": "310 *** 4471"
+    },
+    {
+      "IdRepresentante": "rep-comedor-parroquial-san-jose-1",
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "Nombre": "Jorge Iván Cabrera",
+      "Documento": "12.130.xxx",
+      "Telefono": "315 *** 2208"
+    },
+    {
+      "IdRepresentante": "rep-fundacion-huellas-de-vida-1",
+      "IdOrganizacion": "org-fundacion-huellas-de-vida",
+      "Nombre": "Diana Patricia Losada",
+      "Documento": "36.172.xxx",
+      "Telefono": "312 *** 9015"
+    },
+    {
+      "IdRepresentante": "rep-asociacion-mujeres-del-sur-1",
+      "IdOrganizacion": "org-asociacion-mujeres-del-sur",
+      "Nombre": "Luz Marina Perdomo",
+      "Documento": "26.420.xxx",
+      "Telefono": "318 *** 6630"
+    },
+    {
+      "IdRepresentante": "rep-jac-barrio-las-palmas-1",
+      "IdOrganizacion": "org-jac-barrio-las-palmas",
+      "Nombre": "Hernán Darío Trujillo",
+      "Documento": "7.689.xxx",
+      "Telefono": "311 *** 1187"
+    },
+    {
+      "IdRepresentante": "rep-hogar-infantil-semillas-1",
+      "IdOrganizacion": "org-hogar-infantil-semillas",
+      "Nombre": "Claudia Milena Ortiz",
+      "Documento": "55.168.xxx",
+      "Telefono": "313 *** 5542"
+    }
+  ],
+  "AutorizacionDatos": [
+    {
+      "IdAutorizacion": "aut-hogar-feliz",
+      "IdRepresentante": "rep-hogar-feliz-1",
+      "Fecha": "2026-02-10",
+      "Medio": "Formato físico firmado",
+      "Finalidades": "Gestión de la vinculación; Programación y entrega de remisiones; Reportes agregados a la red de bancos",
+      "VersionPolitica": "v2.1",
+      "SoporteUrl": "autorizaciones/autorizacion_hogar_feliz.pdf"
+    },
+    {
+      "IdAutorizacion": "aut-comedor-parroquial-san-jose",
+      "IdRepresentante": "rep-comedor-parroquial-san-jose-1",
+      "Fecha": "2026-03-04",
+      "Medio": "Formulario digital",
+      "Finalidades": "Gestión de la vinculación; Programación y entrega de remisiones",
+      "VersionPolitica": "v2.1",
+      "SoporteUrl": "autorizaciones/autorizacion_san_jose.pdf"
+    },
+    {
+      "IdAutorizacion": "aut-fundacion-huellas-de-vida",
+      "IdRepresentante": "rep-fundacion-huellas-de-vida-1",
+      "Fecha": "2024-08-21",
+      "Medio": "Formato físico firmado",
+      "Finalidades": "Gestión de la vinculación; Programación y entrega de remisiones",
+      "VersionPolitica": "v1.0",
+      "SoporteUrl": "autorizaciones/autorizacion_huellas_2024.pdf"
+    }
+  ],
+  "PoblacionAtendida": [
+    {
+      "IdOrganizacion": "org-hogar-feliz",
+      "Grupo": "Niños y niñas",
+      "Cantidad": 52
+    },
+    {
+      "IdOrganizacion": "org-hogar-feliz",
+      "Grupo": "Adultos mayores",
+      "Cantidad": 34
+    },
+    {
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "Grupo": "Adultos mayores",
+      "Cantidad": 120
+    },
+    {
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "Grupo": "Personas en situación de calle",
+      "Cantidad": 90
+    },
+    {
+      "IdOrganizacion": "org-fundacion-huellas-de-vida",
+      "Grupo": "Familias desplazadas",
+      "Cantidad": 54
+    },
+    {
+      "IdOrganizacion": "org-asociacion-mujeres-del-sur",
+      "Grupo": "Madres cabeza de hogar",
+      "Cantidad": 40
+    },
+    {
+      "IdOrganizacion": "org-jac-barrio-las-palmas",
+      "Grupo": "Niños y niñas",
+      "Cantidad": 60
+    },
+    {
+      "IdOrganizacion": "org-hogar-infantil-semillas",
+      "Grupo": "Niños y niñas",
+      "Cantidad": 45
+    }
+  ],
+  "Programa": [
+    {
+      "IdPrograma": "prog-mercado-solidario",
+      "Nombre": "Mercado solidario",
+      "Activo": true
+    },
+    {
+      "IdPrograma": "prog-comedores-comunitarios",
+      "Nombre": "Comedores comunitarios",
+      "Activo": true
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "Nombre": "Atención de emergencias",
+      "Activo": true
+    }
+  ],
+  "ComponenteKit": [
+    {
+      "IdPrograma": "prog-mercado-solidario",
+      "IdProducto": "prod-arroz",
+      "KgPorKit": 1
+    },
+    {
+      "IdPrograma": "prog-mercado-solidario",
+      "IdProducto": "prod-leche-entera",
+      "KgPorKit": 1.1
+    },
+    {
+      "IdPrograma": "prog-mercado-solidario",
+      "IdProducto": "prod-sandia",
+      "KgPorKit": 3
+    },
+    {
+      "IdPrograma": "prog-mercado-solidario",
+      "IdProducto": "prod-pan-tajado",
+      "KgPorKit": 0.5
+    },
+    {
+      "IdPrograma": "prog-comedores-comunitarios",
+      "IdProducto": "prod-arroz",
+      "KgPorKit": 2
+    },
+    {
+      "IdPrograma": "prog-comedores-comunitarios",
+      "IdProducto": "prod-frijol",
+      "KgPorKit": 1
+    },
+    {
+      "IdPrograma": "prog-comedores-comunitarios",
+      "IdProducto": "prod-aceite-vegetal",
+      "KgPorKit": 0.5
+    },
+    {
+      "IdPrograma": "prog-comedores-comunitarios",
+      "IdProducto": "prod-panela",
+      "KgPorKit": 0.5
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "IdProducto": "prod-arroz",
+      "KgPorKit": 2
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "IdProducto": "prod-frijol",
+      "KgPorKit": 1
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "IdProducto": "prod-atun-en-lata",
+      "KgPorKit": 0.34
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "IdProducto": "prod-panela",
+      "KgPorKit": 1
+    },
+    {
+      "IdPrograma": "prog-atencion-de-emergencias",
+      "IdProducto": "prod-aceite-vegetal",
+      "KgPorKit": 1
+    }
+  ],
+  "MotivoExcepcionFefo": [
+    {
+      "IdMotivo": "mot-lote-danado",
+      "Descripcion": "Lote dañado",
+      "Activo": true
+    },
+    {
+      "IdMotivo": "mot-lote-no-encontrado-en-bodega",
+      "Descripcion": "Lote no encontrado en bodega",
+      "Activo": true
+    }
+  ],
+  "Remision": [
+    {
+      "IdRemision": "rem-S-0911",
+      "Numero": "S-0911",
+      "Fecha": "2026-11-09",
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "IdPrograma": "prog-comedores-comunitarios",
+      "NumeroKits": 30,
+      "PdfUrl": "remisiones/S-0911.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0910",
+      "Numero": "S-0910",
+      "Fecha": "2026-11-08",
+      "IdOrganizacion": "org-hogar-feliz",
+      "IdPrograma": "prog-mercado-solidario",
+      "NumeroKits": 18,
+      "PdfUrl": "remisiones/S-0910.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0905",
+      "Numero": "S-0905",
+      "Fecha": "2026-11-05",
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "IdPrograma": "prog-comedores-comunitarios",
+      "NumeroKits": 28,
+      "PdfUrl": "remisiones/S-0905.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0901",
+      "Numero": "S-0901",
+      "Fecha": "2026-11-01",
+      "IdOrganizacion": "org-comedor-parroquial-san-jose",
+      "IdPrograma": "prog-comedores-comunitarios",
+      "NumeroKits": 26,
+      "PdfUrl": "remisiones/S-0901.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0897",
+      "Numero": "S-0897",
+      "Fecha": "2026-10-29",
+      "IdOrganizacion": "org-hogar-feliz",
+      "IdPrograma": "prog-mercado-solidario",
+      "NumeroKits": 17,
+      "PdfUrl": "remisiones/S-0897.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0893",
+      "Numero": "S-0893",
+      "Fecha": "2026-10-26",
+      "IdOrganizacion": "org-hogar-feliz",
+      "IdPrograma": "prog-mercado-solidario",
+      "NumeroKits": 16,
+      "PdfUrl": "remisiones/S-0893.pdf"
+    },
+    {
+      "IdRemision": "rem-S-0889",
+      "Numero": "S-0889",
+      "Fecha": "2026-10-22",
+      "IdOrganizacion": "org-fundacion-huellas-de-vida",
+      "IdPrograma": "prog-mercado-solidario",
+      "NumeroKits": 13,
+      "PdfUrl": "remisiones/S-0889.pdf"
+    }
+  ],
+  "DetalleRemision": [],
+  "Importacion": [
+    {
+      "IdImportacion": "imp-1",
+      "Fecha": "2026-09-14T10:00:00-05:00",
+      "ArchivoUrl": "importaciones/recepciones_2024.xlsx",
+      "IdUsuario": "usr-laura-gomez",
+      "FilasTotales": 1284,
+      "FilasImportadas": 1284
+    },
+    {
+      "IdImportacion": "imp-2",
+      "Fecha": "2026-09-20T10:00:00-05:00",
+      "ArchivoUrl": "importaciones/recepciones_2025_s1.xlsx",
+      "IdUsuario": "usr-laura-gomez",
+      "FilasTotales": 713,
+      "FilasImportadas": 702
+    }
+  ],
+  "ErrorImportacion": [],
+  "EquivalenciaNombre": [
+    {
+      "NombreOrigen": "LECHE ENTERA X 1100",
+      "IdProducto": "prod-leche-entera"
+    },
+    {
+      "NombreOrigen": "arroz blanco bulto",
+      "IdProducto": "prod-arroz"
+    },
+    {
+      "NombreOrigen": "PAN TAJADO GDE",
+      "IdProducto": "prod-pan-tajado"
+    },
+    {
+      "NombreOrigen": "Pollo pechuga band",
+      "IdProducto": "prod-pechuga-de-pollo"
+    },
+    {
+      "NombreOrigen": "SANDIA KILOS",
+      "IdProducto": "prod-sandia"
+    }
+  ],
+  "ReporteMensual": [
+    {
+      "IdReporte": "repm-2026-09",
+      "Periodo": "2026-09",
+      "Formato": "PDF",
+      "ArchivoUrl": "reportes/2026-09.pdf",
+      "FechaGeneracion": "2026-10-02T09:00:00-05:00"
+    },
+    {
+      "IdReporte": "repm-2026-10",
+      "Periodo": "2026-10",
+      "Formato": "PDF",
+      "ArchivoUrl": "reportes/2026-10.pdf",
+      "FechaGeneracion": "2026-11-03T09:00:00-05:00"
+    }
+  ],
+  "CambioParametro": [
+    {
+      "IdCambio": "cp-1",
+      "Entidad": "Categoria:Frutas y verduras",
+      "Campo": "VidaUtilDias",
+      "ValorAnterior": null,
+      "ValorNuevo": "7",
+      "IdUsuario": "usr-laura-gomez",
+      "Fecha": "2026-09-15T09:00:00-05:00"
+    },
+    {
+      "IdCambio": "cp-2",
+      "Entidad": "Categoria:Panadería",
+      "Campo": "VidaUtilDias",
+      "ValorAnterior": "4",
+      "ValorNuevo": "3",
+      "IdUsuario": "usr-laura-gomez",
+      "Fecha": "2026-10-02T09:00:00-05:00"
+    },
+    {
+      "IdCambio": "cp-3",
+      "Entidad": "ComponenteKit:Mercado solidario/Sandía",
+      "Campo": "KgPorKit",
+      "ValorAnterior": "2",
+      "ValorNuevo": "3",
+      "IdUsuario": "usr-laura-gomez",
+      "Fecha": "2026-10-20T09:00:00-05:00"
+    }
+  ],
+  "_prototipo": {
+    "nota": "Datos que las pantallas muestran pero que no están en el modelo v1.1, o que el sistema calcula y no guarda.",
+    "fechaReferencia": "2026-11-10",
+    "remisionEnCurso": {
+      "Numero": "S-0912",
+      "IdOrganizacion": "org-hogar-feliz",
+      "IdPrograma": "prog-mercado-solidario",
+      "NumeroKits": 20,
+      "Fecha": "2026-11-10",
+      "lotesDisponiblesFefo": [
+        {
+          "IdLote": "lot-L-106",
+          "disponible": 50,
+          "diasParaVencer": 125
+        },
+        {
+          "IdLote": "lot-L-102",
+          "disponible": 3,
+          "diasParaVencer": 125
+        },
+        {
+          "IdLote": "lot-L-090",
+          "disponible": 10,
+          "diasParaVencer": 8
+        },
+        {
+          "IdLote": "lot-L-101",
+          "disponible": 42,
+          "diasParaVencer": 10
+        },
+        {
+          "IdLote": "lot-L-103",
+          "disponible": 680,
+          "diasParaVencer": 5
+        },
+        {
+          "IdLote": "lot-L-104",
+          "disponible": 60,
+          "diasParaVencer": 1
+        }
+      ]
+    },
+    "equivalenciasSinAsignar": [
+      "GALLETAS SURTIDAS",
+      "frijol cargamanto 500"
+    ],
+    "reporteMensualCifras": {
+      "oct": {
+        "name": "Octubre 2026",
+        "prev": "septiembre",
+        "recv": 62480,
+        "ent": 54900,
+        "recLoss": 2890,
+        "bodLoss": 1640,
+        "baja": 980,
+        "comp": 660,
+        "recs": 214,
+        "rate": 7.3,
+        "prevRate": 8.4,
+        "cats": [
+          [
+            "Frutas y verduras",
+            14800,
+            2150,
+            11900
+          ],
+          [
+            "Panadería",
+            3900,
+            820,
+            2950
+          ],
+          [
+            "Lácteos",
+            9200,
+            610,
+            8150
+          ],
+          [
+            "Carnes",
+            4100,
+            420,
+            3500
+          ],
+          [
+            "Cereales",
+            18600,
+            310,
+            16900
+          ],
+          [
+            "Huevos",
+            1900,
+            140,
+            1700
+          ],
+          [
+            "Otros",
+            9980,
+            80,
+            9800
+          ]
+        ],
+        "donors": [
+          [
+            "Almacenes Éxito",
+            18400,
+            1050
+          ],
+          [
+            "Carulla",
+            12900,
+            780
+          ],
+          [
+            "Olímpica",
+            11200,
+            420
+          ],
+          [
+            "Lácteos del Huila",
+            8100,
+            310
+          ],
+          [
+            "Otros donantes",
+            11880,
+            330
+          ]
+        ],
+        "motivos": [
+          [
+            "Producto golpeado",
+            1380,
+            "r"
+          ],
+          [
+            "Vencido en bodega",
+            1120,
+            "b"
+          ],
+          [
+            "Empaque roto",
+            760,
+            "r"
+          ],
+          [
+            "Vencido al recibir",
+            750,
+            "r"
+          ],
+          [
+            "Cadena de frío",
+            520,
+            "b"
+          ]
+        ],
+        "trend": [
+          [
+            "may",
+            9.8
+          ],
+          [
+            "jun",
+            9.4
+          ],
+          [
+            "jul",
+            9
+          ],
+          [
+            "ago",
+            8.7
+          ],
+          [
+            "sep",
+            8.4
+          ],
+          [
+            "oct",
+            7.3
+          ]
+        ],
+        "ev": [
+          9,
+          610
+        ],
+        "fefo": 4,
+        "evList": [
+          [
+            "L-061",
+            "Pan tajado · 40 bolsas",
+            20,
+            "venció 23-oct"
+          ],
+          [
+            "L-066",
+            "Tomate · granel",
+            85,
+            "venció 26-oct"
+          ],
+          [
+            "L-070",
+            "Yogur · 12 botellas",
+            12,
+            "venció 29-oct"
+          ]
+        ],
+        "progs": [
+          [
+            "Niños y niñas",
+            0,
+            "2.310"
+          ],
+          [
+            "Adultos mayores",
+            0,
+            "1.840"
+          ],
+          [
+            "Familias desplazadas",
+            0,
+            "1.270"
+          ],
+          [
+            "Madres cabeza de hogar",
+            0,
+            "760"
+          ],
+          [
+            "Personas en situación de calle",
+            0,
+            "510"
+          ]
+        ]
+      },
+      "sep": {
+        "name": "Septiembre 2026",
+        "prev": "agosto",
+        "recv": 58900,
+        "ent": 51200,
+        "recLoss": 3010,
+        "bodLoss": 1940,
+        "baja": 1180,
+        "comp": 760,
+        "recs": 198,
+        "rate": 8.4,
+        "prevRate": 8.7,
+        "cats": [
+          [
+            "Frutas y verduras",
+            13600,
+            2380,
+            10900
+          ],
+          [
+            "Panadería",
+            3700,
+            910,
+            2700
+          ],
+          [
+            "Lácteos",
+            8800,
+            650,
+            7800
+          ],
+          [
+            "Carnes",
+            3900,
+            470,
+            3300
+          ],
+          [
+            "Cereales",
+            17500,
+            330,
+            15800
+          ],
+          [
+            "Huevos",
+            1800,
+            130,
+            1600
+          ],
+          [
+            "Otros",
+            9600,
+            80,
+            9100
+          ]
+        ],
+        "donors": [
+          [
+            "Almacenes Éxito",
+            17200,
+            1120
+          ],
+          [
+            "Carulla",
+            12100,
+            830
+          ],
+          [
+            "Olímpica",
+            10400,
+            460
+          ],
+          [
+            "Lácteos del Huila",
+            7900,
+            330
+          ],
+          [
+            "Otros donantes",
+            11300,
+            270
+          ]
+        ],
+        "motivos": [
+          [
+            "Producto golpeado",
+            1420,
+            "r"
+          ],
+          [
+            "Vencido en bodega",
+            1390,
+            "b"
+          ],
+          [
+            "Empaque roto",
+            800,
+            "r"
+          ],
+          [
+            "Vencido al recibir",
+            790,
+            "r"
+          ],
+          [
+            "Cadena de frío",
+            550,
+            "b"
+          ]
+        ],
+        "trend": [
+          [
+            "abr",
+            10.1
+          ],
+          [
+            "may",
+            9.8
+          ],
+          [
+            "jun",
+            9.4
+          ],
+          [
+            "jul",
+            9
+          ],
+          [
+            "ago",
+            8.7
+          ],
+          [
+            "sep",
+            8.4
+          ]
+        ],
+        "ev": [
+          12,
+          840
+        ],
+        "fefo": 6,
+        "evList": [
+          [
+            "L-031",
+            "Banano · granel",
+            120,
+            "venció 14-sep"
+          ],
+          [
+            "L-038",
+            "Pan tajado · 60 bolsas",
+            30,
+            "venció 19-sep"
+          ],
+          [
+            "L-044",
+            "Queso campesino · 20 bloques",
+            10,
+            "venció 27-sep"
+          ]
+        ],
+        "progs": [
+          [
+            "Niños y niñas",
+            0,
+            "2.250"
+          ],
+          [
+            "Adultos mayores",
+            0,
+            "1.790"
+          ],
+          [
+            "Familias desplazadas",
+            0,
+            "1.180"
+          ],
+          [
+            "Madres cabeza de hogar",
+            0,
+            "700"
+          ],
+          [
+            "Personas en situación de calle",
+            0,
+            "470"
+          ]
+        ]
+      }
+    },
+    "bitacoraUsuarios": [
+      {
+        "date": "05-nov-2026 10:22",
+        "text": "Analista: se habilitó «Generar reporte para la red de bancos»",
+        "who": "Laura Gómez"
+      },
+      {
+        "date": "02-sep-2026 11:12",
+        "text": "Sofía Trujillo: usuario desactivado",
+        "who": "Laura Gómez"
+      },
+      {
+        "date": "18-ago-2026 14:05",
+        "text": "Andrés Cuéllar: invitación aceptada",
+        "who": "Sistema"
+      }
+    ],
+    "finalidadesAutorizacion": [
+      "Gestión de la vinculación",
+      "Programación y entrega de remisiones",
+      "Reportes agregados a la red de bancos",
+      "Comunicaciones del banco"
+    ]
+  }
+}
