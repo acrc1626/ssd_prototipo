@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useConfirmarStore } from '../../stores/confirmar';
 import { useDatosStore } from '../../stores/datos';
 import { useSesionStore } from '../../stores/sesion';
 import DialogoConfirmar from '../DialogoConfirmar.vue';
@@ -15,11 +16,21 @@ import Navegacion from './Navegacion.vue';
  *  estado intermedio solo-íconos, que es lo que se desbordaba en pantallas chicas. */
 const sesion = useSesionStore();
 const datos = useDatosStore();
+const confirmar = useConfirmarStore();
 const router = useRouter();
 
 const menuMovilAbierto = ref(false);
 
-function salir(): void {
+/** Confirmar antes de cerrar sesión: el botón es de solo ícono, pegado al avatar, y como
+ *  el prototipo guarda en memoria, un clic accidental perdería los cambios de la sesión
+ *  (prevención de errores / control del usuario, Nielsen). */
+async function salir(): Promise<void> {
+  const ok = await confirmar.pedir({
+    titulo: 'Cerrar sesión',
+    mensaje: 'Vas a salir de la demostración. En este prototipo los datos de la sesión se reinician al salir o al recargar.',
+    textoConfirmar: 'Cerrar sesión',
+  });
+  if (!ok) return;
   sesion.cerrarSesion();
   router.push('/ingresar');
 }

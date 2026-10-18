@@ -18,7 +18,7 @@ import { useDatosStore } from '../stores/datos';
 type FiltroNivel = 'TODOS' | NivelRiesgo;
 type Orden = 'VENCE' | 'KG' | 'PRODUCTO';
 
-const COLUMNAS = '88px minmax(160px,1fr) 144px 128px 96px 104px 112px';
+const COLUMNAS = '88px minmax(160px,1fr) 144px 128px 96px 104px 112px 56px';
 
 const datos = useDatosStore();
 const riesgo = useRiesgoAplicacion();
@@ -118,6 +118,7 @@ function textoDias(dias: number): string {
           <span class="text-right">Días</span>
           <span class="text-right">Kg</span>
           <span>Nivel</span>
+          <span class="sr-only">Acciones</span>
         </div>
         <div v-for="f in filasPagina" :key="f.idLote" class="tbl-row" :style="{ gridTemplateColumns: COLUMNAS }">
           <span class="tbl-cell" data-label="Lote"><span class="lot">{{ f.codigo }}</span></span>
@@ -140,6 +141,16 @@ function textoDias(dias: number): string {
           <span class="tbl-cell num" data-label="Kg">{{ formatearNumero(f.kg) }}</span>
           <span class="tbl-cell" data-label="Nivel">
             <span :class="claseChipRiesgo[f.nivelRiesgo]">{{ etiquetaRiesgo[f.nivelRiesgo] }}</span>
+          </span>
+          <span class="tbl-cell">
+            <router-link
+              :to="`/existencias?lote=${f.idLote}`"
+              class="btn-icon h-[34px]! w-[34px]! max-desk:h-touch! max-desk:w-touch!"
+              :aria-label="'Ver ' + f.codigo + ' en existencias'"
+              title="Ver en existencias"
+            >
+              <Icono nombre="existencias" :tamano="16" />
+            </router-link>
           </span>
         </div>
       </div>

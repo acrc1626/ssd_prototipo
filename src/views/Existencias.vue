@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { usePaginacion } from '../application/paginacion';
 import { useExistenciasAplicacion } from '../application/existencias';
@@ -55,6 +56,20 @@ const riesgoFiltro = ref<FiltroRiesgo>('TODOS');
 const orden = ref<Orden>('VENCE');
 const busqueda = ref('');
 const expandidos = ref<Set<string>>(new Set());
+
+/** Llega desde Riesgo de vencimiento con `?lote=<id>`: se filtra por ese lote (su código
+ *  queda en el buscador, a la vista, y se puede limpiar) y se abre su trazabilidad, para
+ *  que la coordinadora caiga directo en el lote que la preocupaba (cierra el flujo
+ *  Inicio → Riesgo → Existencias). */
+const route = useRoute();
+onMounted(() => {
+  const idLote = typeof route.query.lote === 'string' ? route.query.lote : '';
+  if (!idLote) return;
+  const fila = aplicacion.filas.value.find((f) => f.idLote === idLote);
+  if (!fila) return;
+  busqueda.value = fila.codigo;
+  expandidos.value = new Set([idLote]);
+});
 
 const kgEnBodega = computed(() => aplicacion.filas.value.reduce((t, f) => t + f.kg, 0));
 const kgRiesgoAlto = computed(() =>
