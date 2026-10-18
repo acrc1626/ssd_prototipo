@@ -9,17 +9,26 @@ export const ICONOS: Record<string, string> = {
     <path d="M6 9.5V20h12V9.5" />
     <path d="M10 20v-6h4v6" />
   `,
+  /* Recepciones = recibir/entrada: bandeja de entrada (inbox). Antes era una caja con "+"
+     que parecía botiquín médico. */
   recepciones: `
-    <rect x="4" y="7" width="16" height="13" rx="2" />
-    <path d="M4 7l8-4 8 4" />
-    <line x1="12" y1="11" x2="12" y2="17" />
-    <line x1="9" y1="14" x2="15" y2="14" />
+    <path d="M4 13h4l1.5 2.5h5L16 13h4" />
+    <path d="M5 5h14l2 8v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z" />
   `,
   existencias: `
     <path d="M12 4 21 9l-9 5-9-5Z" />
     <path d="M3 14l9 5 9-5" />
   `,
+  /* "Bajas" = sacar/reducir inventario (vencido/dañado/compostaje), NO borrar del sistema:
+     caja con signo menos. La papelera quedó como `quitar`. */
   bajas: `
+    <rect x="4" y="7" width="16" height="13" rx="2" />
+    <path d="M4 7l8-4 8 4" />
+    <line x1="9" y1="13.5" x2="15" y2="13.5" />
+  `,
+  /* Papelera: solo para quitar un elemento de una lista en edición (renglón, componente
+     de kit, grupo de población), donde sí se está removiendo esa fila. */
+  quitar: `
     <path d="M4 7h16" />
     <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
     <path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13" />

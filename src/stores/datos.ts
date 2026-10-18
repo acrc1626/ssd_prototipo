@@ -231,19 +231,30 @@ export const useDatosStore = defineStore('datos', () => {
    *  (application/remisiones.ts deshabilita "Emitir" si no la hay); si de todas formas
    *  faltara, simplemente consume lo que haya y deja el resto sin cubrir — no lanza
    *  error, para no tumbar el flujo por una carrera de datos en memoria. */
-  function emitirRemision(idOrganizacion: string, idPrograma: string, numeroKits: number, idUsuario: string): { idRemision: string; numero: string } {
+  /** Emitir remisión (doc v2.0, UC-03/ADR-010): el destinatario puede ser una organización
+   *  o una persona natural; los renglones finales = (plantilla del kit × nº de kits) +
+   *  renglones adicionales ad-hoc, ya fusionados por producto por quien llama. Para cada
+   *  renglón se asignan existencias por FEFO entre los lotes del producto, creando
+   *  SALIDA_REMISION + DetalleRemision. Un renglón puede repartirse en varios lotes. */
+  function emitirRemision(payload: {
+    destinatario: { tipo: 'ORGANIZACION'; idOrganizacion: string } | { tipo: 'PERSONA'; nombre: string; documento: string };
+    renglones: { idProducto: string; kg: number }[];
+    esEvento: boolean;
+    idPrograma: string;
+    numeroKits: number;
+    idUsuario: string;
+  }): { idRemision: string; numero: string } {
     const d = requerir();
     const numero = siguienteNumeroRemision();
     const idRemision = `rem-${numero}`;
     const fecha = `${fechaReferencia.value}T09:00:00-05:00`;
     const idsDetalleExistentes = new Set(d.DetalleRemision.map((x) => x.IdDetalleRemision));
 
-    const componentes = d.ComponenteKit.filter((c) => c.IdPrograma === idPrograma);
-    for (const componente of componentes) {
-      let kgRestante = componente.KgPorKit * numeroKits;
+    for (const renglon of payload.renglones) {
+      let kgRestante = renglon.kg;
       const lotesDelProducto = d.Lote.filter((l) => {
         const presentacion = d.Presentacion.find((p) => p.IdPresentacion === l.IdPresentacion);
-        return presentacion?.IdProducto === componente.IdProducto;
+        return presentacion?.IdProducto === renglon.idProducto;
       }).sort((a, b) => (a.FechaVencimiento ?? '9999-99-99').localeCompare(b.FechaVencimiento ?? '9999-99-99'));
 
       for (const lote of lotesDelProducto) {
@@ -252,10 +263,7 @@ export const useDatosStore = defineStore('datos', () => {
         const kgActual = kgLote(lote.IdLote, d.MovimientoInventario);
         if (existenciaActual <= 0 || kgActual <= 0) continue;
 
-        // Cantidad proporcional al kg real que se toma, sin forzar un mínimo de 1 unidad:
-        // con un mínimo de 1, un lote de "bultos de 50 kg" consumía el bulto entero (50 kg)
-        // aunque el kit solo necesitara 6 kg — el comprobante quedaba con casi 10 veces más
-        // kg de los que decía la simulación de la pantalla "Nueva remisión".
+        // Cantidad proporcional al kg real que se toma, sin forzar un mínimo de 1 unidad.
         const kgPorUnidad = kgActual / existenciaActual;
         const kgReal = Math.round(Math.min(kgRestante, kgActual) * 10) / 10;
         const cantidadAConsumir = Math.round((kgReal / kgPorUnidad) * 10) / 10;
@@ -267,7 +275,7 @@ export const useDatosStore = defineStore('datos', () => {
           Cantidad: cantidadAConsumir,
           Kg: kgReal,
           Fecha: fecha,
-          IdUsuario: idUsuario,
+          IdUsuario: payload.idUsuario,
           IdRemision: idRemision,
           IdMovimientoCorregido: null,
         });
@@ -283,10 +291,14 @@ export const useDatosStore = defineStore('datos', () => {
       IdRemision: idRemision,
       Numero: numero,
       Fecha: fechaReferencia.value,
-      IdOrganizacion: idOrganizacion,
-      IdPrograma: idPrograma,
-      NumeroKits: numeroKits,
+      IdOrganizacion: payload.destinatario.tipo === 'ORGANIZACION' ? payload.destinatario.idOrganizacion : '',
+      IdPrograma: payload.idPrograma,
+      NumeroKits: payload.numeroKits,
       PdfUrl: null,
+      DestinatarioTipo_PROTOTIPO: payload.destinatario.tipo,
+      DestinatarioNombre_PROTOTIPO: payload.destinatario.tipo === 'PERSONA' ? payload.destinatario.nombre : undefined,
+      DestinatarioDocumento_PROTOTIPO: payload.destinatario.tipo === 'PERSONA' ? payload.destinatario.documento : undefined,
+      EsEvento_PROTOTIPO: payload.esEvento,
     });
 
     return { idRemision, numero };

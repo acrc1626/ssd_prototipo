@@ -41,6 +41,14 @@ function alternarExpandida(id: string): void {
   expandidas.value = copia;
 }
 
+/** Estilo del círculo de cada paso del flujo de vinculación: completado (verde con check),
+ *  actual (borde verde) o pendiente (gris). */
+function clasePaso(indice: number, actual: number): string {
+  if (indice < actual) return 'bg-brand text-white';
+  if (indice === actual) return 'bg-mint-soft text-brand-text border-2 border-brand';
+  return 'bg-surface border border-line text-muted';
+}
+
 // --- Aviso de confirmación (patrón de RecepcionDetalle.vue) ---
 const avisoGuardado = ref('');
 let avisoTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -330,13 +338,29 @@ function quitarPoblacion(fila: FilaOrganizacion, grupo: string): void {
           </div>
 
           <div v-if="expandidas.has(f.idOrganizacion)" class="col-span-full rounded-md bg-page p-4">
-            <!-- Etapa -->
+            <!-- Etapa: flujo de vinculación -->
             <div class="flex flex-wrap items-center gap-4 pb-4">
-              <template v-for="(etapa, i) in ORDEN_ETAPAS" :key="etapa">
-                <span :class="ORDEN_ETAPAS.indexOf(f.etapa) >= i ? 'chip-ok' : 'chip-neutral'">{{ ETIQUETA_ETAPA[etapa] }}</span>
-                <span v-if="i < ORDEN_ETAPAS.length - 1" class="h-px w-6 bg-line" aria-hidden="true"></span>
-              </template>
-              <button v-if="f.etapa !== 'VINCULADA'" type="button" class="btn-secondary ml-auto" @click="avanzarEtapa(f)">
+              <ol class="flex min-w-[260px] flex-1 items-start" :aria-label="'Avance de vinculación de ' + f.nombre">
+                <li
+                  v-for="(etapa, i) in ORDEN_ETAPAS"
+                  :key="etapa"
+                  class="flex flex-1 flex-col items-center text-center last:flex-none"
+                  :aria-current="ORDEN_ETAPAS.indexOf(f.etapa) === i ? 'step' : undefined"
+                >
+                  <div class="flex w-full items-center">
+                    <span class="h-0.5 flex-1" :class="[i === 0 ? 'opacity-0' : '', i <= ORDEN_ETAPAS.indexOf(f.etapa) ? 'bg-brand' : 'bg-line']"></span>
+                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold" :class="clasePaso(i, ORDEN_ETAPAS.indexOf(f.etapa))">
+                      <Icono v-if="i < ORDEN_ETAPAS.indexOf(f.etapa)" nombre="check" :tamano="16" />
+                      <span v-else>{{ i + 1 }}</span>
+                    </span>
+                    <span class="h-0.5 flex-1" :class="[i === ORDEN_ETAPAS.length - 1 ? 'opacity-0' : '', i < ORDEN_ETAPAS.indexOf(f.etapa) ? 'bg-brand' : 'bg-line']"></span>
+                  </div>
+                  <span class="mt-1 px-1 text-[11px] leading-tight" :class="i <= ORDEN_ETAPAS.indexOf(f.etapa) ? 'font-semibold text-ink' : 'text-muted'">
+                    {{ ETIQUETA_ETAPA[etapa] }}
+                  </span>
+                </li>
+              </ol>
+              <button v-if="f.etapa !== 'VINCULADA'" type="button" class="btn-secondary shrink-0" @click="avanzarEtapa(f)">
                 Avanzar etapa
                 <Icono nombre="chevron-derecha" :tamano="16" />
               </button>
@@ -392,6 +416,10 @@ function quitarPoblacion(fila: FilaOrganizacion, grupo: string): void {
               <div class="card">
                 <div class="card-body gap-3!">
                   <h2 class="text-sm!">Autorización de datos</h2>
+                  <p class="help">
+                    Habeas Data (Ley 1581): no se guardan ni usan los datos del representante sin su autorización. Una organización
+                    solo puede recibir remisiones cuando está Vinculada y con la autorización registrada.
+                  </p>
                   <template v-if="f.autorizada">
                     <p class="text-sm text-ink">{{ f.medioAutorizacion }}</p>
                     <p class="text-xs text-muted">{{ formatearFecha(f.fechaAutorizacion!) }} · {{ f.finalidadesAutorizacion }}</p>
@@ -472,7 +500,7 @@ function quitarPoblacion(fila: FilaOrganizacion, grupo: string): void {
                         :aria-label="'Quitar ' + p.grupo"
                         @click="quitarPoblacion(f, p.grupo)"
                       >
-                        <Icono nombre="bajas" :tamano="16" />
+                        <Icono nombre="quitar" :tamano="16" />
                       </button>
                     </span>
                   </li>

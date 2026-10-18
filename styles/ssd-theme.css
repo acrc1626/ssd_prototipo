@@ -272,7 +272,9 @@
 
   /* Tablas: encabezado 34, filas 55; scroll solo dentro de su contenedor; bajo 1024 px cada fila es una tarjeta */
   .tbl-scroll { @apply relative overflow-x-auto max-w-full focus-visible:outline-offset-[-2px]; } /* poner tabindex="0" y aria-label */
-  .tbl-head { @apply max-tablet:hidden grid items-center gap-x-5 h-[34px] px-4 bg-page text-xs font-bold uppercase tracking-[0.08em] text-table-head; }
+  /* Franja de encabezado diferenciada de los datos: fondo verde suave de marca (mint-soft,
+     antes bg-page casi igual al blanco de la tarjeta) + borde inferior. Texto 5.15:1 AA. */
+  .tbl-head { @apply max-tablet:hidden grid items-center gap-x-5 h-[36px] px-4 rounded-t-md border-b border-line bg-mint-soft text-xs font-bold uppercase tracking-[0.08em] text-table-head; }
   .tbl-row { @apply grid items-center gap-x-5 min-h-row py-2 px-4 text-sm border-b border-line-row
                     max-tablet:grid-cols-2! max-tablet:gap-y-2 max-tablet:my-2 max-tablet:p-4 max-tablet:rounded-lg max-tablet:border max-tablet:bg-surface; }
   .tbl-cell { @apply min-w-0 truncate max-tablet:whitespace-normal max-tablet:flex max-tablet:flex-col max-tablet:items-start max-tablet:gap-1; }
@@ -285,14 +287,14 @@
   /* Tabla con muchas columnas (Existencias): gap entre columnas más chico (16 en vez de
      20) para que quepa en el ancho de la pantalla sin scroll horizontal y la columna
      flexible llene hasta el borde. Se pone en el contenedor .tbl-scroll. */
-  .tbl-fit .tbl-head, .tbl-fit .tbl-row { column-gap: 1rem; }
+  .tbl-fit .tbl-head, .tbl-fit .tbl-row, .tbl-fit .rcp-head, .tbl-fit .rcp-row { column-gap: 1rem; }
 
   /* Tabla de Recepciones: fila expandible. Clases propias (prefijo rcp-), no se tocan
      .tbl-head/.tbl-row porque Existencias.vue también las usa. El color de encabezado
      (#586b5e) ya coincide con --color-table-head: ambos quedaron en el mismo tono
      oscurecido tras la auditoría de contraste (ver la variable arriba). */
   .rcp-head {
-    @apply max-tablet:hidden grid items-center gap-x-5 px-4 bg-page uppercase;
+    @apply max-tablet:hidden grid items-center gap-x-5 px-4 rounded-t-md border-b border-line bg-mint-soft uppercase;
     height: 38px;
     font-size: 10px;
     font-weight: 700;

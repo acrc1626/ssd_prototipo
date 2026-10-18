@@ -73,7 +73,7 @@ export function useReporteAplicacion() {
   const donantes = computed<FilaDonanteReporte[]>(() =>
     [...(cifras.value?.donors ?? [])]
       .map(([nombre, recibido, perdida]) => ({ nombre, recibido, perdida }))
-      .sort((a, b) => b.recibido - a.recibido),
+      .sort((a, b) => b.perdida - a.perdida),
   );
 
   const tendencia = computed<PuntoTendencia[]>(() => (cifras.value?.trend ?? []).map(([mes, tasa]) => ({ mes, tasa })));
@@ -81,6 +81,58 @@ export function useReporteAplicacion() {
   const diferenciaTasa = computed(() => (cifras.value ? +(cifras.value.prevRate - cifras.value.rate).toFixed(1) : 0));
 
   const totalPerdido = computed(() => (cifras.value ? cifras.value.recLoss + cifras.value.bodLoss : 0));
+
+  /** Entradas del mes por origen (donación vs compra). Si el periodo no trae el split,
+   *  deja la compra en 0 y toda la entrada como donación. */
+  const entradas = computed(() => {
+    const c = cifras.value;
+    if (!c) return { donacion: 0, compra: 0, total: 0 };
+    const compra = c.recvCom ?? 0;
+    const donacion = c.recvDon ?? c.recv - compra;
+    return { donacion, compra, total: c.recv };
+  });
+
+  /** Dónde se pierde: en recepción (selección) vs en bodega; y cómo sale lo de bodega. */
+  const perdidaPorFase = computed(() => ({
+    recepcion: cifras.value?.recLoss ?? 0,
+    bodega: cifras.value?.bodLoss ?? 0,
+  }));
+  const salidaBodega = computed(() => ({
+    baja: cifras.value?.baja ?? 0,
+    compostaje: cifras.value?.comp ?? 0,
+  }));
+
+  /** CSV del reporte del mes seleccionado, para descargar e incluir en informes. */
+  function generarCsv(): string {
+    const c = cifras.value;
+    if (!c) return '';
+    const lineas: string[] = [];
+    const esc = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
+    lineas.push(`Reporte mensual de desperdicio;${c.name}`);
+    lineas.push('');
+    lineas.push('Indicador;Valor');
+    lineas.push(`Kg recibidos;${c.recv}`);
+    lineas.push(`Kg recibidos por donación;${entradas.value.donacion}`);
+    lineas.push(`Kg recibidos por compra;${entradas.value.compra}`);
+    lineas.push(`Kg entregados;${c.ent}`);
+    lineas.push(`Kg perdidos en recepción;${c.recLoss}`);
+    lineas.push(`Kg perdidos en bodega;${c.bodLoss}`);
+    lineas.push(`Kg dados de baja;${c.baja}`);
+    lineas.push(`Kg a compostaje;${c.comp}`);
+    lineas.push(`Tasa de desperdicio (%);${c.rate}`);
+    lineas.push(`Tasa del mes anterior (%);${c.prevRate}`);
+    lineas.push('');
+    lineas.push('Categoría;Recibido (kg);Perdido (kg);Aprovechado (kg);% pérdida');
+    for (const cat of categorias.value) {
+      lineas.push([esc(cat.nombre), cat.recibido, cat.perdida, cat.aprovechado, cat.porcentajePerdida.toFixed(1)].join(';'));
+    }
+    lineas.push('');
+    lineas.push('Donante;Recibido (kg);Perdido (kg)');
+    for (const don of donantes.value) {
+      lineas.push([esc(don.nombre), don.recibido, don.perdida].join(';'));
+    }
+    return lineas.join('\n');
+  }
 
   return {
     periodos,
@@ -92,5 +144,9 @@ export function useReporteAplicacion() {
     tendencia,
     diferenciaTasa,
     totalPerdido,
+    entradas,
+    perdidaPorFase,
+    salidaBodega,
+    generarCsv,
   };
 }

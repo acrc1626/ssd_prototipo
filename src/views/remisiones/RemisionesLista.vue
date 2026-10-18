@@ -39,7 +39,7 @@ function imprimir(): void {
 
 const totalKits = computed(() => remisiones.filas.value.reduce((t, f) => t + f.numeroKits, 0));
 const totalKg = computed(() => remisiones.filas.value.reduce((t, f) => t + f.kgTotal, 0));
-const organizacionesAtendidas = computed(() => new Set(remisiones.filas.value.map((f) => f.organizacion)).size);
+const destinatariosAtendidos = computed(() => new Set(remisiones.filas.value.map((f) => f.destinatario)).size);
 
 const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = usePaginacion(remisiones.filas);
 </script>
@@ -59,7 +59,7 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4 print:hidden">
     <TarjetaIndicador compacto titulo="Remisiones" :valor="remisiones.filas.value.length.toString()" icono="remisiones" />
     <TarjetaIndicador compacto titulo="Kits entregados" :valor="formatearNumero(totalKits, 0)" icono="caja" />
-    <TarjetaIndicador compacto titulo="Organizaciones atendidas" :valor="organizacionesAtendidas.toString()" icono="organizaciones" />
+    <TarjetaIndicador compacto titulo="Destinatarios atendidos" :valor="destinatariosAtendidos.toString()" icono="organizaciones" />
     <TarjetaIndicador compacto titulo="Kg entregados" :valor="formatearNumero(totalKg)" unidad="kg" icono="existencias" />
   </div>
 
@@ -72,7 +72,7 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
         <div class="tbl-head" :style="{ gridTemplateColumns: COLUMNAS }">
           <span>Número</span>
           <span>Fecha</span>
-          <span>Organización</span>
+          <span>Destinatario</span>
           <span>Programa</span>
           <span class="text-right">Kits</span>
           <span class="text-right">Kg</span>
@@ -82,9 +82,15 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
           <div class="tbl-row" :style="{ gridTemplateColumns: COLUMNAS }">
             <span class="tbl-cell font-mono font-semibold text-ink" data-label="Número">{{ f.numero }}</span>
             <span class="tbl-cell" data-label="Fecha">{{ formatearFecha(f.fecha) }}</span>
-            <span class="tbl-cell text-muted" data-label="Organización">{{ f.organizacion }}</span>
-            <span class="tbl-cell text-muted" data-label="Programa">{{ f.programa }}</span>
-            <span class="tbl-cell num" data-label="Kits">{{ f.numeroKits }}</span>
+            <span class="tbl-cell" data-label="Destinatario">
+              <span class="block text-ink">{{ f.destinatario }}</span>
+              <span v-if="f.esPersona || f.esEvento" class="flex flex-wrap gap-1">
+                <span v-if="f.esPersona" class="chip-neutral">Persona</span>
+                <span v-if="f.esEvento" class="chip-warn">Evento</span>
+              </span>
+            </span>
+            <span class="tbl-cell text-muted" data-label="Programa">{{ f.programa || 'Sin kit' }}</span>
+            <span class="tbl-cell num" data-label="Kits">{{ f.numeroKits || '—' }}</span>
             <span class="tbl-cell num" data-label="Kg">{{ formatearNumero(f.kgTotal) }}</span>
             <span class="tbl-cell">
               <button
@@ -168,16 +174,18 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
 
         <div class="grid grid-cols-2 gap-4 rounded-md bg-page p-4 text-sm">
           <div>
-            <p class="text-xs font-bold uppercase tracking-[0.06em] text-muted">Organización</p>
-            <p class="font-medium text-ink">{{ comprobante.organizacion }}</p>
+            <p class="text-xs font-bold uppercase tracking-[0.06em] text-muted">Destinatario</p>
+            <p class="font-medium text-ink">{{ comprobante.destinatario }}</p>
+            <p v-if="comprobante.esPersona" class="text-xs text-muted">Persona natural</p>
+            <p v-if="comprobante.esEvento" class="text-xs text-lot-ink">Entrega de evento</p>
           </div>
           <div>
             <p class="text-xs font-bold uppercase tracking-[0.06em] text-muted">Programa</p>
-            <p class="font-medium text-ink">{{ comprobante.programa }}</p>
+            <p class="font-medium text-ink">{{ comprobante.programa || 'Sin kit' }}</p>
           </div>
           <div>
             <p class="text-xs font-bold uppercase tracking-[0.06em] text-muted">Kits entregados</p>
-            <p class="font-medium text-ink">{{ comprobante.numeroKits }}</p>
+            <p class="font-medium text-ink">{{ comprobante.numeroKits || '—' }}</p>
           </div>
           <div>
             <p class="text-xs font-bold uppercase tracking-[0.06em] text-muted">Peso total</p>

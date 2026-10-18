@@ -111,13 +111,7 @@ function textoDias(dias: number | null): string {
 <template>
   <Migas :items="migas" />
 
-  <EncabezadoPagina icono="existencias" titulo="Existencias" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)">
-    <template #chip>
-      <span class="chip-ok">
-        <span class="h-2 w-2 rounded-full bg-brand-hover"></span>
-        Se actualiza sin recargar
-      </span>
-    </template>
+  <EncabezadoPagina icono="existencias" titulo="Existencias">
     <template v-if="puedeNuevaRemision" #acciones>
       <router-link to="/remisiones" class="btn-primary">
         <Icono nombre="mas" :tamano="18" />
@@ -127,14 +121,13 @@ function textoDias(dias: number | null): string {
   </EncabezadoPagina>
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
-    <TarjetaIndicador compacto titulo="Lotes vigentes" :valor="aplicacion.filas.value.length.toString()" nota="Con existencia mayor a cero" icono="existencias" />
-    <TarjetaIndicador compacto titulo="En bodega" :valor="formatearNumero(kgEnBodega)" unidad="kg" nota="Suma de movimientos" icono="caja" />
+    <TarjetaIndicador compacto titulo="Lotes vigentes" :valor="aplicacion.filas.value.length.toString()" icono="existencias" />
+    <TarjetaIndicador compacto titulo="En bodega" :valor="formatearNumero(kgEnBodega)" unidad="kg" icono="caja" />
     <TarjetaIndicador
       compacto
       titulo="Riesgo alto"
       :valor="formatearNumero(kgRiesgoAlto)"
       unidad="kg"
-      nota="Lotes que vencen en 2 días o menos"
       icono="riesgo"
       tono="alerta"
     />
@@ -143,7 +136,6 @@ function textoDias(dias: number | null): string {
       titulo="Vencimiento estimado"
       :valor="aplicacion.vencimientoEstimadoCount.value.toString()"
       unidad="lotes"
-      nota="Sin fecha impresa"
       icono="historicos"
       tono="lote"
     />
@@ -223,14 +215,8 @@ function textoDias(dias: number | null): string {
                 <span class="block text-xs text-muted">{{ f.donante }}</span>
               </template>
             </span>
-            <span
-              class="tbl-cell flex flex-wrap items-center gap-1 overflow-visible whitespace-normal"
-              data-label="Vencimiento"
-            >
-              <template v-if="f.fechaVencimiento">
-                <span>{{ formatearFecha(f.fechaVencimiento) }}</span>
-                <span v-if="f.vencimientoEstimado" class="chip-warn">estimada</span>
-              </template>
+            <span class="tbl-cell" data-label="Vencimiento">
+              <span v-if="f.fechaVencimiento">{{ formatearFecha(f.fechaVencimiento) }}</span>
               <span v-else class="text-muted">Sin fecha</span>
             </span>
             <span class="tbl-cell num" data-label="Existencia">{{ formatearNumero(f.existencia, 0) }} {{ f.unidadConteo }}</span>
@@ -256,13 +242,21 @@ function textoDias(dias: number | null): string {
                 :aria-label="'Ver trazabilidad de ' + f.codigo"
                 @click="alternarExpandido(f.idLote)"
               >
-                <Icono nombre="chevron-abajo" :tamano="16" />
+                <Icono
+                  nombre="chevron-derecha"
+                  :tamano="16"
+                  class="transition-transform"
+                  :class="{ 'rotate-90': estaExpandido(f.idLote) }"
+                />
               </button>
             </span>
           </div>
 
           <div v-if="estaExpandido(f.idLote)" class="col-span-full rounded-md bg-page p-4 text-sm">
-            <p class="mb-2 font-medium text-ink">Trazabilidad de {{ f.codigo }}</p>
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              <p class="font-medium text-ink">Trazabilidad de {{ f.codigo }}</p>
+              <span v-if="f.vencimientoEstimado" class="chip-warn">Vencimiento estimado</span>
+            </div>
             <ul class="flex flex-col gap-2">
               <li
                 v-for="m in trazabilidad(f.idLote)"

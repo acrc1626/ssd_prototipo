@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { usePaginacion } from '../application/paginacion';
 import { useUsuariosAplicacion } from '../application/usuarios';
 import type { FilaUsuario } from '../application/usuarios';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
+import EstadoVacio from '../components/EstadoVacio.vue';
+import Icono from '../components/Icono.vue';
 import Migas from '../components/Migas.vue';
 import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
@@ -21,7 +23,21 @@ const confirmar = useConfirmarStore();
 const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Usuarios y roles' }];
 const roles = computed(() => datos.roles);
 
-const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = usePaginacion(usuarios.filas);
+const busqueda = ref('');
+const rolFiltro = ref('TODOS');
+const estadoFiltro = ref<'TODOS' | 'ACTIVOS' | 'INACTIVOS'>('TODOS');
+const filas = computed(() => {
+  const texto = busqueda.value.trim().toLocaleLowerCase('es');
+  return usuarios.filas.value.filter((u) => {
+    if (rolFiltro.value !== 'TODOS' && u.idRol !== rolFiltro.value) return false;
+    if (estadoFiltro.value === 'ACTIVOS' && !u.activo) return false;
+    if (estadoFiltro.value === 'INACTIVOS' && u.activo) return false;
+    if (texto && !(u.nombre.toLocaleLowerCase('es').includes(texto) || u.correo.toLocaleLowerCase('es').includes(texto))) return false;
+    return true;
+  });
+});
+
+const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = usePaginacion(filas);
 
 function iniciales(nombre: string): string {
   return nombre
@@ -85,8 +101,32 @@ async function onCambiarActivo(fila: FilaUsuario, event: Event): Promise<void> {
   <div class="card">
     <div class="card-body">
       <h2>Personas</h2>
+      <p class="help">Los roles son fijos (Coordinador, Asistente administrativa, Personal de bodega). No se crean roles nuevos: a cada persona se le asigna uno.</p>
 
-      <div class="tbl-scroll" tabindex="0" aria-label="Usuarios y roles">
+      <div class="flex flex-wrap items-center gap-4">
+        <label class="flex items-center gap-2 text-sm text-label">
+          Rol
+          <select v-model="rolFiltro" class="select max-w-none w-[200px]">
+            <option value="TODOS">Todos</option>
+            <option v-for="r in roles" :key="r.IdRol" :value="r.IdRol">{{ r.Nombre }}</option>
+          </select>
+        </label>
+        <label class="flex items-center gap-2 text-sm text-label">
+          Estado
+          <select v-model="estadoFiltro" class="select max-w-none w-[150px]">
+            <option value="TODOS">Todos</option>
+            <option value="ACTIVOS">Activos</option>
+            <option value="INACTIVOS">Inactivos</option>
+          </select>
+        </label>
+        <div class="relative ml-auto">
+          <Icono nombre="buscar" :tamano="16" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+          <input v-model="busqueda" type="search" class="input pl-10" placeholder="Buscar nombre o correo" aria-label="Buscar usuario" />
+        </div>
+      </div>
+
+      <EstadoVacio v-if="filas.length === 0" titulo="No hay usuarios con esos filtros" descripcion="Prueba a quitar un filtro o a buscar con otras palabras." />
+      <div v-else class="tbl-scroll" tabindex="0" aria-label="Usuarios y roles">
         <div class="tbl-head" :style="{ gridTemplateColumns: COLUMNAS }">
           <span>Nombre</span>
           <span>Correo</span>
@@ -126,7 +166,7 @@ async function onCambiarActivo(fila: FilaUsuario, event: Event): Promise<void> {
         :total-paginas="totalPaginas"
         :rango-desde="rangoDesde"
         :rango-hasta="rangoHasta"
-        :total="usuarios.filas.value.length"
+        :total="filas.length"
         etiqueta="usuarios"
         @ir-pagina="irPagina"
       />

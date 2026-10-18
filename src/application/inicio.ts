@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 
 import { existenciaLote, kgLote, productoDeLote } from '../domain/calculos';
-import { formatearNumero, unirConY } from '../domain/formato';
+import { formatearNumero } from '../domain/formato';
 import type { NivelRiesgo } from '../domain/modelos';
 import { useDatosStore } from '../stores/datos';
 import { useSesionStore } from '../stores/sesion';
@@ -9,10 +9,16 @@ import { useExistenciasAplicacion } from './existencias';
 
 export interface PendienteInicio {
   id: string;
-  etiqueta: string;
+  icono: string;
   titulo: string;
   descripcion: string;
   accion?: { etiqueta: string; ruta: string };
+}
+
+export interface AccionVencimiento {
+  etiqueta: string;
+  ruta: string;
+  icono: string;
 }
 
 export interface AlertaVencimiento {
@@ -89,20 +95,37 @@ export function useInicioAplicacion() {
       });
   });
 
+  /** Organizaciones que todavía no están vinculadas: no pueden recibir remisiones hasta
+   *  completar el proceso (Radicación → … → Vinculada). Es una tarea accionable. */
+  const organizacionesEnProceso = computed(
+    () => datos.organizaciones.filter((o) => o.Etapa !== 'VINCULADA').length,
+  );
+
+  /** Pendientes = tareas accionables de verdad, no información de solo lectura. El riesgo
+   *  de vencimiento ya no va aquí (no era accionable ni escalaba: con muchos lotes se
+   *  volvía un listado inmanejable); pasó al panel "Por vencer" con su propia acción por
+   *  rol (ver accionVencimiento). Cada pendiente se filtra por lo que el rol puede hacer. */
   const pendientes = computed<PendienteInicio[]>(() => {
     const rutasDisponibles = new Set(sesion.itemsMenu.map((i) => i.ruta));
     const resultado: PendienteInicio[] = [];
 
-    const altas = alertas.value.filter((a) => a.nivel === 'ALTO');
-    if (altas.length > 0) {
-      const kgTotal = altas.reduce((t, a) => t + a.kg, 0);
-      const nombres = altas.map((a) => `${a.codigo} ${a.producto}`);
+    if (sesion.rol === 'bodega' && recepcionesBorrador.value > 0) {
       resultado.push({
-        id: 'riesgo',
-        etiqueta: `${altas[0]!.diasParaVencer}d`,
-        titulo: `${altas.length} lotes en riesgo alto`,
-        descripcion: `${unirConY(nombres)} · ${formatearNumero(kgTotal)} kg`,
-        accion: rutasDisponibles.has('/riesgo') ? { etiqueta: 'Ver riesgo', ruta: '/riesgo' } : undefined,
+        id: 'borradores',
+        icono: 'recepciones',
+        titulo: `${recepcionesBorrador.value} ${recepcionesBorrador.value === 1 ? 'recepción' : 'recepciones'} por confirmar`,
+        descripcion: 'En borrador: todavía no crean lotes en existencias',
+        accion: rutasDisponibles.has('/recepciones') ? { etiqueta: 'Revisar', ruta: '/recepciones' } : undefined,
+      });
+    }
+
+    if (organizacionesEnProceso.value > 0 && rutasDisponibles.has('/organizaciones')) {
+      resultado.push({
+        id: 'organizaciones',
+        icono: 'organizaciones',
+        titulo: `${organizacionesEnProceso.value} ${organizacionesEnProceso.value === 1 ? 'organización' : 'organizaciones'} por vincular`,
+        descripcion: 'En proceso: no pueden recibir remisiones hasta vincularse',
+        accion: { etiqueta: 'Gestionar', ruta: '/organizaciones' },
       });
     }
 
@@ -110,40 +133,25 @@ export function useInicioAplicacion() {
     if (equivalencias.length > 0 && rutasDisponibles.has('/historicos')) {
       resultado.push({
         id: 'equivalencias',
-        etiqueta: String(equivalencias.length),
-        titulo: `${equivalencias.length} ${equivalencias.length === 1 ? 'nombre' : 'nombres'} de producto sin equivalencia`,
-        descripcion: 'Vienen de los históricos; asígnales un producto del catálogo',
+        icono: 'catalogo',
+        titulo: `${equivalencias.length} ${equivalencias.length === 1 ? 'nombre' : 'nombres'} sin equivalencia`,
+        descripcion: 'De los históricos; asígnales un producto del catálogo',
         accion: { etiqueta: 'Asignar', ruta: '/historicos' },
       });
     }
 
-    const reporte = reporteDelMes.value;
-    if (reporte) {
-      const diferencia = +(reporte.prevRate - reporte.rate).toFixed(1);
-      const mes = reporte.name.split(' ')[0]!;
-      resultado.push({
-        id: 'reporte',
-        etiqueta: mes.slice(0, 3),
-        titulo: `Desperdicio de ${mes.toLowerCase()}: ${formatearNumero(reporte.rate)} %`,
-        descripcion:
-          diferencia >= 0
-            ? `Bajó ${formatearNumero(Math.abs(diferencia))} puntos frente a ${reporte.prev}`
-            : `Subió ${formatearNumero(Math.abs(diferencia))} puntos frente a ${reporte.prev}`,
-        accion: rutasDisponibles.has('/reporte') ? { etiqueta: 'Ver reporte', ruta: '/reporte' } : undefined,
-      });
-    }
-
-    if (sesion.rol === 'bodega' && recepcionesBorrador.value > 0) {
-      resultado.unshift({
-        id: 'borradores',
-        etiqueta: String(recepcionesBorrador.value),
-        titulo: `${recepcionesBorrador.value} recepciones en borrador`,
-        descripcion: 'Aún no crean lotes en existencias',
-        accion: rutasDisponibles.has('/recepciones') ? { etiqueta: 'Ver recepciones', ruta: '/recepciones' } : undefined,
-      });
-    }
-
     return resultado;
+  });
+
+  /** Acción del panel "Por vencer", según lo que el rol puede hacer con un lote que está
+   *  por vencer: bodega lo da de baja; la asistente lo distribuye en una remisión antes
+   *  de perderlo; la coordinadora revisa el detalle de riesgo. */
+  const accionVencimiento = computed<AccionVencimiento | undefined>(() => {
+    const rutas = new Set(sesion.itemsMenu.map((i) => i.ruta));
+    if (rutas.has('/bajas')) return { etiqueta: 'Registrar baja', ruta: '/bajas', icono: 'bajas' };
+    if (rutas.has('/remisiones')) return { etiqueta: 'Emitir remisión', ruta: '/remisiones/nueva', icono: 'remisiones' };
+    if (rutas.has('/riesgo')) return { etiqueta: 'Ver riesgo', ruta: '/riesgo', icono: 'riesgo' };
+    return undefined;
   });
 
   return {
@@ -155,6 +163,7 @@ export function useInicioAplicacion() {
     conteoPorNivel,
     alertas,
     pendientes,
+    accionVencimiento,
     mostrarRecepcionesBorrador,
     vencimientoEstimadoCount,
   };

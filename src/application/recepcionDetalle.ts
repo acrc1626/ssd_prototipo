@@ -39,11 +39,15 @@ export function obtenerRecepcionDetalle(numero: string): DatosRecepcionDetalle |
   const sesion = useSesionStore();
 
   if (numero === 'nueva') {
+    // La fecha por defecto es el día real en que se registra (no la fecha de referencia
+    // del prototipo): una recepción se ingresa el día que llega la donación.
+    const hoy = new Date();
+    const fechaHoy = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
     return {
       idRecepcion: null,
       numero: null,
       donanteId: '',
-      fecha: datos.fechaReferencia,
+      fecha: fechaHoy,
       origen: 'DONACION',
       numeroSoporte: '',
       soporteUrl: null,

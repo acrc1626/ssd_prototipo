@@ -302,7 +302,7 @@ function alternarExpandido(id: string): void {
                     :aria-label="'Quitar ' + c.producto + ' de ' + p.nombre"
                     @click="quitarComponente(p.idPrograma, c.idProducto, c.producto, c.kgPorKit)"
                   >
-                    <Icono nombre="bajas" :tamano="16" />
+                    <Icono nombre="quitar" :tamano="16" />
                   </button>
                 </span>
               </div>

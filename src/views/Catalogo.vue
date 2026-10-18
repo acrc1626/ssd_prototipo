@@ -509,9 +509,10 @@ const pagPresentaciones = reactive(usePaginacion(presentacionesFiltradas));
         <div class="flex flex-col gap-1">
           <h2>Equivalencias</h2>
           <p class="text-sm text-muted">
-            Nombres de los históricos ya asignados a un producto.
+            Al importar históricos, los nombres viejos (por ejemplo "SANDIA KILOS") se traducen al producto del catálogo
+            ("Sandía") para poder sumarlos en los reportes. Aquí ves las traducciones ya hechas.
             <router-link v-if="catalogo.nombresSinAsignar.value > 0" to="/historicos" class="font-medium text-brand-text hover:underline">
-              Hay {{ catalogo.nombresSinAsignar.value }} pendientes en Históricos.
+              Hay {{ catalogo.nombresSinAsignar.value }} nombres por asignar en Históricos.
             </router-link>
           </p>
         </div>
@@ -525,17 +526,24 @@ const pagPresentaciones = reactive(usePaginacion(presentacionesFiltradas));
 
         <EstadoVacio v-if="catalogo.equivalencias.value.length === 0" titulo="Todavía no hay equivalencias asignadas" />
         <EstadoVacio v-else-if="equivalenciasFiltradas.length === 0" titulo="No hay equivalencias con esa búsqueda" descripcion="Prueba a buscar con otras palabras." />
-        <ul v-else class="flex flex-col divide-y divide-line-row">
-          <li
-            v-for="e in equivalenciasFiltradas"
-            :key="e.nombreOrigen"
-            class="flex items-center justify-between gap-4 py-3 text-sm first:pt-0 last:pb-0"
-          >
-            <span class="min-w-0 truncate font-mono text-xs text-muted" :title="e.nombreOrigen">{{ e.nombreOrigen }}</span>
-            <Icono nombre="chevron-derecha" :tamano="16" class="shrink-0 text-muted" />
-            <span class="min-w-0 truncate text-right font-medium text-ink">{{ e.producto }}</span>
-          </li>
-        </ul>
+        <div v-else class="overflow-hidden rounded-md border border-line">
+          <div class="grid grid-cols-[minmax(0,1fr)_28px_minmax(0,1fr)] items-center gap-3 border-b border-line bg-mint-soft px-4 py-2 text-xs font-bold uppercase tracking-[0.06em] text-table-head">
+            <span>Nombre en el histórico</span>
+            <span class="sr-only">se traduce a</span>
+            <span>Producto</span>
+          </div>
+          <ul class="flex flex-col divide-y divide-line-row">
+            <li
+              v-for="e in equivalenciasFiltradas"
+              :key="e.nombreOrigen"
+              class="grid grid-cols-[minmax(0,1fr)_28px_minmax(0,1fr)] items-center gap-3 px-4 py-2.5 text-sm"
+            >
+              <span class="min-w-0 truncate font-mono text-xs text-muted" :title="e.nombreOrigen">{{ e.nombreOrigen }}</span>
+              <Icono nombre="chevron-derecha" :tamano="16" class="justify-self-center text-muted" />
+              <span class="min-w-0 truncate font-medium text-ink">{{ e.producto }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 
 import { usePaginacion } from '../../application/paginacion';
+import { obtenerRecepcionDetalle } from '../../application/recepcionDetalle';
 import { useRecepcionesAplicacion } from '../../application/recepciones';
 import EncabezadoPagina from '../../components/EncabezadoPagina.vue';
 import EstadoVacio from '../../components/EstadoVacio.vue';
@@ -15,7 +16,7 @@ import type { EstadoRecepcion, OrigenRecepcion } from '../../domain/modelos';
 type FiltroEstado = 'TODAS' | EstadoRecepcion;
 type FiltroOrigen = 'TODOS' | OrigenRecepcion;
 
-const COLUMNAS = '96px 96px minmax(110px,1fr) 96px minmax(100px,1fr) 88px 96px 144px 104px 56px';
+const COLUMNAS = '80px 88px minmax(120px,1fr) 72px minmax(110px,1fr) 72px 84px 104px 92px 48px';
 
 const aplicacion = useRecepcionesAplicacion();
 
@@ -62,6 +63,12 @@ function etiquetaOrigen(origen: OrigenRecepcion): string {
 
 function alternarDetalle(idRecepcion: string): void {
   filaAbiertaId.value = filaAbiertaId.value === idRecepcion ? null : idRecepcion;
+}
+
+/** Renglones (productos recibidos) de una recepción, para el detalle expandible: es la
+ *  información que la fila no muestra. Reusa obtenerRecepcionDetalle. */
+function renglonesDe(numero: string) {
+  return obtenerRecepcionDetalle(numero)?.renglones ?? [];
 }
 </script>
 
@@ -157,7 +164,7 @@ function alternarDetalle(idRecepcion: string): void {
         titulo="No hay recepciones con esos filtros"
         descripcion="Prueba a quitar un filtro o a buscar con otras palabras."
       />
-      <div v-else class="tbl-scroll" tabindex="0" aria-label="Tabla de recepciones">
+      <div v-else class="tbl-scroll tbl-fit" tabindex="0" aria-label="Tabla de recepciones">
         <div class="rcp-head" :style="{ gridTemplateColumns: columnas }">
           <span>Número</span>
           <span>Fecha</span>
@@ -210,48 +217,50 @@ function alternarDetalle(idRecepcion: string): void {
             role="region"
             :aria-label="'Detalle de la recepción ' + f.numero"
           >
-            <div class="rcp-detalle-grid">
-              <div>
-                <p class="rcp-detalle-label">Número de recepción</p>
-                <p class="rcp-detalle-valor font-mono">{{ f.numero }}</p>
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <p class="rcp-detalle-label">Productos recibidos</p>
+              <p class="text-xs text-muted">
+                {{ f.renglones }} {{ f.renglones === 1 ? 'renglón' : 'renglones' }} · {{ formatearNumero(f.kgRecibidos) }} kg en total
+              </p>
+            </div>
+
+            <p v-if="renglonesDe(f.numero).length === 0" class="py-3 text-center text-sm text-muted">
+              Esta recepción todavía no tiene renglones.
+            </p>
+            <div v-else class="tbl-scroll tbl-fit" tabindex="0" :aria-label="'Productos de la recepción ' + f.numero">
+              <div class="tbl-head" style="grid-template-columns: minmax(150px,1fr) 120px 96px minmax(120px,1fr) 88px">
+                <span>Producto</span>
+                <span class="text-right">Cantidad</span>
+                <span class="text-right">Kg</span>
+                <span>Vencimiento</span>
+                <span>Lote</span>
               </div>
-              <div>
-                <p class="rcp-detalle-label">Donante</p>
-                <p class="rcp-detalle-valor">{{ f.donante }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Origen</p>
-                <p class="rcp-detalle-valor">{{ etiquetaOrigen(f.origen) }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Número de soporte</p>
-                <p class="rcp-detalle-valor">{{ f.numeroSoporte }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Renglones</p>
-                <p class="rcp-detalle-valor">{{ f.renglones }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Peso total recibido</p>
-                <p class="rcp-detalle-valor">{{ formatearNumero(f.kgRecibidos) }} kg</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Registrado por</p>
-                <p class="rcp-detalle-valor">{{ f.registro }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Fecha de registro</p>
-                <p class="rcp-detalle-valor">{{ formatearFecha(f.fecha) }}</p>
-              </div>
-              <div>
-                <p class="rcp-detalle-label">Estado</p>
-                <p class="rcp-detalle-valor">
-                  <span :class="f.estado === 'BORRADOR' ? 'chip-warn' : 'chip-ok'">
-                    {{ f.estado === 'BORRADOR' ? 'Borrador' : 'Confirmada' }}
-                  </span>
-                </p>
+              <div
+                v-for="r in renglonesDe(f.numero)"
+                :key="r.id"
+                class="tbl-row"
+                style="grid-template-columns: minmax(150px,1fr) 120px 96px minmax(120px,1fr) 88px"
+              >
+                <span class="tbl-cell" data-label="Producto">
+                  <span class="block font-medium text-ink">{{ r.productoNombre }}</span>
+                  <span class="block text-xs text-muted">{{ r.presentacionNombre }}</span>
+                </span>
+                <span class="tbl-cell num" data-label="Cantidad">{{ formatearNumero(r.cantidad, 0) }} {{ r.unidadConteo }}</span>
+                <span class="tbl-cell num" data-label="Kg">{{ formatearNumero(r.kgRecibido) }}</span>
+                <span class="tbl-cell flex flex-wrap items-center gap-1 overflow-visible whitespace-normal" data-label="Vencimiento">
+                  <template v-if="r.fechaVencimiento">
+                    <span>{{ formatearFecha(r.fechaVencimiento) }}</span>
+                    <span v-if="r.vencimientoEstimado" class="chip-warn">estimada</span>
+                  </template>
+                  <span v-else class="text-muted">Sin fecha</span>
+                </span>
+                <span class="tbl-cell" data-label="Lote">
+                  <span v-if="r.codigoLote" class="lot">{{ r.codigoLote }}</span>
+                  <span v-else class="text-xs text-muted">Sin crear</span>
+                </span>
               </div>
             </div>
+
             <div class="mt-4">
               <router-link :to="`/recepciones/${f.numero}`" class="btn-primary">
                 <Icono :nombre="f.estado === 'BORRADOR' ? 'lapiz' : 'ojo'" :tamano="16" />

@@ -30,7 +30,15 @@ const fecha = ref('');
 const origen = ref<OrigenRecepcion>('DONACION');
 const numeroSoporte = ref('');
 const soporteUrl = ref<string | null>(null);
+const soporteTipo = ref<string | null>(null);
+const soporteError = ref('');
 const inputArchivoRef = ref<HTMLInputElement | null>(null);
+
+/** Tipos permitidos para el soporte del donante: solo PDF, PNG o JPG. */
+const TIPOS_SOPORTE = ['application/pdf', 'image/png', 'image/jpeg'];
+const esPdfSoporte = computed(
+  () => soporteTipo.value === 'application/pdf' || /\.pdf($|\?)/i.test(numeroSoporte.value) || /\.pdf($|\?)/i.test(soporteUrl.value ?? ''),
+);
 const estado = ref<'BORRADOR' | 'CONFIRMADA'>('BORRADOR');
 const renglones = ref<RenglonRecepcion[]>([]);
 const avisoGuardado = ref(false);
@@ -82,7 +90,17 @@ const presentacionNuevaId = ref('');
 const cantidadNueva = ref<number | null>(null);
 const fechaNueva = ref('');
 const cantidadInputRef = ref<HTMLInputElement | null>(null);
-const donanteSelectRef = ref<HTMLSelectElement | null>(null);
+let contadorRenglon = 0;
+
+// Buscador dentro de la tabla de renglones (útil cuando ya hay varios y falta corregir uno)
+const busquedaRenglon = ref('');
+const renglonesFiltrados = computed(() => {
+  const texto = busquedaRenglon.value.trim().toLocaleLowerCase('es');
+  if (!texto) return renglones.value;
+  return renglones.value.filter(
+    (r) => r.productoNombre.toLocaleLowerCase('es').includes(texto) || r.presentacionNombre.toLocaleLowerCase('es').includes(texto),
+  );
+});
 
 /** Auditoría RC-01/RC-03: Categoria.AplicaVencimiento ya existe en el modelo (CLAUDE.md,
  *  sección Datos) — se usa para exigir vencimiento solo en productos perecederos, no en
@@ -97,7 +115,6 @@ function categoriaRequiereVencimiento(idPresentacion: string): boolean {
 const erroresRenglon = ref<string[]>([]);
 const erroresRecepcion = ref<string[]>([]);
 const erroresBoxRef = ref<HTMLElement | null>(null);
-const donanteInvalido = ref(false);
 
 const busquedaProducto = ref('');
 const comboAbierto = ref(false);
@@ -193,6 +210,18 @@ function agregarRenglon(): void {
   if (idPresentacion && categoriaRequiereVencimiento(idPresentacion) && !fechaNueva.value) {
     erroresRenglon.value.push('Este producto vence: agrega la fecha de vencimiento.');
   }
+  // Duplicado: mismo producto/presentación + mismo vencimiento + misma cantidad. Casi
+  // siempre es un doble clic o un error; se avisa en el banner rojo y no se agrega.
+  if (idPresentacion && cantidad && cantidad > 0) {
+    const duplicado = renglones.value.some(
+      (r) => r.idPresentacion === idPresentacion && (r.fechaVencimiento ?? '') === (fechaNueva.value || '') && r.cantidad === cantidad,
+    );
+    if (duplicado) {
+      const pres = datos.presentaciones.find((p) => p.IdPresentacion === idPresentacion);
+      const prod = pres ? datos.productos.find((p) => p.IdProducto === pres.IdProducto) : undefined;
+      erroresRenglon.value.push(`Ya agregaste "${prod?.Nombre ?? 'ese producto'}" con la misma cantidad y vencimiento. Edítalo en la tabla si necesitas cambiarlo.`);
+    }
+  }
   if (erroresRenglon.value.length > 0) return;
   if (!idPresentacion || !cantidad) return;
 
@@ -201,7 +230,7 @@ function agregarRenglon(): void {
   const producto = datos.productos.find((p) => p.IdProducto === presentacion.IdProducto);
 
   const nuevo: RenglonRecepcion = {
-    id: `nuevo-${renglones.value.length}-${idPresentacion}`,
+    id: `nuevo-${++contadorRenglon}-${idPresentacion}`,
     idPresentacion,
     productoNombre: producto?.Nombre ?? '',
     presentacionNombre: presentacion.Nombre_PENDIENTE,
@@ -214,11 +243,31 @@ function agregarRenglon(): void {
     codigoLote: null,
   };
 
-  renglones.value = [...renglones.value, nuevo];
+  // El renglón nuevo queda de primero (lo último agregado es lo más visible).
+  renglones.value = [nuevo, ...renglones.value];
   presentacionNuevaId.value = '';
   busquedaProducto.value = '';
   cantidadNueva.value = null;
   fechaNueva.value = '';
+}
+
+/** Edición en línea de un renglón que ya está en la tabla (antes de guardar): recalcula
+ *  los kg a partir de la cantidad y ajusta el desecho si se pasa del recibido. */
+function actualizarCantidad(id: string, valor: string): void {
+  const n = Number(valor);
+  if (Number.isNaN(n) || n <= 0) return;
+  renglones.value = renglones.value.map((r) => {
+    if (r.id !== id) return r;
+    const pres = datos.presentaciones.find((p) => p.IdPresentacion === r.idPresentacion);
+    const kgRecibido = pres ? kgDesdePresentacion(pres, n) : r.kgRecibido;
+    return { ...r, cantidad: n, kgRecibido, kgDesechado: Math.min(r.kgDesechado, kgRecibido) };
+  });
+}
+
+function actualizarVencimiento(id: string, valor: string): void {
+  renglones.value = renglones.value.map((r) =>
+    r.id === id ? { ...r, fechaVencimiento: valor || null, vencimientoEstimado: false } : r,
+  );
 }
 
 function abrirSelectorArchivo(): void {
@@ -243,12 +292,19 @@ function cerrarVisorSoporte(): void {
 }
 
 function onArchivoSeleccionado(event: Event): void {
-  const archivo = (event.target as HTMLInputElement).files?.[0];
+  const input = event.target as HTMLInputElement;
+  const archivo = input.files?.[0];
+  input.value = '';
   if (!archivo) return;
+  if (!TIPOS_SOPORTE.includes(archivo.type)) {
+    soporteError.value = 'Solo se permiten archivos PDF, PNG o JPG.';
+    return;
+  }
+  soporteError.value = '';
   if (soporteUrl.value?.startsWith('blob:')) URL.revokeObjectURL(soporteUrl.value);
   soporteUrl.value = URL.createObjectURL(archivo);
+  soporteTipo.value = archivo.type;
   numeroSoporte.value = archivo.name;
-  (event.target as HTMLInputElement).value = '';
 }
 
 /** Crea o actualiza la cabecera de la recepción y guarda los renglones actuales en el
@@ -292,16 +348,15 @@ function guardarBorrador(): void {
   }, 2500);
 }
 
-/** Auditoría RC-01: antes se podía confirmar sin donante, sin renglones y con
- *  perecederos sin vencimiento — el lote quedaba "Sin riesgo" en Existencias,
- *  contradiciendo la trazabilidad que promete la app. */
-function calcularErroresRecepcion(): { mensajes: string[]; donanteInvalido: boolean } {
+/** Obligatorios según el esquema de BD (tabla Recepcion): Fecha y Origen son NOT NULL;
+ *  IdDonante es nullable, así que el donante NO se exige. Para CONFIRMAR, además, la
+ *  regla de negocio pide al menos un renglón y que los perecederos tengan vencimiento
+ *  (si no, el lote quedaría "Sin riesgo" en Existencias). */
+function calcularErroresRecepcion(): string[] {
   const mensajes: string[] = [];
-  let donInvalido = false;
 
-  if (!donanteId.value) {
-    donInvalido = true;
-    mensajes.push('Selecciona un donante.');
+  if (!fecha.value) {
+    mensajes.push('Selecciona la fecha de recepción.');
   }
   if (renglones.value.length === 0) {
     mensajes.push('Agrega al menos un renglón.');
@@ -313,27 +368,26 @@ function calcularErroresRecepcion(): { mensajes: string[]; donanteInvalido: bool
     mensajes.push(`Falta el vencimiento de ${unirConY(sinVencimiento.map((r) => r.productoNombre))}.`);
   }
 
-  return { mensajes, donanteInvalido: donInvalido };
+  return mensajes;
 }
 
-/** Si ya se mostraron errores, se recalculan en vivo al corregir un campo — si no, el
- *  mensaje "Agrega al menos un renglón" se quedaba pegado aunque el usuario ya hubiera
- *  agregado uno. Solo revisa mientras el bloque de errores esté visible, para no
- *  adelantarse a corregir antes de que la persona intente confirmar. */
-watch([donanteId, renglones], () => {
+/** Botones habilitados según los obligatorios (esquema + negocio):
+ *  - Guardar borrador: al menos un renglón registrado.
+ *  - Confirmar: al menos un renglón y la fecha puesta (el vencimiento de perecederos se
+ *    valida al confirmar, con mensaje en el banner). */
+const puedeGuardarBorrador = computed(() => renglones.value.length > 0);
+const puedeConfirmar = computed(() => renglones.value.length > 0 && !!fecha.value);
+
+// Recalcula los errores en vivo mientras el banner esté visible (al corregir un campo).
+watch([fecha, renglones], () => {
   if (erroresRecepcion.value.length === 0) return;
-  const { mensajes, donanteInvalido: donInvalido } = calcularErroresRecepcion();
-  erroresRecepcion.value = mensajes;
-  donanteInvalido.value = donInvalido;
+  erroresRecepcion.value = calcularErroresRecepcion();
 });
 
 function validarRecepcion(): boolean {
-  const { mensajes, donanteInvalido: donInvalido } = calcularErroresRecepcion();
-  erroresRecepcion.value = mensajes;
-  donanteInvalido.value = donInvalido;
-
+  erroresRecepcion.value = calcularErroresRecepcion();
   if (erroresRecepcion.value.length > 0) {
-    nextTick(() => (donanteInvalido.value ? donanteSelectRef.value?.focus() : erroresBoxRef.value?.focus()));
+    nextTick(() => erroresBoxRef.value?.focus());
     return false;
   }
   return true;
@@ -410,8 +464,22 @@ function volver(): void {
               <Icono nombre="check" :tamano="16" />
               Guardado
             </span>
-            <button type="button" class="btn-secondary" @click="guardarBorrador()">Guardar borrador</button>
-            <button type="button" class="btn-primary" @click="confirmarRecepcion()">
+            <button
+              type="button"
+              class="btn-secondary"
+              :disabled="!puedeGuardarBorrador"
+              :title="!puedeGuardarBorrador ? 'Agrega al menos un producto para guardar el borrador' : undefined"
+              @click="guardarBorrador()"
+            >
+              Guardar borrador
+            </button>
+            <button
+              type="button"
+              class="btn-primary"
+              :disabled="!puedeConfirmar"
+              :title="!puedeConfirmar ? 'Agrega al menos un producto y la fecha para confirmar' : undefined"
+              @click="confirmarRecepcion()"
+            >
               Confirmar recepción
             </button>
           </div>
@@ -431,26 +499,18 @@ function volver(): void {
 
         <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
           <label class="label">
-            <span class="lbl-cap">Donante <span v-if="!soloLectura" aria-hidden="true" class="text-error">*</span></span>
-            <span v-if="soloLectura" class="text-sm text-ink">{{ nombreDonante(donanteId) }}</span>
-            <select
-              v-else
-              ref="donanteSelectRef"
-              v-model="donanteId"
-              class="select max-w-[220px]!"
-              aria-required="true"
-              :aria-invalid="donanteInvalido"
-              :class="{ 'border-error!': donanteInvalido }"
-            >
-              <option value="" disabled>Seleccione un donante</option>
+            Donante
+            <span v-if="soloLectura" class="text-sm text-ink">{{ nombreDonante(donanteId) || 'Sin donante' }}</span>
+            <select v-else v-model="donanteId" class="select max-w-[220px]!">
+              <option value="">Sin donante</option>
               <option v-for="d in donantes" :key="d.IdDonante" :value="d.IdDonante">{{ d.Nombre }}</option>
             </select>
           </label>
 
           <label class="label">
-            Fecha de recepción
+            <span class="lbl-cap">Fecha de recepción <span v-if="!soloLectura" aria-hidden="true" class="text-error">*</span></span>
             <span v-if="soloLectura" class="text-sm text-ink">{{ formatearFecha(fecha) }}</span>
-            <input v-else v-model="fecha" type="date" class="input-date" />
+            <input v-else v-model="fecha" type="date" class="input-date" aria-required="true" />
           </label>
 
           <label class="label">
@@ -468,7 +528,7 @@ function volver(): void {
               ref="inputArchivoRef"
               type="file"
               class="hidden"
-              accept="image/*,application/pdf"
+              accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
               @change="onArchivoSeleccionado"
             />
             <div class="flex flex-wrap items-center gap-2">
@@ -484,9 +544,11 @@ function volver(): void {
                 @click="abrirSelectorArchivo()"
               >
                 <Icono nombre="adjuntar" :tamano="16" />
-                {{ soporteUrl ? 'Cambiar archivo' : 'Adjuntar foto o PDF' }}
+                {{ soporteUrl ? 'Cambiar archivo' : 'Adjuntar PDF o imagen' }}
               </button>
             </div>
+            <p v-if="soporteError" role="alert" class="text-xs text-error">{{ soporteError }}</p>
+            <p v-else class="help">PDF, PNG o JPG</p>
           </label>
         </div>
       </div>
@@ -591,69 +653,111 @@ function volver(): void {
         <p v-if="renglones.length === 0" class="py-8 text-center text-sm text-muted">
           Todavía no hay renglones en esta recepción.
         </p>
-        <div v-else class="tbl-scroll max-h-[330px] overflow-y-auto" tabindex="0" aria-label="Renglones de la recepción">
-          <div class="tbl-head sticky top-0 z-10" style="grid-template-columns: minmax(0,1fr) 96px 88px 112px 112px 96px 96px 56px">
-            <span>Producto y presentación</span>
-            <span class="text-right">Cantidad</span>
-            <span class="text-right">Kg</span>
-            <span>Vencimiento</span>
-            <span class="text-right">Desechado (kg)</span>
-            <span class="text-right">Aprov. kg</span>
-            <span>Lote</span>
-            <span class="sr-only">Quitar</span>
-          </div>
-          <div
-            v-for="r in renglones"
-            :key="r.id"
-            class="tbl-row"
-            style="grid-template-columns: minmax(0,1fr) 96px 88px 112px 112px 96px 96px 56px"
-          >
-            <span class="tbl-cell" data-label="Producto y presentación">
-              <span class="block font-medium text-ink">{{ r.productoNombre }}</span>
-              <span class="block text-xs text-muted">{{ r.presentacionNombre }}</span>
-            </span>
-            <span class="tbl-cell num" data-label="Cantidad">{{ formatearNumero(r.cantidad, decimalesCantidad(r.cantidad)) }} {{ r.unidadConteo }}</span>
-            <span class="tbl-cell num" data-label="Kg">{{ formatearNumero(r.kgRecibido) }}</span>
-            <span
-              class="tbl-cell flex flex-wrap items-center gap-1 overflow-visible whitespace-normal"
-              data-label="Vencimiento"
-            >
-              <span>{{ r.fechaVencimiento ? formatearFecha(r.fechaVencimiento) : 'Sin fecha' }}</span>
-              <span v-if="r.vencimientoEstimado" class="chip-warn">estimada</span>
-            </span>
-            <span class="tbl-cell" data-label="Desechado (kg)">
-              <span v-if="soloLectura" class="num block">{{ formatearNumero(r.kgDesechado) }}</span>
+        <template v-else>
+          <div class="flex justify-end">
+            <div class="relative">
+              <Icono nombre="buscar" :tamano="16" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
               <input
-                v-else
-                type="number"
-                min="0"
-                :max="r.kgRecibido"
-                class="input-num"
-                :value="r.kgDesechado"
-                :aria-label="'Kg desechado de ' + r.productoNombre"
-                @change="actualizarDesecho(r.id, ($event.target as HTMLInputElement).value)"
+                v-model="busquedaRenglon"
+                type="search"
+                class="input pl-10"
+                placeholder="Buscar en los renglones"
+                aria-label="Buscar renglón por producto"
               />
-            </span>
-            <span class="tbl-cell num text-brand-hover" data-label="Aprov. kg">
-              {{ formatearNumero(r.kgRecibido - r.kgDesechado) }}
-            </span>
-            <span class="tbl-cell" data-label="Lote">
-              <span v-if="r.codigoLote" class="lot">{{ r.codigoLote }}</span>
-              <span v-else class="text-xs text-muted">Al confirmar</span>
-            </span>
-            <span class="tbl-cell" data-label="Quitar">
-              <button
-                v-if="!soloLectura"
-                type="button"
-                class="btn-icon h-[34px]! w-[34px]! max-desk:h-touch! max-desk:w-touch!"
-                :aria-label="'Quitar ' + r.productoNombre"
-                @click="quitarRenglon(r.id)"
-              >
-                <Icono nombre="bajas" :tamano="16" />
-              </button>
-            </span>
+            </div>
           </div>
-        </div>
+
+          <p v-if="renglonesFiltrados.length === 0" class="py-6 text-center text-sm text-muted">
+            Ningún renglón coincide con la búsqueda.
+          </p>
+          <div v-else class="tbl-scroll max-h-[330px] overflow-y-auto" tabindex="0" aria-label="Renglones de la recepción">
+            <div class="tbl-head sticky top-0 z-10" style="grid-template-columns: minmax(0,1fr) 128px 80px 150px 108px 84px 84px 56px">
+              <span>Producto y presentación</span>
+              <span>Cantidad</span>
+              <span class="text-right">Kg</span>
+              <span>Vencimiento</span>
+              <span class="text-right">Desechado (kg)</span>
+              <span class="text-right">Aprov. kg</span>
+              <span>Lote</span>
+              <span class="sr-only">Quitar</span>
+            </div>
+            <div
+              v-for="r in renglonesFiltrados"
+              :key="r.id"
+              class="tbl-row"
+              style="grid-template-columns: minmax(0,1fr) 128px 80px 150px 108px 84px 84px 56px"
+            >
+              <span class="tbl-cell" data-label="Producto y presentación">
+                <span class="block font-medium text-ink">{{ r.productoNombre }}</span>
+                <span class="block text-xs text-muted">{{ r.presentacionNombre }}</span>
+              </span>
+              <span class="tbl-cell" data-label="Cantidad">
+                <span v-if="soloLectura" class="num block">{{ formatearNumero(r.cantidad, decimalesCantidad(r.cantidad)) }} {{ r.unidadConteo }}</span>
+                <span v-else class="flex items-center gap-1 max-tablet:w-full">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    class="input-num w-[72px]!"
+                    :value="r.cantidad"
+                    :aria-label="'Cantidad de ' + r.productoNombre"
+                    @change="actualizarCantidad(r.id, ($event.target as HTMLInputElement).value)"
+                  />
+                  <span class="shrink-0 text-xs text-muted">{{ r.unidadConteo }}</span>
+                </span>
+              </span>
+              <span class="tbl-cell num" data-label="Kg">{{ formatearNumero(r.kgRecibido) }}</span>
+              <span class="tbl-cell" data-label="Vencimiento">
+                <template v-if="soloLectura">
+                  <span class="flex flex-wrap items-center gap-1">
+                    <span>{{ r.fechaVencimiento ? formatearFecha(r.fechaVencimiento) : 'Sin fecha' }}</span>
+                    <span v-if="r.vencimientoEstimado" class="chip-warn">estimada</span>
+                  </span>
+                </template>
+                <input
+                  v-else
+                  type="date"
+                  class="input-date w-full!"
+                  :min="fecha || undefined"
+                  :value="r.fechaVencimiento ?? ''"
+                  :aria-label="'Vencimiento de ' + r.productoNombre"
+                  @change="actualizarVencimiento(r.id, ($event.target as HTMLInputElement).value)"
+                />
+              </span>
+              <span class="tbl-cell" data-label="Desechado (kg)">
+                <span v-if="soloLectura" class="num block">{{ formatearNumero(r.kgDesechado) }}</span>
+                <input
+                  v-else
+                  type="number"
+                  min="0"
+                  :max="r.kgRecibido"
+                  class="input-num"
+                  :value="r.kgDesechado"
+                  :aria-label="'Kg desechado de ' + r.productoNombre"
+                  @change="actualizarDesecho(r.id, ($event.target as HTMLInputElement).value)"
+                />
+              </span>
+              <span class="tbl-cell num text-brand-hover" data-label="Aprov. kg">
+                {{ formatearNumero(r.kgRecibido - r.kgDesechado) }}
+              </span>
+              <span class="tbl-cell" data-label="Lote">
+                <span v-if="r.codigoLote" class="lot">{{ r.codigoLote }}</span>
+                <span v-else class="text-xs text-muted">Al confirmar</span>
+              </span>
+              <span class="tbl-cell" data-label="Quitar">
+                <button
+                  v-if="!soloLectura"
+                  type="button"
+                  class="btn-icon h-[34px]! w-[34px]! max-desk:h-touch! max-desk:w-touch!"
+                  :aria-label="'Quitar ' + r.productoNombre"
+                  @click="quitarRenglon(r.id)"
+                >
+                  <Icono nombre="quitar" :tamano="16" />
+                </button>
+              </span>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
 
@@ -686,8 +790,14 @@ function volver(): void {
           </div>
 
           <div class="flex max-h-[65vh] min-h-[200px] items-center justify-center overflow-hidden rounded-md bg-page">
+            <iframe
+              v-if="soporteUrl && esPdfSoporte"
+              :src="soporteUrl"
+              :title="'Soporte adjunto' + (numeroSoporte ? ': ' + numeroSoporte : '')"
+              class="h-[65vh] w-full"
+            ></iframe>
             <img
-              v-if="soporteUrl && !errorVisorSoporte"
+              v-else-if="soporteUrl && !errorVisorSoporte"
               :src="soporteUrl"
               :alt="'Soporte adjunto' + (numeroSoporte ? ': ' + numeroSoporte : '')"
               class="max-h-[65vh] w-full object-contain"

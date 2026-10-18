@@ -121,6 +121,9 @@ export interface ReporteMensualCifras {
   name: string;
   prev: string;
   recv: number;
+  /** Split de lo recibido por origen (prototipo): donación vs compra. Suman recv. */
+  recvDon?: number;
+  recvCom?: number;
   ent: number;
   recLoss: number;
   bodLoss: number;
@@ -197,10 +200,18 @@ export interface Remision {
   IdRemision: string;
   Numero: string;
   Fecha: string;
+  /** '' cuando el destinatario es una persona natural (ver Destinatario*_PROTOTIPO). */
   IdOrganizacion: string;
+  /** '' / 0 cuando la remisión no se arma por kit (entrega ad-hoc: solo renglones sueltos). */
   IdPrograma: string;
   NumeroKits: number;
   PdfUrl: string | null;
+  /** Destinatario (doc v2.0, UC-08): organización o persona natural. Prototipo. */
+  DestinatarioTipo_PROTOTIPO?: 'ORGANIZACION' | 'PERSONA';
+  DestinatarioNombre_PROTOTIPO?: string;
+  DestinatarioDocumento_PROTOTIPO?: string;
+  /** Entrega de evento / extraordinaria (doc: "programa extraordinario"). Prototipo. */
+  EsEvento_PROTOTIPO?: boolean;
 }
 
 /** Qué lote cubrió qué parte de la remisión (asignación FEFO al emitir). No viene

@@ -1499,43 +1499,43 @@
       "IdRepresentante": "rep-hogar-feliz-1",
       "IdOrganizacion": "org-hogar-feliz",
       "Nombre": "María Elena Ruiz",
-      "Documento": "1.075.xxx.214",
-      "Telefono": "310 *** 4471"
+      "Documento": "1.075.624.214",
+      "Telefono": "310 418 4471"
     },
     {
       "IdRepresentante": "rep-comedor-parroquial-san-jose-1",
       "IdOrganizacion": "org-comedor-parroquial-san-jose",
       "Nombre": "Jorge Iván Cabrera",
-      "Documento": "12.130.xxx",
-      "Telefono": "315 *** 2208"
+      "Documento": "12.130.877",
+      "Telefono": "315 602 2208"
     },
     {
       "IdRepresentante": "rep-fundacion-huellas-de-vida-1",
       "IdOrganizacion": "org-fundacion-huellas-de-vida",
       "Nombre": "Diana Patricia Losada",
-      "Documento": "36.172.xxx",
-      "Telefono": "312 *** 9015"
+      "Documento": "36.172.503",
+      "Telefono": "312 744 9015"
     },
     {
       "IdRepresentante": "rep-asociacion-mujeres-del-sur-1",
       "IdOrganizacion": "org-asociacion-mujeres-del-sur",
       "Nombre": "Luz Marina Perdomo",
-      "Documento": "26.420.xxx",
-      "Telefono": "318 *** 6630"
+      "Documento": "26.420.118",
+      "Telefono": "318 965 6630"
     },
     {
       "IdRepresentante": "rep-jac-barrio-las-palmas-1",
       "IdOrganizacion": "org-jac-barrio-las-palmas",
       "Nombre": "Hernán Darío Trujillo",
-      "Documento": "7.689.xxx",
-      "Telefono": "311 *** 1187"
+      "Documento": "7.689.402",
+      "Telefono": "311 530 1187"
     },
     {
       "IdRepresentante": "rep-hogar-infantil-semillas-1",
       "IdOrganizacion": "org-hogar-infantil-semillas",
       "Nombre": "Claudia Milena Ortiz",
-      "Documento": "55.168.xxx",
-      "Telefono": "313 *** 5542"
+      "Documento": "55.168.390",
+      "Telefono": "313 287 5542"
     }
   ],
   "AutorizacionDatos": [
@@ -1908,6 +1908,8 @@
         "name": "Octubre 2026",
         "prev": "septiembre",
         "recv": 62480,
+        "recvDon": 52980,
+        "recvCom": 9500,
         "ent": 54900,
         "recLoss": 2890,
         "bodLoss": 1640,
@@ -2097,6 +2099,8 @@
         "name": "Septiembre 2026",
         "prev": "agosto",
         "recv": 58900,
+        "recvDon": 50100,
+        "recvCom": 8800,
         "ent": 51200,
         "recLoss": 3010,
         "bodLoss": 1940,
