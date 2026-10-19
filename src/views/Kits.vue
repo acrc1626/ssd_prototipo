@@ -6,8 +6,6 @@ import { usePaginacion } from '../application/paginacion';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../domain/formato';
@@ -22,8 +20,6 @@ const datos = useDatosStore();
 const kits = useKitsAplicacion();
 const confirmar = useConfirmarStore();
 const deshacer = useDeshacerStore();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Programas y kits' }];
 
 const kgTotalRonda = computed(() => kits.programas.value.filter((p) => p.activo).reduce((t, p) => t + p.kgTotalPorKit, 0));
 
@@ -158,9 +154,7 @@ function alternarExpandido(id: string): void {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="kits" titulo="Programas y kits" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)">
+  <EncabezadoPagina icono="kits" titulo="Programas y kits">
     <template #acciones>
       <span v-if="aviso" role="status" class="flex items-center gap-1 text-sm text-brand-hover">
         <Icono nombre="check" :tamano="16" />

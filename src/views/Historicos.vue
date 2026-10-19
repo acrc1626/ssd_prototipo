@@ -5,8 +5,6 @@ import { useHistoricosAplicacion } from '../application/historicos';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearEntero, formatearFecha } from '../domain/formato';
 import { useConfirmarStore } from '../stores/confirmar';
@@ -15,8 +13,6 @@ import { useDatosStore } from '../stores/datos';
 const datos = useDatosStore();
 const historicos = useHistoricosAplicacion();
 const confirmar = useConfirmarStore();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Importar históricos' }];
 
 const seleccionPorNombre = ref<Record<string, string>>({});
 
@@ -40,9 +36,7 @@ async function asignar(nombreOrigen: string): Promise<void> {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="historicos" titulo="Importar históricos" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)" />
+  <EncabezadoPagina icono="historicos" titulo="Importar históricos" />
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
     <TarjetaIndicador compacto titulo="Importaciones" :valor="historicos.importaciones.value.length.toString()" nota="Archivos cargados" icono="historicos" />

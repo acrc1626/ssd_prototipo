@@ -4,16 +4,12 @@ import { computed } from 'vue';
 import { useReporteAplicacion } from '../application/reporte';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../domain/formato';
 import { useDatosStore } from '../stores/datos';
 
 const reporte = useReporteAplicacion();
 const datos = useDatosStore();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Reporte mensual' }];
 
 const notaTasa = computed(() => {
   const c = reporte.cifras.value;
@@ -72,9 +68,7 @@ function imprimir(): void {
 </script>
 
 <template>
-  <Migas class="print:hidden" :items="migas" />
-
-  <EncabezadoPagina class="print:hidden" icono="reporte" titulo="Reporte mensual" subtitulo="Desperdicio de alimentos">
+  <EncabezadoPagina class="print:hidden" icono="reporte" titulo="Reporte mensual">
     <template #acciones>
       <label class="flex items-center gap-2 text-sm text-label print:hidden">
         Periodo

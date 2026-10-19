@@ -7,8 +7,6 @@ import type { FilaUsuario } from '../application/usuarios';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { useConfirmarStore } from '../stores/confirmar';
@@ -20,7 +18,6 @@ const datos = useDatosStore();
 const usuarios = useUsuariosAplicacion();
 const confirmar = useConfirmarStore();
 
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Usuarios y roles' }];
 const roles = computed(() => datos.roles);
 
 const busqueda = ref('');
@@ -88,9 +85,7 @@ async function onCambiarActivo(fila: FilaUsuario, event: Event): Promise<void> {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="usuarios" titulo="Usuarios y roles" :subtitulo="datos.banco?.Nombre" />
+  <EncabezadoPagina icono="usuarios" titulo="Usuarios y roles" />
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-3">
     <TarjetaIndicador compacto titulo="Usuarios" :valor="usuarios.filas.value.length.toString()" nota="Con acceso al sistema" icono="usuarios" />

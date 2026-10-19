@@ -5,8 +5,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { obtenerRecepcionDetalle } from '../../application/recepcionDetalle';
 import type { RenglonRecepcion } from '../../application/recepcionDetalle';
 import Icono from '../../components/Icono.vue';
-import Migas from '../../components/Migas.vue';
-import type { MigaPan } from '../../components/migaPan';
 import { kgDesdePresentacion } from '../../domain/calculos';
 import { formatearFecha, formatearNumero, unirConY } from '../../domain/formato';
 import type { OrigenRecepcion } from '../../domain/modelos';
@@ -61,12 +59,6 @@ watchEffect(() => {
   estado.value = datosRecepcion.estado;
   renglones.value = datosRecepcion.renglones;
 });
-
-const migas = computed<MigaPan[]>(() => [
-  { etiqueta: 'Inicio', ruta: '/inicio' },
-  { etiqueta: 'Recepciones', ruta: '/recepciones' },
-  { etiqueta: numero.value ?? 'Nueva recepción' },
-]);
 
 const soloLectura = computed(() => estado.value === 'CONFIRMADA');
 const esNueva = computed(() => numero.value === null);
@@ -419,13 +411,6 @@ function volver(): void {
 
 <template>
   <template v-if="noEncontrada">
-    <Migas
-      :items="[
-        { etiqueta: 'Inicio', ruta: '/inicio' },
-        { etiqueta: 'Recepciones', ruta: '/recepciones' },
-        { etiqueta: 'No encontrada' },
-      ]"
-    />
     <div class="card">
       <div class="card-body items-center gap-2 py-16 text-center">
         <h1 class="font-display text-lg font-semibold text-ink">No encontramos esa recepción</h1>
@@ -436,7 +421,6 @@ function volver(): void {
   </template>
 
   <template v-else>
-    <Migas :items="migas" />
 
     <div class="card">
       <div class="card-body gap-4">

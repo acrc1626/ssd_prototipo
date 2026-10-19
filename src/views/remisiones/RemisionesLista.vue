@@ -7,8 +7,6 @@ import type { FilaRemision } from '../../application/remisiones';
 import EncabezadoPagina from '../../components/EncabezadoPagina.vue';
 import EstadoVacio from '../../components/EstadoVacio.vue';
 import Icono from '../../components/Icono.vue';
-import Migas from '../../components/Migas.vue';
-import type { MigaPan } from '../../components/migaPan';
 import Paginador from '../../components/Paginador.vue';
 import TarjetaIndicador from '../../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../../domain/formato';
@@ -16,7 +14,6 @@ import { formatearFecha, formatearNumero } from '../../domain/formato';
 const COLUMNAS = '96px 96px minmax(120px,1fr) minmax(100px,1fr) 72px 96px 56px';
 
 const remisiones = useRemisionesAplicacion();
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Remisiones' }];
 
 const expandidaId = ref<string | null>(null);
 function alternarDetalle(id: string): void {
@@ -45,8 +42,6 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
 </script>
 
 <template>
-  <Migas class="print:hidden" :items="migas" />
-
   <EncabezadoPagina class="print:hidden" icono="remisiones" titulo="Remisiones">
     <template #acciones>
       <router-link to="/remisiones/nueva" class="btn-primary">

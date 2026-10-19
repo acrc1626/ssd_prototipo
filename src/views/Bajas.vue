@@ -8,8 +8,6 @@ import { usePaginacion } from '../application/paginacion';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../domain/formato';
@@ -24,8 +22,6 @@ const datos = useDatosStore();
 const bajas = useBajasAplicacion();
 const confirmar = useConfirmarStore();
 const deshacer = useDeshacerStore();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Bajas' }];
 
 const loteId = ref('');
 const tipo = ref<TipoBaja>('BAJA');
@@ -95,9 +91,7 @@ async function registrar(): Promise<void> {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="bajas" titulo="Bajas" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)" />
+  <EncabezadoPagina icono="bajas" titulo="Bajas" />
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
     <TarjetaIndicador compacto titulo="Lotes afectados" :valor="bajas.lotesAfectados.value.toString()" nota="Con baja o compostaje" icono="existencias" />

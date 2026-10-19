@@ -7,8 +7,6 @@ import { useRecepcionesAplicacion } from '../../application/recepciones';
 import EncabezadoPagina from '../../components/EncabezadoPagina.vue';
 import EstadoVacio from '../../components/EstadoVacio.vue';
 import Icono from '../../components/Icono.vue';
-import Migas from '../../components/Migas.vue';
-import type { MigaPan } from '../../components/migaPan';
 import Paginador from '../../components/Paginador.vue';
 import { formatearFecha, formatearNumero } from '../../domain/formato';
 import type { EstadoRecepcion, OrigenRecepcion } from '../../domain/modelos';
@@ -22,7 +20,6 @@ const aplicacion = useRecepcionesAplicacion();
 
 const columnas = COLUMNAS;
 const registradores = aplicacion.registradores;
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Recepciones' }];
 
 const pestana = ref<FiltroEstado>('TODAS');
 const busqueda = ref('');
@@ -73,8 +70,6 @@ function renglonesDe(numero: string) {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
   <EncabezadoPagina icono="recepciones" titulo="Recepciones">
     <template #acciones>
       <router-link to="/recepciones/nueva" class="btn-primary">

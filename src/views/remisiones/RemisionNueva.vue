@@ -6,20 +6,12 @@ import { useRemisionesAplicacion } from '../../application/remisiones';
 import EncabezadoPagina from '../../components/EncabezadoPagina.vue';
 import EstadoVacio from '../../components/EstadoVacio.vue';
 import Icono from '../../components/Icono.vue';
-import Migas from '../../components/Migas.vue';
-import type { MigaPan } from '../../components/migaPan';
 import { formatearNumero } from '../../domain/formato';
 import { useConfirmarStore } from '../../stores/confirmar';
 
 const router = useRouter();
 const remisiones = useRemisionesAplicacion();
 const confirmar = useConfirmarStore();
-
-const migas: MigaPan[] = [
-  { etiqueta: 'Inicio', ruta: '/inicio' },
-  { etiqueta: 'Remisiones', ruta: '/remisiones' },
-  { etiqueta: 'Nueva remisión' },
-];
 
 const PASOS = [
   { n: 1, etiqueta: 'Destinatario' },
@@ -186,9 +178,7 @@ async function emitir(): Promise<void> {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="remisiones" titulo="Nueva remisión" subtitulo="Entrega de productos a una organización o a una persona" />
+  <EncabezadoPagina icono="remisiones" titulo="Nueva remisión" />
 
   <div class="card">
     <div class="card-body">

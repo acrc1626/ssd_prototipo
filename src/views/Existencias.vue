@@ -7,8 +7,6 @@ import { useExistenciasAplicacion } from '../application/existencias';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { CLASE_CHIP_RIESGO, ETIQUETA_MOVIMIENTO, ETIQUETA_RIESGO } from '../domain/calculos';
@@ -48,7 +46,6 @@ const claseChipRiesgo = CLASE_CHIP_RIESGO;
 const etiquetaMovimiento = ETIQUETA_MOVIMIENTO;
 const columnas = COLUMNAS;
 
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Existencias' }];
 const categorias = computed(() => datos.categorias);
 
 const categoriaFiltro = ref('TODAS');
@@ -124,8 +121,6 @@ function textoDias(dias: number | null): string {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
   <EncabezadoPagina icono="existencias" titulo="Existencias">
     <template v-if="puedeNuevaRemision" #acciones>
       <router-link to="/remisiones" class="btn-primary">

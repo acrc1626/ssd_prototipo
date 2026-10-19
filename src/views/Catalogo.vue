@@ -6,8 +6,6 @@ import { usePaginacion } from '../application/paginacion';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearNumero } from '../domain/formato';
@@ -17,8 +15,6 @@ type Pestana = 'CATEGORIAS' | 'PRODUCTOS' | 'PRESENTACIONES' | 'EQUIVALENCIAS';
 
 const datos = useDatosStore();
 const catalogo = useCatalogoAplicacion();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Catálogo' }];
 
 const pestana = ref<Pestana>('CATEGORIAS');
 
@@ -207,9 +203,7 @@ const pagPresentaciones = reactive(usePaginacion(presentacionesFiltradas));
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="catalogo" titulo="Catálogo" subtitulo="Productos, presentaciones y categorías">
+  <EncabezadoPagina icono="catalogo" titulo="Catálogo">
     <template v-if="aviso" #acciones>
       <span role="status" class="flex items-center gap-1 text-sm text-brand-hover">
         <Icono nombre="check" :tamano="16" />

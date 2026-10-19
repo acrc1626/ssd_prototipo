@@ -13,8 +13,6 @@ import { usePaginacion } from '../application/paginacion';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../domain/formato';
@@ -29,8 +27,6 @@ const datos = useDatosStore();
 const organizaciones = useOrganizacionesAplicacion();
 const confirmar = useConfirmarStore();
 const deshacer = useDeshacerStore();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Organizaciones' }];
 
 const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = usePaginacion(organizaciones.filas);
 
@@ -228,9 +224,7 @@ function quitarPoblacion(fila: FilaOrganizacion, grupo: string): void {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="organizaciones" titulo="Organizaciones" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)">
+  <EncabezadoPagina icono="organizaciones" titulo="Organizaciones">
     <template #acciones>
       <span v-if="avisoGuardado" role="status" class="flex items-center gap-1 text-sm text-brand-hover">
         <Icono nombre="check" :tamano="16" />

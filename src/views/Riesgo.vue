@@ -6,8 +6,6 @@ import { useRiesgoAplicacion } from '../application/riesgo';
 import EncabezadoPagina from '../components/EncabezadoPagina.vue';
 import EstadoVacio from '../components/EstadoVacio.vue';
 import Icono from '../components/Icono.vue';
-import Migas from '../components/Migas.vue';
-import type { MigaPan } from '../components/migaPan';
 import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { CLASE_CHIP_RIESGO, ETIQUETA_RIESGO } from '../domain/calculos';
@@ -22,8 +20,6 @@ const COLUMNAS = '88px minmax(160px,1fr) 144px 128px 96px 104px 112px 56px';
 
 const datos = useDatosStore();
 const riesgo = useRiesgoAplicacion();
-
-const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Riesgo de vencimiento' }];
 
 const nivelFiltro = ref<FiltroNivel>('TODOS');
 const orden = ref<Orden>('VENCE');
@@ -57,9 +53,7 @@ function textoDias(dias: number): string {
 </script>
 
 <template>
-  <Migas :items="migas" />
-
-  <EncabezadoPagina icono="riesgo" titulo="Riesgo de vencimiento" :subtitulo="'Corte ' + formatearFecha(datos.fechaReferencia)" />
+  <EncabezadoPagina icono="riesgo" titulo="Riesgo de vencimiento" />
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
     <TarjetaIndicador compacto titulo="Riesgo alto" :valor="riesgo.conteoPorNivel.value.alto.toString()" nota="Lotes" icono="riesgo" tono="alerta" />
