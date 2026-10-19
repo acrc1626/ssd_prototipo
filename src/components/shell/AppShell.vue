@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { nextTick, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useConfirmarStore } from '../../stores/confirmar';
 import { useDatosStore } from '../../stores/datos';
@@ -19,8 +19,48 @@ const sesion = useSesionStore();
 const datos = useDatosStore();
 const confirmar = useConfirmarStore();
 const router = useRouter();
+const route = useRoute();
 
 const menuMovilAbierto = ref(false);
+const cajonRef = ref<HTMLElement | null>(null);
+const contenidoRef = ref<HTMLElement | null>(null);
+let focoPrevioMenu: HTMLElement | null = null;
+
+/** Menú móvil como diálogo (TR-02): al abrir se recuerda el foco y se lleva al cajón; al
+ *  cerrar se devuelve. Escape cierra. Así el teclado no queda atrapado al final del DOM. */
+function alternarMenu(): void {
+  if (menuMovilAbierto.value) {
+    cerrarMenu();
+  } else {
+    focoPrevioMenu = document.activeElement as HTMLElement | null;
+    menuMovilAbierto.value = true;
+  }
+}
+function cerrarMenu(): void {
+  menuMovilAbierto.value = false;
+}
+
+watch(menuMovilAbierto, async (abierto) => {
+  if (abierto) {
+    await nextTick();
+    cajonRef.value?.focus();
+  } else {
+    focoPrevioMenu?.focus?.();
+    focoPrevioMenu = null;
+  }
+});
+
+/** Al cambiar de pantalla, mover el foco al contenido (TR-01): sin esto el foco queda en
+ *  BODY y un lector de pantalla no anuncia la pantalla nueva. */
+watch(
+  () => route.fullPath,
+  async () => {
+    await nextTick();
+    // preventScroll: mover el foco NO debe desplazar la página (si no, al entrar se baja
+    // el scroll y se tapa el título). El scroll al tope lo maneja el router (scrollBehavior).
+    contenidoRef.value?.focus({ preventScroll: true });
+  },
+);
 
 /** Confirmar antes de cerrar sesión: el botón es de solo ícono, pegado al avatar, y como
  *  el prototipo guarda en memoria, un clic accidental perdería los cambios de la sesión
@@ -39,6 +79,8 @@ async function salir(): Promise<void> {
 
 <template>
   <div class="app">
+    <a href="#contenido" class="skip-link">Saltar al contenido</a>
+
     <Cabecera
       class="print:hidden"
       :nombreBanco="datos.banco?.Nombre ?? ''"
@@ -46,7 +88,7 @@ async function salir(): Promise<void> {
       :nombreRol="sesion.infoRol?.Nombre ?? ''"
       :iniciales="sesion.iniciales"
       :menuAbierto="menuMovilAbierto"
-      @alternarMenu="menuMovilAbierto = !menuMovilAbierto"
+      @alternarMenu="alternarMenu"
       @salir="salir"
     />
 
@@ -57,17 +99,23 @@ async function salir(): Promise<void> {
         <NotaPrototipo />
       </nav>
 
-      <main id="contenido" class="app-main">
+      <main id="contenido" ref="contenidoRef" tabindex="-1" class="app-main focus:outline-none">
         <router-view />
       </main>
     </div>
 
     <template v-if="menuMovilAbierto">
-      <div class="fixed inset-0 z-40 bg-brand-ink/40 backdrop-blur-[2px] wide:hidden" @click="menuMovilAbierto = false"></div>
+      <div class="fixed inset-0 z-40 bg-brand-ink/40 backdrop-blur-[2px] wide:hidden" @click="cerrarMenu()"></div>
       <nav
-        class="nav-panel fixed inset-y-0 left-0 z-50 w-nav overflow-y-auto shadow-[15px_0_40px_rgba(23,63,40,0.14)] wide:hidden"
-        aria-label="Navegación principal"
-        @click="menuMovilAbierto = false"
+        id="cajon-menu"
+        ref="cajonRef"
+        class="nav-panel fixed inset-y-0 left-0 z-50 w-nav overflow-y-auto shadow-[15px_0_40px_rgba(23,63,40,0.14)] focus:outline-none wide:hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de navegación"
+        tabindex="-1"
+        @click="cerrarMenu()"
+        @keydown.escape="cerrarMenu()"
       >
         <MarcaMenu :nombreBanco="datos.banco?.Nombre ?? ''" />
         <Navegacion :items="sesion.itemsMenu" />

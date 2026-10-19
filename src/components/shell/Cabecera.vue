@@ -25,8 +25,9 @@ defineEmits<{
     <button
       type="button"
       class="btn-icon wide:hidden"
-      aria-label="Abrir menú"
+      :aria-label="menuAbierto ? 'Cerrar menú' : 'Abrir menú'"
       :aria-expanded="menuAbierto"
+      aria-controls="cajon-menu"
       @click="$emit('alternarMenu')"
     >
       <Icono nombre="menu" :tamano="20" />

@@ -40,6 +40,7 @@ const esPdfSoporte = computed(
 const estado = ref<'BORRADOR' | 'CONFIRMADA'>('BORRADOR');
 const renglones = ref<RenglonRecepcion[]>([]);
 const avisoGuardado = ref(false);
+const recienConfirmada = ref(false);
 
 watchEffect(() => {
   const id = (route.params.id as string | undefined) ?? 'nueva';
@@ -402,6 +403,7 @@ async function confirmarRecepcion(): Promise<void> {
   const resultado = guardarEnStore();
   datos.confirmarRecepcion(resultado.idRecepcion);
   estado.value = 'CONFIRMADA';
+  recienConfirmada.value = true;
 }
 
 function volver(): void {
@@ -440,9 +442,15 @@ function volver(): void {
             </div>
           </div>
 
-          <button v-if="soloLectura" type="button" class="btn-secondary shrink-0" @click="volver()">
-            Volver a recepciones
-          </button>
+          <div v-if="soloLectura" class="flex flex-wrap shrink-0 items-center gap-4">
+            <span v-if="recienConfirmada" role="status" class="flex items-center gap-1 text-sm text-brand-hover">
+              <Icono nombre="check" :tamano="16" />
+              Recepción confirmada. Se crearon los lotes.
+            </span>
+            <button type="button" class="btn-secondary shrink-0" @click="volver()">
+              Volver a recepciones
+            </button>
+          </div>
           <div v-else class="flex flex-wrap shrink-0 items-center gap-4">
             <span v-if="avisoGuardado" role="status" class="flex items-center gap-1 text-sm text-brand-hover">
               <Icono nombre="check" :tamano="16" />

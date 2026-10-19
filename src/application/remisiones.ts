@@ -188,6 +188,11 @@ export function useRemisionesAplicacion() {
     });
   }
 
+  /** Anular una remisión emitida (AS-01): devuelve el inventario y la quita de la lista. */
+  function anular(idRemision: string): void {
+    datos.anularRemision(idRemision);
+  }
+
   return {
     filas,
     detalleLotes,
@@ -199,5 +204,6 @@ export function useRemisionesAplicacion() {
     construirRenglones,
     simular,
     emitir,
+    anular,
   };
 }

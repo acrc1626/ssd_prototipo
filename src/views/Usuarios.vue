@@ -11,12 +11,23 @@ import Paginador from '../components/Paginador.vue';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
 import { useConfirmarStore } from '../stores/confirmar';
 import { useDatosStore } from '../stores/datos';
+import { useSesionStore } from '../stores/sesion';
 
 const COLUMNAS = 'minmax(0,1fr) minmax(0,1.2fr) 210px 130px';
 
 const datos = useDatosStore();
 const usuarios = useUsuariosAplicacion();
 const confirmar = useConfirmarStore();
+const sesion = useSesionStore();
+
+/** CO-01: avisar cuando la acción es sobre la propia cuenta o deja un rol sin nadie activo. */
+function esCuentaPropia(fila: FilaUsuario): boolean {
+  return fila.idUsuario === sesion.usuario?.IdUsuario;
+}
+function esUnicoActivoConSuRol(fila: FilaUsuario): boolean {
+  if (!fila.activo || !fila.idRol) return false;
+  return usuarios.filas.value.filter((u) => u.activo && u.idRol === fila.idRol).length === 1;
+}
 
 const roles = computed(() => datos.roles);
 
@@ -51,10 +62,15 @@ async function onCambiarRol(fila: FilaUsuario, event: Event): Promise<void> {
   if (nuevoIdRol === fila.idRol) return;
 
   const nuevoRol = roles.value.find((r) => r.IdRol === nuevoIdRol);
+  const avisos: string[] = [];
+  if (esCuentaPropia(fila)) avisos.push('Esta es tu propia cuenta: tu menú y permisos cambian para ti de inmediato.');
+  if (esUnicoActivoConSuRol(fila)) avisos.push(`Es la única persona activa con el rol "${fila.nombreRol}"; nadie quedaría en ese rol.`);
+
   const ok = await confirmar.pedir({
     titulo: 'Cambiar rol',
-    mensaje: `${fila.nombre} pasa de "${fila.nombreRol}" a "${nuevoRol?.Nombre ?? ''}". El menú y los permisos cambian de inmediato.`,
+    mensaje: `${fila.nombre} pasa de "${fila.nombreRol}" a "${nuevoRol?.Nombre ?? ''}". El menú y los permisos cambian de inmediato.${avisos.length ? ' ' + avisos.join(' ') : ''}`,
     textoConfirmar: 'Cambiar rol',
+    variante: avisos.length ? 'peligro' : undefined,
   });
   if (!ok) {
     select.value = fila.idRol ?? '';
@@ -69,9 +85,13 @@ async function onCambiarActivo(fila: FilaUsuario, event: Event): Promise<void> {
   if (nuevoActivo === fila.activo) return;
 
   if (!nuevoActivo) {
+    const avisos: string[] = [];
+    if (esCuentaPropia(fila)) avisos.push('Esta es tu propia cuenta: si la desactivas, perderás el acceso al sistema.');
+    if (esUnicoActivoConSuRol(fila)) avisos.push(`Es la única persona activa con el rol "${fila.nombreRol}"; nadie quedaría en ese rol.`);
+
     const ok = await confirmar.pedir({
       titulo: 'Desactivar usuario',
-      mensaje: `${fila.nombre} no va a poder ingresar al sistema mientras esté inactivo.`,
+      mensaje: `${fila.nombre} no va a poder ingresar al sistema mientras esté inactivo.${avisos.length ? ' ' + avisos.join(' ') : ''}`,
       textoConfirmar: 'Desactivar',
       variante: 'peligro',
     });

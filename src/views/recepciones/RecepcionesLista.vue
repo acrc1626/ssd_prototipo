@@ -81,7 +81,7 @@ function renglonesDe(numero: string) {
 
   <div class="card">
     <div class="card-body gap-0!">
-      <div class="p-4">
+      <div class="flex flex-col gap-3 p-4 pb-3">
         <div class="segmented" role="tablist" aria-label="Filtrar por estado">
           <button
             type="button"
@@ -114,9 +114,8 @@ function renglonesDe(numero: string) {
             <span class="chip-neutral ml-1.5">{{ totalConfirmadas }}</span>
           </button>
         </div>
-      </div>
 
-      <div class="grid grid-cols-1 gap-4 p-4 tablet:grid-cols-2 desk:grid-cols-[minmax(260px,1.5fr)_minmax(180px,1fr)_minmax(180px,1fr)_auto] desk:items-end">
+        <div class="grid grid-cols-1 gap-3 tablet:grid-cols-2 desk:grid-cols-[minmax(260px,1.5fr)_minmax(180px,1fr)_minmax(180px,1fr)_auto] desk:items-end">
         <label class="label">
           Buscar
           <div class="relative">
@@ -152,6 +151,7 @@ function renglonesDe(numero: string) {
         <span class="text-sm text-muted desk:pb-[11px]">
           {{ filas.length }} {{ filas.length === 1 ? 'recepción' : 'recepciones' }}
         </span>
+        </div>
       </div>
 
       <EstadoVacio

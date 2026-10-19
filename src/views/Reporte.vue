@@ -15,7 +15,7 @@ const notaTasa = computed(() => {
   const c = reporte.cifras.value;
   if (!c) return '';
   const dif = reporte.diferenciaTasa.value;
-  return dif >= 0 ? `Bajó ${formatearNumero(Math.abs(dif))} pts frente a ${c.prev}` : `Subió ${formatearNumero(Math.abs(dif))} pts frente a ${c.prev}`;
+  return dif >= 0 ? `Bajó ${formatearNumero(Math.abs(dif))} pp frente a ${c.prev}` : `Subió ${formatearNumero(Math.abs(dif))} pp frente a ${c.prev}`;
 });
 
 // --- Gráfica de tendencia (línea) ---

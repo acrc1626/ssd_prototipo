@@ -137,6 +137,9 @@
 @layer components {
   /* App shell: cabecera y menú fijos, contenido con minmax(0,1fr); la página nunca hace scroll horizontal */
   .app { @apply min-h-screen flex flex-col; }
+  /* Enlace "Saltar al contenido" (TR-01): oculto hasta recibir foco con Tab. */
+  .skip-link { @apply sr-only; }
+  .skip-link:focus { @apply not-sr-only fixed left-4 top-3 z-50 rounded-md bg-surface px-4 py-2 text-sm font-medium text-ink shadow-md outline outline-2 outline-brand; }
   .app-header { @apply sticky top-0 z-40 h-header flex items-center gap-4 px-6 bg-surface border-b border-line; }
   .app-body { @apply grid flex-1 min-w-0 items-start grid-cols-[minmax(0,1fr)] wide:grid-cols-[var(--spacing-nav)_minmax(0,1fr)]; }
   .app-nav { @apply nav-panel hidden wide:flex sticky top-header h-[calc(100vh-var(--spacing-header))] overflow-y-auto border-r border-line; }
@@ -183,9 +186,12 @@
   .btn:disabled { @apply cursor-not-allowed pointer-events-none; }
 
   .btn-primary {
+    /* Degradado propio del botón (no el decorativo brand-start/brand-end): el extremo
+       claro #62C94F daba 1.9:1 con texto blanco. Estos dos verdes pasan AA en texto chico
+       (#2A8341 = 4.75:1, #1F7637 = 5.67:1 contra blanco). TR-03 de la auditoría. */
     @apply btn text-white border-transparent;
-    background-color: var(--color-brand-start);
-    background-image: linear-gradient(135deg, var(--color-brand-start) 0%, var(--color-brand-end) 100%);
+    background-color: #2a8341;
+    background-image: linear-gradient(135deg, #2a8341 0%, #1f7637 100%);
     box-shadow: 0 7px 18px -4px rgba(47, 143, 72, 0.3);
     transition: filter 180ms ease, box-shadow 180ms ease, transform 180ms ease;
   }

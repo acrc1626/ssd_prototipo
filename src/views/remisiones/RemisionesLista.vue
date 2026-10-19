@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { usePaginacion } from '../../application/paginacion';
 import { useRemisionesAplicacion } from '../../application/remisiones';
@@ -10,14 +11,44 @@ import Icono from '../../components/Icono.vue';
 import Paginador from '../../components/Paginador.vue';
 import TarjetaIndicador from '../../components/TarjetaIndicador.vue';
 import { formatearFecha, formatearNumero } from '../../domain/formato';
+import { useConfirmarStore } from '../../stores/confirmar';
 
 const COLUMNAS = '96px 96px minmax(120px,1fr) minmax(100px,1fr) 72px 96px 56px';
 
 const remisiones = useRemisionesAplicacion();
+const confirmar = useConfirmarStore();
+const route = useRoute();
 
 const expandidaId = ref<string | null>(null);
 function alternarDetalle(id: string): void {
   expandidaId.value = expandidaId.value === id ? null : id;
+}
+
+// Toast de éxito (TR-06): al emitir (llega ?emitida=) y al anular.
+const aviso = ref('');
+let avisoTimeout: ReturnType<typeof setTimeout> | null = null;
+function mostrarAviso(mensaje: string): void {
+  aviso.value = mensaje;
+  if (avisoTimeout) clearTimeout(avisoTimeout);
+  avisoTimeout = setTimeout(() => (aviso.value = ''), 5000);
+}
+onMounted(() => {
+  const n = route.query.emitida;
+  if (typeof n === 'string') mostrarAviso(`Remisión ${n} emitida.`);
+});
+
+async function anularRemision(f: FilaRemision): Promise<void> {
+  const ok = await confirmar.pedir({
+    titulo: 'Anular remisión',
+    mensaje: `La remisión ${f.numero} se anula y los ${formatearNumero(f.kgTotal)} kg vuelven al inventario. Esta acción no se puede deshacer.`,
+    textoConfirmar: 'Anular remisión',
+    variante: 'peligro',
+  });
+  if (!ok) return;
+  remisiones.anular(f.idRemision);
+  if (expandidaId.value === f.idRemision) expandidaId.value = null;
+  if (comprobante.value?.idRemision === f.idRemision) comprobante.value = null;
+  mostrarAviso(`Remisión ${f.numero} anulada. El inventario volvió a su estado anterior.`);
 }
 
 const comprobante = ref<FilaRemision | null>(null);
@@ -44,6 +75,10 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
 <template>
   <EncabezadoPagina class="print:hidden" icono="remisiones" titulo="Remisiones">
     <template #acciones>
+      <span v-if="aviso" role="status" class="flex items-center gap-1 text-sm text-brand-hover">
+        <Icono nombre="check" :tamano="16" />
+        {{ aviso }}
+      </span>
       <router-link to="/remisiones/nueva" class="btn-primary">
         <Icono nombre="mas" :tamano="18" />
         Nueva remisión
@@ -103,10 +138,16 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
           <div v-if="expandidaId === f.idRemision" class="col-span-full rounded-md bg-page p-4">
             <div class="flex flex-wrap items-center justify-between gap-2 pb-3">
               <p class="text-sm font-medium text-ink">Lotes asignados por FEFO</p>
-              <button type="button" class="btn-secondary" @click="verComprobante(f)">
-                <Icono nombre="ojo" :tamano="16" />
-                Ver comprobante
-              </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" class="btn-secondary" @click="verComprobante(f)">
+                  <Icono nombre="ojo" :tamano="16" />
+                  Ver comprobante
+                </button>
+                <button type="button" class="btn-danger" @click="anularRemision(f)">
+                  <Icono nombre="quitar" :tamano="16" />
+                  Anular remisión
+                </button>
+              </div>
             </div>
 
             <p v-if="!f.tieneDetalle" class="text-xs text-muted">Detalle de lotes no disponible para esta remisión.</p>

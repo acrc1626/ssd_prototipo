@@ -304,6 +304,17 @@ export const useDatosStore = defineStore('datos', () => {
     return { idRemision, numero };
   }
 
+  /** Anular una remisión (AS-01): devuelve el inventario quitando sus SALIDA_REMISION y su
+   *  DetalleRemision, y borra la remisión. Como los movimientos son de solo inserción en el
+   *  resto de la app, aquí revertir equivale a quitar lo que esa remisión insertó; es la
+   *  corrección de un error de emisión (una remisión emitida ya descontó inventario). */
+  function anularRemision(idRemision: string): void {
+    const d = requerir();
+    d.MovimientoInventario = d.MovimientoInventario.filter((m) => m.IdRemision !== idRemision);
+    d.DetalleRemision = d.DetalleRemision.filter((x) => x.IdRemision !== idRemision);
+    d.Remision = d.Remision.filter((r) => r.IdRemision !== idRemision);
+  }
+
   /** Renglones de recepciones en borrador (overlay, igual que `movimientosLocales`:
    *  no son Lote/MovimientoInventario todavía). Clave = IdRecepcion. La presencia de la
    *  clave (no el largo del arreglo) es lo que distingue "ya se guardó, aunque haya
@@ -522,6 +533,7 @@ export const useDatosStore = defineStore('datos', () => {
     agregarPoblacion,
     quitarPoblacion,
     emitirRemision,
+    anularRemision,
     tieneBorradorGuardado,
     renglonesBorrador,
     guardarRenglonesBorrador,

@@ -157,7 +157,7 @@ async function emitir(): Promise<void> {
 
   const ok = await confirmar.pedir({
     titulo: 'Emitir remisión',
-    mensaje: 'Se descuentan estos productos del inventario (por FEFO) y la remisión queda registrada.',
+    mensaje: 'Se descuentan estos productos del inventario (por FEFO) y la remisión queda registrada. Si fue un error, puedes anularla después desde la lista de remisiones.',
     detalle,
     textoConfirmar: 'Emitir remisión',
   });

@@ -326,7 +326,7 @@ function quitarPoblacion(fila: FilaOrganizacion, grupo: string): void {
                 :aria-label="'Ver detalle de ' + f.nombre"
                 @click="alternarExpandida(f.idOrganizacion)"
               >
-                <Icono nombre="chevron-abajo" :tamano="16" />
+                <Icono nombre="chevron-derecha" :tamano="16" class="transition-transform" :class="{ 'rotate-90': expandidas.has(f.idOrganizacion) }" />
               </button>
             </span>
           </div>

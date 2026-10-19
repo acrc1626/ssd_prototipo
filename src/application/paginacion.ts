@@ -6,7 +6,7 @@ import type { Ref } from 'vue';
  *  - Vuelve a la página 1 cuando la fuente cambia (al filtrar/buscar la computed se
  *    recalcula y devuelve un arreglo nuevo), y ajusta la página si se queda sin filas.
  *  Se usa junto con el componente Paginador.vue. */
-export function usePaginacion<T>(fuente: Ref<T[]>, porPagina = 12) {
+export function usePaginacion<T>(fuente: Ref<T[]>, porPagina = 10) {
   const pagina = ref(1);
   const total = computed(() => fuente.value.length);
   const totalPaginas = computed(() => Math.max(1, Math.ceil(total.value / porPagina)));

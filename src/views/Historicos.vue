@@ -16,6 +16,15 @@ const confirmar = useConfirmarStore();
 
 const seleccionPorNombre = ref<Record<string, string>>({});
 
+// Toast de éxito al asignar una equivalencia (TR-06).
+const aviso = ref('');
+let avisoTimeout: ReturnType<typeof setTimeout> | null = null;
+function mostrarAviso(mensaje: string): void {
+  aviso.value = mensaje;
+  if (avisoTimeout) clearTimeout(avisoTimeout);
+  avisoTimeout = setTimeout(() => (aviso.value = ''), 5000);
+}
+
 async function asignar(nombreOrigen: string): Promise<void> {
   const idProducto = seleccionPorNombre.value[nombreOrigen];
   if (!idProducto) return;
@@ -32,11 +41,19 @@ async function asignar(nombreOrigen: string): Promise<void> {
   const copia = { ...seleccionPorNombre.value };
   delete copia[nombreOrigen];
   seleccionPorNombre.value = copia;
+  mostrarAviso(`Se asignó "${nombreOrigen}" a "${producto?.Nombre ?? ''}".`);
 }
 </script>
 
 <template>
-  <EncabezadoPagina icono="historicos" titulo="Importar históricos" />
+  <EncabezadoPagina icono="historicos" titulo="Importar históricos">
+    <template v-if="aviso" #acciones>
+      <span role="status" class="flex items-center gap-1 text-sm text-brand-hover">
+        <Icono nombre="check" :tamano="16" />
+        {{ aviso }}
+      </span>
+    </template>
+  </EncabezadoPagina>
 
   <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
     <TarjetaIndicador compacto titulo="Importaciones" :valor="historicos.importaciones.value.length.toString()" nota="Archivos cargados" icono="historicos" />

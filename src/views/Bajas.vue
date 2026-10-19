@@ -70,7 +70,7 @@ async function registrar(): Promise<void> {
   const esBaja = tipo.value === 'BAJA';
   const ok = await confirmar.pedir({
     titulo: esBaja ? 'Registrar baja' : 'Registrar compostaje',
-    mensaje: `Se resta del lote y queda en la trazabilidad. ${esBaja ? 'No se puede deshacer una vez confirmado.' : ''}`,
+    mensaje: 'Se resta del lote y queda en la trazabilidad. Podrás deshacerla unos segundos después de registrarla.',
     detalle: [
       `${lote.producto} · ${lote.presentacion}`,
       `Lote ${lote.codigo}`,
