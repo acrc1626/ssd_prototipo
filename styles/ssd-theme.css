@@ -165,7 +165,7 @@
   .nav-item:not([aria-current="page"]):active { background-color: #dff1dc; transform: translateX(1px) scale(0.99); }
   .nav-item[aria-current="page"] { @apply font-bold; color: var(--color-brand-text); background-color: var(--color-mint-soft); }
   .nav-item:focus-visible { outline: 3px solid var(--color-brand); outline-offset: 2px; }
-  .app-main { @apply min-w-0 flex flex-col gap-4 px-4 pt-4 pb-8 tablet:px-6 tablet:pt-6 desk:px-8; }
+  .app-main { @apply min-w-0 flex flex-col gap-4 px-4 pt-2 pb-8 tablet:px-6 tablet:pt-3 desk:px-8; }
 
   /* Botones: ficha "Diseño detallado de botones" del equipo. .btn ya da 42 px (48 bajo 1280,
      por encima del mínimo táctil de 44 que pide la ficha), padding 17, radio 10, texto 13/600.
