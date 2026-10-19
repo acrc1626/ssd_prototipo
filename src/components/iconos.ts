@@ -143,6 +143,11 @@ export const ICONOS: Record<string, string> = {
     <line x1="12" y1="8" x2="12" y2="13" />
     <circle cx="12" cy="16.2" r="0.8" fill="currentColor" stroke="none" />
   `,
+  info: `
+    <circle cx="12" cy="12" r="9" />
+    <line x1="12" y1="11" x2="12" y2="16" />
+    <circle cx="12" cy="7.8" r="0.8" fill="currentColor" stroke="none" />
+  `,
   vacio: `
     <path d="M3 10 7 4h10l4 6" />
     <path d="M3 10v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8" />

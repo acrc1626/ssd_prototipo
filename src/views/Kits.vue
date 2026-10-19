@@ -248,7 +248,7 @@ function alternarExpandido(id: string): void {
                 :aria-label="'Ver composición de ' + p.nombre"
                 @click="alternarExpandido(p.idPrograma)"
               >
-                <Icono nombre="chevron-abajo" :tamano="16" />
+                <Icono nombre="chevron-derecha" :tamano="16" class="transition-transform" :class="{ 'rotate-90': expandidos.has(p.idPrograma) }" />
               </button>
             </span>
           </div>

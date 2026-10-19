@@ -100,7 +100,7 @@ const { pagina, totalPaginas, filasPagina, rangoDesde, rangoHasta, irPagina } = 
                 :aria-label="'Ver detalle de ' + f.numero"
                 @click="alternarDetalle(f.idRemision)"
               >
-                <Icono nombre="chevron-abajo" :tamano="16" />
+                <Icono nombre="chevron-derecha" :tamano="16" class="transition-transform" :class="{ 'rotate-90': expandidaId === f.idRemision }" />
               </button>
             </span>
           </div>

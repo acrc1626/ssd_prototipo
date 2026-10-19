@@ -10,6 +10,7 @@ import ToastDeshacer from '../ToastDeshacer.vue';
 import Cabecera from './Cabecera.vue';
 import MarcaMenu from './MarcaMenu.vue';
 import Navegacion from './Navegacion.vue';
+import NotaPrototipo from './NotaPrototipo.vue';
 
 /** App shell: cabecera + menú fijos, contenido con minmax(0,1fr) (CLAUDE.md regla 6).
  *  Bajo 1440 px el menú vive en un cajón detrás del botón de la cabecera: nada de un
@@ -53,6 +54,7 @@ async function salir(): Promise<void> {
       <nav class="app-nav print:hidden" aria-label="Navegación principal">
         <MarcaMenu :nombreBanco="datos.banco?.Nombre ?? ''" />
         <Navegacion :items="sesion.itemsMenu" />
+        <NotaPrototipo />
       </nav>
 
       <main id="contenido" class="app-main">
@@ -69,6 +71,7 @@ async function salir(): Promise<void> {
       >
         <MarcaMenu :nombreBanco="datos.banco?.Nombre ?? ''" />
         <Navegacion :items="sesion.itemsMenu" />
+        <NotaPrototipo />
       </nav>
     </template>
   </div>

@@ -27,12 +27,12 @@ El prototipo tiene una base de usabilidad sólida: componentes compartidos, vali
 
 | # | Hallazgo | Heurística | Severidad | Estado |
 |---|---|---|---|---|
-| 1 | Recargar la página reinicia los datos sin aviso | H1 | Media‑Alta | Abierto |
-| 2 | "Salir" cierra sesión sin confirmar | H3 / H5 | Media | Abierto |
+| 1 | Recargar la página reinicia los datos sin aviso | H1 | Media‑Alta | **Mitigado** |
+| 2 | "Salir" cierra sesión sin confirmar | H3 / H5 | Media | **Corregido** |
 | 3 | Riesgo de vencimiento era un callejón sin salida | H2 / H7 | Media | **Corregido** |
-| 4 | Impresión del Reporte arrastra el menú lateral | H8 | Baja | Abierto |
-| 5 | El "chevron" para expandir no es consistente entre tablas | H4 | Baja | Abierto |
-| 6 | Falta un glosario único (FEFO, niveles, vencimiento estimado) | H10 | Baja | Abierto |
+| 4 | Impresión del Reporte sin identificar el mes | H8 | Baja | **Corregido** |
+| 5 | El "chevron" para expandir no es consistente entre tablas | H4 | Baja | **Corregido** |
+| 6 | Falta un glosario único (FEFO, niveles, vencimiento estimado) | H10 | Baja | **Corregido** |
 | 7 | Sin red de seguridad ante un error en tiempo de ejecución | H9 | Baja | Abierto |
 
 ---
@@ -97,10 +97,16 @@ El prototipo tiene una base de usabilidad sólida: componentes compartidos, vali
 - **Kits (Programas y kits):** el flujo está completo y sano. Crear programa → componer el kit (producto + kg por kit, con validación y deshacer) → el kit queda disponible en "Nueva remisión". Activar/desactivar pide confirmación. No requería cambios.
 - **Riesgo de vencimiento → Existencias:** se agregó una acción por fila **"Ver en existencias"** que abre el lote enfocado (`/existencias?lote=<id>`): queda filtrado por su código (a la vista en el buscador, se puede limpiar) y con su trazabilidad abierta. Así se cierra la cadena **Inicio → Riesgo → Existencias**, que antes terminaba en una tabla de solo lectura.
 
-## Recomendaciones priorizadas (lo que falta)
+## Correcciones aplicadas en esta revisión
 
-1. **Nota de "los datos se reinician al recargar"** (riesgo de demo). *Media‑Alta.*
-2. **Confirmar antes de "Salir".** *Media.*
-3. **Hoja de impresión del Reporte** sin menú ni cabecera. *Baja.*
-4. **Unificar el chevron de expandir** en todas las tablas. *Baja.*
-5. **Tooltips/glosario** de FEFO, niveles y vencimiento estimado. *Baja.*
+1. **Nota permanente de prototipo** al pie del menú ("Los datos se reinician al recargar") y aviso al cerrar sesión. (#1)
+2. **Confirmación antes de "Salir"**, que además advierte del reinicio de datos. (#2)
+3. **Acción "Ver en existencias"** por fila en Riesgo, con el lote enfocado. (#3)
+4. **Encabezado solo para impresión** en el Reporte (banco, mes y fecha de generación); el menú y la cabecera ya no se imprimen. (#4)
+5. **Chevron de expandir unificado** (derecha que rota) en Existencias, Kits y Remisiones. (#5)
+6. **Leyenda en contexto** en Riesgo: niveles de riesgo y "estimada"; FEFO ya se explica en Nueva remisión. (#6)
+
+## Lo que queda abierto
+
+- **Red de seguridad ante errores en runtime** (error boundary). *Baja.* Pendiente.
+- **Persistencia real** de los datos: fuera del alcance del MVP (no hay backend); la nota de prototipo lo deja explícito mientras tanto.

@@ -7,9 +7,11 @@ import Icono from '../components/Icono.vue';
 import Migas from '../components/Migas.vue';
 import type { MigaPan } from '../components/migaPan';
 import TarjetaIndicador from '../components/TarjetaIndicador.vue';
-import { formatearNumero } from '../domain/formato';
+import { formatearFecha, formatearNumero } from '../domain/formato';
+import { useDatosStore } from '../stores/datos';
 
 const reporte = useReporteAplicacion();
+const datos = useDatosStore();
 
 const migas: MigaPan[] = [{ etiqueta: 'Inicio', ruta: '/inicio' }, { etiqueta: 'Reporte mensual' }];
 
@@ -72,7 +74,7 @@ function imprimir(): void {
 <template>
   <Migas class="print:hidden" :items="migas" />
 
-  <EncabezadoPagina icono="reporte" titulo="Reporte mensual" subtitulo="Desperdicio de alimentos">
+  <EncabezadoPagina class="print:hidden" icono="reporte" titulo="Reporte mensual" subtitulo="Desperdicio de alimentos">
     <template #acciones>
       <label class="flex items-center gap-2 text-sm text-label print:hidden">
         Periodo
@@ -92,6 +94,14 @@ function imprimir(): void {
   </EncabezadoPagina>
 
   <template v-if="reporte.cifras.value">
+    <!-- Encabezado solo para impresión / PDF: deja el reporte autodescrito (qué banco,
+         qué mes, cuándo se generó), ya que al imprimir se ocultan el menú y la cabecera. -->
+    <div class="hidden print:block">
+      <p class="text-sm text-muted">{{ datos.banco?.Nombre }}</p>
+      <h1 class="font-display text-xl font-bold text-ink">Reporte mensual de desperdicio</h1>
+      <p class="text-sm text-muted">{{ reporte.cifras.value.name }} · generado el {{ formatearFecha(datos.fechaReferencia) }}</p>
+    </div>
+
     <!-- KPIs -->
     <div class="grid grid-cols-2 gap-4 desk:grid-cols-4">
       <TarjetaIndicador compacto titulo="Tasa de desperdicio" :valor="formatearNumero(reporte.cifras.value.rate)" unidad="%" :nota="notaTasa" icono="reporte" tono="lote" />

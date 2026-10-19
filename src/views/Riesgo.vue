@@ -104,6 +104,11 @@ function textoDias(dias: number): string {
         </div>
       </div>
 
+      <p class="help">
+        El nivel indica qué tan pronto vence el lote: Alto (vence muy pronto), Medio y Bajo. "estimada" quiere decir que la fecha
+        se calculó por la vida útil del producto porque el empaque no la traía.
+      </p>
+
       <EstadoVacio
         v-if="filas.length === 0"
         titulo="No hay lotes con esos filtros"
